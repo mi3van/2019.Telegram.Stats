@@ -2,7 +2,7 @@ package com.kitzapp.telegram_stats.presentation.presenters.base;
 
 
 import com.kitzapp.telegram_stats.domain.executor.Executor;
-import com.kitzapp.telegram_stats.domain.executor.MainThread;
+import com.kitzapp.telegram_stats.domain.threading.MainThread;
 
 /**
  * This is a base class for all presenters which are communicating with interactors. This base class will hold a

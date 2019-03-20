@@ -1,11 +1,12 @@
 package com.kitzapp.telegram_stats.domain.repository.Charts;
 
-import com.kitzapp.telegram_stats.domain.model.ChartModel;
+import android.content.Context;
 
 /**
  * A sample repository with CRUD operations on a model.
  */
 public interface ChartRepository {
 
-    ChartModel getCharts();
+    String loadJSONFromAsset(Context context);
+
 }

@@ -1,9 +1,7 @@
-package com.kitzapp.telegram_stats.threading;
+package com.kitzapp.telegram_stats.domain.threading;
 
 import android.os.Handler;
 import android.os.Looper;
-
-import com.kitzapp.telegram_stats.domain.executor.MainThread;
 
 
 /**

@@ -1,4 +1,4 @@
-package com.kitzapp.telegram_stats.domain.executor;
+package com.kitzapp.telegram_stats.domain.threading;
 
 /**
  * This interface will define a class that will enable interactors to run certain operations on the main (UI) thread. For example,

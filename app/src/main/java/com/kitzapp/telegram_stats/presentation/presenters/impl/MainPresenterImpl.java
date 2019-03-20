@@ -1,10 +1,9 @@
 package com.kitzapp.telegram_stats.presentation.presenters.impl;
 
 import com.kitzapp.telegram_stats.domain.executor.Executor;
-import com.kitzapp.telegram_stats.domain.executor.MainThread;
-import com.kitzapp.telegram_stats.domain.interactors.SampleInteractor;
+import com.kitzapp.telegram_stats.domain.threading.MainThread;
+import com.kitzapp.telegram_stats.domain.interactors.impl.SampleInteractor;
 import com.kitzapp.telegram_stats.presentation.presenters.base.AbstractPresenter;
-import com.kitzapp.telegram_stats.presentation.presenters.MainPresenter;
 
 /**
  * Created by dmilicic on 12/13/15.

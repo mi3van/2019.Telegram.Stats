@@ -1,7 +1,7 @@
 package com.kitzapp.telegram_stats.domain.interactors.base;
 
 import com.kitzapp.telegram_stats.domain.executor.Executor;
-import com.kitzapp.telegram_stats.domain.executor.MainThread;
+import com.kitzapp.telegram_stats.domain.threading.MainThread;
 
 /**
  * Created by dmilicic on 8/4/15.

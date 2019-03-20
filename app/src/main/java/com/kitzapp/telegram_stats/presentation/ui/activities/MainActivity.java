@@ -3,7 +3,7 @@ package com.kitzapp.telegram_stats.presentation.ui.activities;
 import android.os.Bundle;
 
 import com.kitzapp.telegram_stats.R;
-import com.kitzapp.telegram_stats.presentation.presenters.MainPresenter;
+import com.kitzapp.telegram_stats.presentation.presenters.impl.MainPresenter;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;

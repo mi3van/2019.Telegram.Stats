@@ -1,4 +1,4 @@
-package com.kitzapp.telegram_stats.domain.interactors;
+package com.kitzapp.telegram_stats.domain.interactors.impl;
 
 
 import com.kitzapp.telegram_stats.domain.interactors.base.Interactor;

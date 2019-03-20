@@ -1,6 +1,5 @@
-package com.kitzapp.telegram_stats.domain.executor.impl;
+package com.kitzapp.telegram_stats.domain.executor;
 
-import com.kitzapp.telegram_stats.domain.executor.Executor;
 import com.kitzapp.telegram_stats.domain.interactors.base.AbstractInteractor;
 
 import java.util.concurrent.BlockingQueue;

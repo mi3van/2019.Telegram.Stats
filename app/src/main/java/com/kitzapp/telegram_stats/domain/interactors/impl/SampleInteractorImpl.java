@@ -1,8 +1,7 @@
 package com.kitzapp.telegram_stats.domain.interactors.impl;
 
 import com.kitzapp.telegram_stats.domain.executor.Executor;
-import com.kitzapp.telegram_stats.domain.executor.MainThread;
-import com.kitzapp.telegram_stats.domain.interactors.SampleInteractor;
+import com.kitzapp.telegram_stats.domain.threading.MainThread;
 import com.kitzapp.telegram_stats.domain.interactors.base.AbstractInteractor;
 import com.kitzapp.telegram_stats.domain.repository.Charts.ChartRepository;
 

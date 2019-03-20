@@ -1,4 +1,4 @@
-package com.kitzapp.telegram_stats.presentation.presenters;
+package com.kitzapp.telegram_stats.presentation.presenters.impl;
 
 import com.kitzapp.telegram_stats.presentation.presenters.base.BasePresenter;
 import com.kitzapp.telegram_stats.presentation.ui.BaseView;
