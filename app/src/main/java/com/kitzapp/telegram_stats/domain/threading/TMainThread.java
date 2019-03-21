@@ -7,13 +7,13 @@ import android.os.Looper;
 /**
  * This class makes sure that the runnable we provide will be run on the main UI thread.
  */
-public class MainThreadImpl implements MainThread {
+public class TMainThread implements MainThread {
 
     private static MainThread sMainThread;
 
     private Handler mHandler;
 
-    private MainThreadImpl() {
+    private TMainThread() {
         mHandler = new Handler(Looper.getMainLooper());
     }
 
@@ -24,7 +24,7 @@ public class MainThreadImpl implements MainThread {
 
     public static MainThread getInstance() {
         if (sMainThread == null) {
-            sMainThread = new MainThreadImpl();
+            sMainThread = new TMainThread();
         }
 
         return sMainThread;

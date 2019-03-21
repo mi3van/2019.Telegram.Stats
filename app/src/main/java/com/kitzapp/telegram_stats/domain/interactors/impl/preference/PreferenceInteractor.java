@@ -1,10 +1,10 @@
-package com.kitzapp.telegram_stats.domain.interactors.impl;
+package com.kitzapp.telegram_stats.domain.interactors.impl.preference;
 
 
 import com.kitzapp.telegram_stats.domain.interactors.base.Interactor;
 
 
-public interface SampleInteractor extends Interactor {
+public interface PreferenceInteractor extends Interactor {
 
     interface Callback {
         // TODO: Add interactor callback methods here

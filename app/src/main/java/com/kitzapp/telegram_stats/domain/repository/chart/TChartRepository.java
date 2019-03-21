@@ -1,7 +1,6 @@
-package com.kitzapp.telegram_stats.domain.repository.Charts;
+package com.kitzapp.telegram_stats.domain.repository.chart;
 
 import android.content.Context;
-import com.kitzapp.telegram_stats.domain.model.ChartModel;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,11 +12,17 @@ import java.io.InputStream;
 
 public class TChartRepository implements ChartRepository {
 
+    private Context _context;
+
+    public TChartRepository(Context context) {
+        this._context = context;
+    }
+
     @Override
-    public String loadJSONFromAsset(Context context) {
+    public String getJsonForChart() {
         String json;
         try {
-            InputStream is = context.getAssets().open("chart_data.json");
+            InputStream is = _context.getAssets().open("chart_data.json");
             int size = is.available();
             byte[] buffer = new byte[size];
             is.read(buffer);
@@ -30,5 +35,4 @@ public class TChartRepository implements ChartRepository {
         }
         return json;
     }
-
 }

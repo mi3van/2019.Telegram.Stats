@@ -1,4 +1,4 @@
-package com.kitzapp.telegram_stats.domain.repository.Preference;
+package com.kitzapp.telegram_stats.domain.repository.preference;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -16,12 +16,10 @@ public class TPreferenceRepository implements PreferenceRepository {
     public static int THEME_LIGHT = R.style.AppTheme;
     public static int THEME_DARK = R.style.AppThemeDark;
 
-    private final Context _context;
     private SharedPreferences _preference;
 
     public TPreferenceRepository(Context context) {
-        _context = context;
-        _preference = PreferenceManager.getDefaultSharedPreferences(_context);
+        _preference = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     @Override
