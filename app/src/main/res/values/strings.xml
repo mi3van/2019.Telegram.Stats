@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Telegram.Stats</string>
+    <string name="nav_bar_title">Statistics</string>
+    <string name="night_mode_title">Night mode</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.kitzapp.telegram_stats.presentation.ui;
+package com.kitzapp.telegram_stats.presentation.ui.base;
 
 /**
  * <p>

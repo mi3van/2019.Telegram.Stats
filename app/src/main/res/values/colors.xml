@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="cActionBarLight">#517da2</color>
+    <color name="cActionBarDark">#212d3b</color>
+    <color name="cTotalBackgrLight">#f0f0f0</color>
+    <color name="cTotalBackgrDark">#151e27</color>
+    <color name="cElementBackgrLight">#fff</color>
+    <color name="cElementBackgrDark">#1d2733</color>
 </resources>

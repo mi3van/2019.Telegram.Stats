@@ -16,14 +16,14 @@ import com.kitzapp.telegram_stats.domain.threading.MainThread;
 public abstract class AbstractInteractor implements Interactor {
 
     protected Executor   mThreadExecutor;
-    protected MainThread mMainThread;
+    protected MainThread _mainThread;
 
     protected volatile boolean mIsCanceled;
     protected volatile boolean mIsRunning;
 
     public AbstractInteractor(Executor threadExecutor, MainThread mainThread) {
         mThreadExecutor = threadExecutor;
-        mMainThread = mainThread;
+        _mainThread = mainThread;
     }
 
     /**

@@ -13,8 +13,8 @@ import com.kitzapp.telegram_stats.common.SettingsKeys;
  */
 
 public class TPreferenceRepository implements PreferenceRepository {
-    public static int THEME_LIGHT = R.style.AppTheme;
-    public static int THEME_DARK = R.style.AppThemeDark;
+    public static int THEME_LIGHT = R.style.AppTheme_Light;
+    public static int THEME_DARK = R.style.AppTheme_Dark;
 
     private SharedPreferences _preference;
 
@@ -24,14 +24,18 @@ public class TPreferenceRepository implements PreferenceRepository {
 
     @Override
     public int getCurrentTheme() {
-        int currentTheme = this.getThemeIsDark() ? THEME_LIGHT : THEME_DARK;
+        boolean themeIsDark = this.getThemeIsDark();
+        int currentTheme = themeIsDark ? THEME_DARK : THEME_LIGHT;
         return currentTheme;
     }
 
     @Override
-    public void changeCurrentTheme() {
+    public int changeThemeAndGetNew() {
         boolean isDark = this.getThemeIsDark();
-        this.saveThemeIsDark(!isDark);
+        boolean newThemeIsDark = !isDark;
+        this.saveThemeIsDark(newThemeIsDark);
+
+        return newThemeIsDark ? THEME_DARK : THEME_LIGHT;
     }
 
     private boolean getThemeIsDark() {

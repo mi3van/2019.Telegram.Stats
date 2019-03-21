@@ -1,6 +1,8 @@
 package com.kitzapp.telegram_stats.presentation.ui.activities;
 
-import android.os.Bundle;
+import android.content.Intent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -11,11 +13,11 @@ import com.kitzapp.telegram_stats.domain.executor.ThreadExecutor;
 import com.kitzapp.telegram_stats.domain.threading.TMainThread;
 import com.kitzapp.telegram_stats.presentation.presenters.impl.ChartPresenter;
 import com.kitzapp.telegram_stats.presentation.presenters.impl.TChartPresenter;
+import com.kitzapp.telegram_stats.presentation.ui.base.BaseActivity;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+import java.util.Objects;
 
-public class ChartActivity extends AppCompatActivity implements ChartPresenter.View {
+public class ChartActivity extends BaseActivity implements ChartPresenter.View {
 
     private FloatingActionButton _loading;
 
@@ -24,25 +26,33 @@ public class ChartActivity extends AppCompatActivity implements ChartPresenter.V
     private TextView _textView;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        this.initVariables();
+    protected int getLayoutID() {
+        return R.layout.activity_main;
     }
 
-    private void initVariables() {
-        _loading = findViewById(R.id.loading);
-        _progressBar = findViewById(R.id.progressBar);
-        _textView = findViewById(R.id.test);
+    @Override
+    protected int getCurrentTheme() {
+        return _chartPresenter.getCurrentTheme();
+    }
 
-        _loading.setOnClickListener(l -> _chartPresenter.runAnalyzeJson());
-
+    @Override
+    protected void initVariables() {
         _chartPresenter = new TChartPresenter(
                 getApplicationContext(),
                 ThreadExecutor.getInstance(),
                 TMainThread.getInstance(),
                 this);
+    }
+
+    @Override
+    protected void initViews() {
+        _loading = findViewById(R.id.loading);
+        _progressBar = findViewById(R.id.progressBar);
+        _textView = findViewById(R.id.test);
+
+        Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.nav_bar_title));
+
+        _loading.setOnClickListener(l -> _chartPresenter.runAnalyzeJson());
     }
 
     @Override
@@ -68,8 +78,27 @@ public class ChartActivity extends AppCompatActivity implements ChartPresenter.V
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        _chartPresenter.resume();
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.action_bar_button, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.themeBtn) {
+            this.changeTheme();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void changeTheme() {
+        _chartPresenter.changeCurrentTheme();
+        finish();
+        final Intent intent = new Intent(this, ChartActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 }

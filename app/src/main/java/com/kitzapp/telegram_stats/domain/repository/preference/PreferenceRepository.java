@@ -7,6 +7,6 @@ public interface PreferenceRepository {
 
     int getCurrentTheme();
 
-    void changeCurrentTheme();
+    int changeThemeAndGetNew();
 
 }

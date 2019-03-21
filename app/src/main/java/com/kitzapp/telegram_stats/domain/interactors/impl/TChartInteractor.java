@@ -1,4 +1,4 @@
-package com.kitzapp.telegram_stats.domain.interactors.impl.chart;
+package com.kitzapp.telegram_stats.domain.interactors.impl;
 
 import com.kitzapp.telegram_stats.domain.executor.Executor;
 import com.kitzapp.telegram_stats.domain.interactors.base.AbstractInteractor;
@@ -17,7 +17,8 @@ public class TChartInteractor extends AbstractInteractor implements ChartInterac
     public TChartInteractor(
                             Executor threadExecutor,
                             MainThread mainThread,
-                            Callback callback, ChartRepository repository) {
+                            Callback callback,
+                            ChartRepository repository) {
         super(threadExecutor, mainThread);
         _chartCallback = callback;
         _chartRepository = repository;
@@ -38,10 +39,10 @@ public class TChartInteractor extends AbstractInteractor implements ChartInterac
     }
 
     private void notifyError() {
-        mMainThread.post(() -> _chartCallback.onRetrievalFailed("Nothing to welcome you with :("));
+        _mainThread.post(() -> _chartCallback.onRetrievalFailed("Nothing to welcome you with :("));
     }
 
     private void postJsonString(final String jsonChart) {
-        mMainThread.post(() -> _chartCallback.onJsonRetrieved(jsonChart));
+        _mainThread.post(() -> _chartCallback.onJsonRetrieved(jsonChart));
     }
 }
