@@ -17,6 +17,7 @@
 
     <color name="cWhite">#fff</color>
     <color name="cBlack">#000</color>
+    <color name="cNavAndStatusBar">#333</color>
 
     <color name="cCellTitle">#77bdf2</color>
 </resources>

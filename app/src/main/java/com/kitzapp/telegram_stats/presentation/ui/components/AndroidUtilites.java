@@ -1,13 +1,19 @@
 package com.kitzapp.telegram_stats.presentation.ui.components;
 
+import android.animation.ValueAnimator;
+import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.util.Log;
 
+import android.util.TypedValue;
+import androidx.vectordrawable.graphics.drawable.ArgbEvaluator;
 import com.kitzapp.telegram_stats.AndroidApplication;
 import com.kitzapp.telegram_stats.BuildConfig;
 
 import java.util.Hashtable;
+
+import static com.kitzapp.telegram_stats.common.AppConts.DELAY_COLOR_ANIM;
 
 /**
  * Created by Ivan Kuzmin on 2019-03-22.
@@ -18,6 +24,13 @@ public class AndroidUtilites {
 
     private static final Hashtable<String, Typeface> typefaceCache = new Hashtable<>();
     public static float density = 1;
+
+    static ValueAnimator getArgbAnimator(int fromColor, int toColor, ValueAnimator.AnimatorUpdateListener listener){
+        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), fromColor, toColor);
+        colorAnimation.setDuration(DELAY_COLOR_ANIM);
+        colorAnimation.addUpdateListener(listener);
+        return colorAnimation;
+    }
 
     public static Typeface getTypeface(String assetPath) {
         synchronized (typefaceCache) {
@@ -48,10 +61,10 @@ public class AndroidUtilites {
         }
     }
 
-    public static int dp(float value) {
-        if (value == 0) {
-            return 0;
-        }
-        return (int) Math.ceil(density * value);
+    public static int convertDpToPx(Resources r, float dpValue) {
+        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                dpValue,
+                r.getDisplayMetrics());
+        return (int) px;
     }
 }

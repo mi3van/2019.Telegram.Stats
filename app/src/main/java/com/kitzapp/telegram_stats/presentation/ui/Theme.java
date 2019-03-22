@@ -22,18 +22,18 @@ public class Theme {
     private static HashMap<String, Integer> lightThemeColors;
 
     public static final String key_totalBackColor = "totalBackColor";
-    public static final String key_actionBarBackColor = "actionBarBackColor";
-    public static final String key_actionBarTextColor = "actionBarTextColor";
+    public static final String key_toolbarBackColor = "actionBarBackColor";
+    private static final String key_toolbarTextColor = "actionBarTextColor";
     private static final String key_cellTitleTextColor = "cellTitleTextColor";
     public static final String key_cellBackColor = "cellBackColor";
     public static final String key_cellSubBackColor = "cellSubBackColor";
-    public static final String key_chartDescrTextColor = "chartDescrTextColor";
+    private static final String key_chartDescrTextColor = "chartDescrTextColor";
     private static final String key_simpleTextColor = "simpleTextColor";
 
     private static final int colorLightBackup;
     private static final int colorDarkBackup;
 
-    public static RFontTextPaint actionBarTextPaint;
+    public static RFontTextPaint toolbarTextPaint;
     public static RFontTextPaint simpleTextPaint;
     public static RFontTextPaint cellTitleTextPaint;
     public static RFontTextPaint chartDescrTextPaint;
@@ -43,15 +43,10 @@ public class Theme {
         darkThemeColors = new HashMap<>();
         lightThemeColors = new HashMap<>();
 
-        actionBarTextPaint = new RFontTextPaint();
+        toolbarTextPaint = new RFontTextPaint();
         simpleTextPaint = new RFontTextPaint();
         cellTitleTextPaint = new RFontTextPaint();
         chartDescrTextPaint = new RFontTextPaint();
-
-        actionBarTextPaint.setTextSize(AndroidUtilites.dp(16));
-        simpleTextPaint.setTextSize(AndroidUtilites.dp(12));
-        cellTitleTextPaint.setTextSize(AndroidUtilites.dp(12));
-        chartDescrTextPaint.setTextSize(AndroidUtilites.dp(8));
 
         colorLightBackup = 0x00000000;
         colorDarkBackup = 0xffffffff;
@@ -75,10 +70,6 @@ public class Theme {
         if (currentTheme != theme) {
             currentTheme = theme;
 
-            if (save) {
-                AndroidApplication.mainRepository.saveNewTheme(theme);
-            }
-
             if (currentTheme == DARK) {
                 currentColors = darkThemeColors;
             } else {
@@ -86,6 +77,11 @@ public class Theme {
             }
 
             updateFontsColors();
+
+            if (save) {
+                AndroidApplication.mainRepository.saveNewTheme(theme);
+                AndroidApplication.observerManager.notifyMyObservers(ObserverManager.KEY_OBSERVER_THEME_UPDATED);
+            }
         }
     }
 
@@ -93,6 +89,10 @@ public class Theme {
         simpleTextPaint.setColor(getColor(key_simpleTextColor));
         cellTitleTextPaint.setColor(getColor(key_cellTitleTextColor));
         chartDescrTextPaint.setColor(getColor(key_chartDescrTextColor));
+
+        cellTitleTextPaint.setTypeface(AndroidUtilites.getTypeface("fonts/rmedium.ttf"));
+        toolbarTextPaint.setTypeface(AndroidUtilites.getTypeface("fonts/rmedium.ttf"));
+        chartDescrTextPaint.setTypeface(AndroidUtilites.getTypeface("fonts/rlight.ttf"));
     }
 
     public static int getColor(String key) {
@@ -105,8 +105,8 @@ public class Theme {
 
     public static void initThemesHashes() {
         darkThemeColors.put(key_totalBackColor, 0xff151e27);
-        darkThemeColors.put(key_actionBarBackColor, 0xff212d3b);
-        darkThemeColors.put(key_actionBarTextColor, 0xffffffff);
+        darkThemeColors.put(key_toolbarBackColor, 0xff212d3b);
+        darkThemeColors.put(key_toolbarTextColor, 0xffffffff);
         darkThemeColors.put(key_cellTitleTextColor, 0xff77bdf2);
         darkThemeColors.put(key_cellBackColor , 0xff1d2733);
         darkThemeColors.put(key_cellSubBackColor , 0xff19232e);
@@ -114,8 +114,8 @@ public class Theme {
         darkThemeColors.put(key_simpleTextColor , 0xffffffff);
 
         lightThemeColors.put(key_totalBackColor, 0xfff0f0f0);
-        lightThemeColors.put(key_actionBarBackColor, 0xff517da2);
-        lightThemeColors.put(key_actionBarTextColor, 0xffffffff);
+        lightThemeColors.put(key_toolbarBackColor, 0xff517da2);
+        lightThemeColors.put(key_toolbarTextColor, 0xffffffff);
         lightThemeColors.put(key_cellTitleTextColor, 0xff77bdf2);
         lightThemeColors.put(key_cellBackColor , 0xffffffff);
         lightThemeColors.put(key_cellSubBackColor , 0xfff5f8f9);

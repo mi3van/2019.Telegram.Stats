@@ -11,7 +11,7 @@ import android.text.TextPaint;
 public class RFontTextPaint extends TextPaint {
     public RFontTextPaint() {
         super(Paint.ANTI_ALIAS_FLAG);
-        this.setTypeface(AndroidUtilites.getTypeface("fonts/rmedium.ttf"));
+        this.setTypeface(AndroidUtilites.getTypeface("fonts/rregular.ttf"));
         setColor(0xffffffff);
     }
 }

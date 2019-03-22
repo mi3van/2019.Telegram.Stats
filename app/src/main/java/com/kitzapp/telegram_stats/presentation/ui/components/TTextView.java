@@ -2,52 +2,46 @@ package com.kitzapp.telegram_stats.presentation.ui.components;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Canvas;
+import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.widget.LinearLayout;
-
-import androidx.vectordrawable.graphics.drawable.ArgbEvaluator;
+import android.widget.TextView;
+import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.AndroidApplication;
-import com.kitzapp.telegram_stats.R;
 import com.kitzapp.telegram_stats.presentation.ui.ObserverManager;
 import com.kitzapp.telegram_stats.presentation.ui.Theme;
 
-import androidx.annotation.Nullable;
-
 import java.util.Observable;
-import java.util.Observer;
-
-import static com.kitzapp.telegram_stats.common.AppConts.DELAY_COLOR_ANIM;
 
 /**
- * Created by Ivan Kuzmin on 2019-03-22.
+ * Created by Ivan Kuzmin on 22.03.2019;
+ * 3van@mail.ru;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-class TLinearLayout extends LinearLayout implements TViewObserver {
+public class TTextView extends TextView implements TViewObserver {
 
-    private int _oldColor;
+    int _oldTextColor;
 
-    public TLinearLayout(Context context) {
+    public TTextView(Context context) {
         super(context);
         this.init();
     }
 
-    public TLinearLayout(Context context, @Nullable AttributeSet attrs) {
+    public TTextView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.init();
     }
 
-    public TLinearLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TTextView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.init();
     }
 
     @Override
     public void init() {
-        setWillNotDraw(false);
-        _oldColor = getCurrentColor();
-        this.setBackgroundColor(_oldColor);
+        _oldTextColor = getCurrentColor();
+        this.setTypeface(Theme.simpleTextPaint.getTypeface());
+        this.setTextColor(_oldTextColor);
     }
 
     @Override
@@ -61,20 +55,20 @@ class TLinearLayout extends LinearLayout implements TViewObserver {
     }
 
     private int getCurrentColor() {
-        return Theme.getColor(Theme.key_totalBackColor);
+        return Theme.simpleTextPaint.getColor();
     }
 
     @Override
     public void update(Observable o, Object arg) {
         if ((int) arg == ObserverManager.KEY_OBSERVER_THEME_UPDATED) {
             int newColor = getCurrentColor();
-            if (_oldColor != newColor) {
+            if (_oldTextColor != newColor) {
                 ValueAnimator valueAnimator = AndroidUtilites.getArgbAnimator(
-                        _oldColor,
+                        _oldTextColor,
                         newColor,
-                        animation -> setBackgroundColor((int) animation.getAnimatedValue()));
+                        animation -> setTextColor((int) animation.getAnimatedValue()));
                 valueAnimator.start();
-                _oldColor = newColor;
+                _oldTextColor = newColor;
             }
         }
     }

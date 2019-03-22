@@ -1,13 +1,14 @@
 package com.kitzapp.telegram_stats.presentation.ui.activities;
 
+import android.graphics.Color;
 import android.os.Build;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.Toolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.kitzapp.telegram_stats.BuildConfig;
 import com.kitzapp.telegram_stats.R;
 import com.kitzapp.telegram_stats.domain.executor.ThreadExecutor;
 import com.kitzapp.telegram_stats.domain.threading.TMainThread;
@@ -24,6 +25,7 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View {
     private TChartPresenter _chartPresenter;
     private ProgressBar _progressBar;
     private TextView _textView;
+    private Toolbar _toolbar;
 
     @Override
     protected int getLayoutID() {
@@ -44,13 +46,19 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View {
         _loading = findViewById(R.id.loading);
         _progressBar = findViewById(R.id.progressBar);
         _textView = findViewById(R.id.test);
+        _toolbar = findViewById(R.id.toolbar);
 
-        Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.nav_bar_title));
+        setSupportActionBar(_toolbar);
+        _toolbar.setTitle(getResources().getString(R.string.nav_bar_title));
 
         _loading.setOnClickListener(l -> _chartPresenter.runAnalyzeJson());
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setNavigationBarColor(getResources().getColor(R.color.cBlack));
+            int blackColor = getResources().getColor(R.color.cBlack);
+            Window window = getWindow();
+            window.setNavigationBarColor(blackColor);
+            window.setStatusBarColor(Color.TRANSPARENT);
+            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
     }
 
