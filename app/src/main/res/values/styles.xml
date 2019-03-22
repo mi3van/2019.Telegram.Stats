@@ -1,33 +1,6 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat">
-        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
-    </style>
-
-    <style name="AppTheme.Light">
-        <item name="colorPrimary">@color/cActionBarLight</item>
-        <item name="colorPrimaryDark">@color/cActionBarDark</item>
-
-        <item name="android:textColorPrimary">@android:color/white</item>
-        <item name="android:colorBackground">@color/cTotalBackgrLight</item>
-
-        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/cActionBarDark</item>
-    </style>
-
-    <style name="AppTheme.Dark">
-        <item name="colorPrimary">@color/cActionBarDark</item>
-        <item name="colorPrimaryDark">@color/cTotalBackgrDark</item>
-
-        <item name="android:textColorPrimary">@android:color/white</item>
-        <item name="android:colorBackground">@color/cTotalBackgrDark</item>
-
-        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/cTotalBackgrDark</item>
-    </style>
-
-    <style name="WindowAnimationTransition">
-        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
-        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
-    </style>
+    <style name="AppTheme" parent="Theme.AppCompat"/>
 
 </resources>

@@ -6,5 +6,5 @@ package com.kitzapp.telegram_stats.common;
  */
 
 public class SettingsKeys {
-    public static final String APP_THEME_IS_DARK = "APP_THEME_IS_DARK";
+    public static final String APP_THEME = "APP_THEME";
 }

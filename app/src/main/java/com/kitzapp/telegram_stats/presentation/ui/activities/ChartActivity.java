@@ -1,6 +1,6 @@
 package com.kitzapp.telegram_stats.presentation.ui.activities;
 
-import android.content.Intent;
+import android.os.Build;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,7 +13,7 @@ import com.kitzapp.telegram_stats.domain.executor.ThreadExecutor;
 import com.kitzapp.telegram_stats.domain.threading.TMainThread;
 import com.kitzapp.telegram_stats.presentation.presenters.impl.ChartPresenter;
 import com.kitzapp.telegram_stats.presentation.presenters.impl.TChartPresenter;
-import com.kitzapp.telegram_stats.presentation.ui.base.BaseActivity;
+import com.kitzapp.telegram_stats.presentation.ui.activities.base.BaseActivity;
 
 import java.util.Objects;
 
@@ -27,12 +27,7 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View {
 
     @Override
     protected int getLayoutID() {
-        return R.layout.activity_main;
-    }
-
-    @Override
-    protected int getCurrentTheme() {
-        return _chartPresenter.getCurrentTheme();
+        return R.layout.activity_chart;
     }
 
     @Override
@@ -53,6 +48,10 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View {
         Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.nav_bar_title));
 
         _loading.setOnClickListener(l -> _chartPresenter.runAnalyzeJson());
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setNavigationBarColor(getResources().getColor(R.color.cBlack));
+        }
     }
 
     @Override
@@ -88,17 +87,9 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View {
         int id = item.getItemId();
 
         if (id == R.id.themeBtn) {
-            this.changeTheme();
+            _chartPresenter.changeCurrentTheme();
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void changeTheme() {
-        _chartPresenter.changeCurrentTheme();
-        finish();
-        final Intent intent = new Intent(this, ChartActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
     }
 }

@@ -3,18 +3,17 @@ package com.kitzapp.telegram_stats.presentation.presenters.impl;
 import android.content.Context;
 
 import com.kitzapp.telegram_stats.domain.executor.Executor;
+import com.kitzapp.telegram_stats.domain.interactors.impl.ChartInteractor;
 import com.kitzapp.telegram_stats.domain.interactors.impl.TChartInteractor;
 import com.kitzapp.telegram_stats.domain.repository.chart.TChartRepository;
-import com.kitzapp.telegram_stats.domain.repository.preference.TPreferenceRepository;
 import com.kitzapp.telegram_stats.domain.threading.MainThread;
-import com.kitzapp.telegram_stats.domain.interactors.impl.ChartInteractor;
 import com.kitzapp.telegram_stats.presentation.presenters.base.AbstractPresenter;
+import com.kitzapp.telegram_stats.presentation.ui.Theme;
 
 public class TChartPresenter extends AbstractPresenter implements ChartPresenter,
         ChartInteractor.Callback {
 
     private TChartRepository _chartRepository;
-    private TPreferenceRepository _preferenceRepository;
     private ChartPresenter.View _view;
 
     public TChartPresenter(Context context,
@@ -23,7 +22,6 @@ public class TChartPresenter extends AbstractPresenter implements ChartPresenter
                            View view) {
         super(executor, mainThread);
         _chartRepository = new TChartRepository(context);
-        _preferenceRepository = new TPreferenceRepository(context);
         _view = view;
     }
 
@@ -64,13 +62,8 @@ public class TChartPresenter extends AbstractPresenter implements ChartPresenter
     }
 
     @Override
-    public int getCurrentTheme() {
-        return _preferenceRepository.getCurrentTheme();
-    }
-
-    @Override
-    public int changeCurrentTheme() {
-        return _preferenceRepository.changeThemeAndGetNew();
+    public void changeCurrentTheme() {
+        Theme.changeThemeAndSave();
     }
 
     @Override
