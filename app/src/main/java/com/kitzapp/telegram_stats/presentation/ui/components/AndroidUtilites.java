@@ -8,7 +8,7 @@ import android.util.Log;
 
 import android.util.TypedValue;
 import androidx.vectordrawable.graphics.drawable.ArgbEvaluator;
-import com.kitzapp.telegram_stats.AndroidApplication;
+import com.kitzapp.telegram_stats.Application.AndroidApp;
 import com.kitzapp.telegram_stats.BuildConfig;
 
 import java.util.Hashtable;
@@ -38,7 +38,7 @@ public class AndroidUtilites {
                 try {
                     Typeface t;
                     if (Build.VERSION.SDK_INT >= 26) {
-                        Typeface.Builder builder = new Typeface.Builder(AndroidApplication.applicationContext.getAssets(), assetPath);
+                        Typeface.Builder builder = new Typeface.Builder(AndroidApp.applicationContext.getAssets(), assetPath);
                         if (assetPath.contains("medium")) {
                             builder.setWeight(700);
                         }
@@ -47,7 +47,7 @@ public class AndroidUtilites {
                         }
                         t = builder.build();
                     } else {
-                        t = Typeface.createFromAsset(AndroidApplication.applicationContext.getAssets(), assetPath);
+                        t = Typeface.createFromAsset(AndroidApp.applicationContext.getAssets(), assetPath);
                     }
                     typefaceCache.put(assetPath, t);
                 } catch (Exception e) {

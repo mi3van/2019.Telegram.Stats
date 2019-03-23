@@ -1,12 +1,12 @@
-package com.kitzapp.telegram_stats;
+package com.kitzapp.telegram_stats.Application;
 
 import android.app.Application;
 import android.content.Context;
 
 import com.kitzapp.telegram_stats.domain.repository.preference.TPreferenceRepository;
-import com.kitzapp.telegram_stats.presentation.ui.ObserverManager;
+import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
 
-public class AndroidApplication extends Application {
+public class AndroidApp extends Application {
 
     public static volatile Context applicationContext;
     public static volatile TPreferenceRepository mainRepository;

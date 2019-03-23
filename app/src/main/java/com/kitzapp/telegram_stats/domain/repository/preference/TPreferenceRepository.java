@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.kitzapp.telegram_stats.common.SettingsKeys;
-import com.kitzapp.telegram_stats.presentation.ui.ThemeManager;
+import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 
 /**
  * Created by Ivan Kuzmin on 2019-03-20.

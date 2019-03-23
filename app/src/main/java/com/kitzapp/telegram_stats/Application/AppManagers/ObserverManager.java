@@ -1,7 +1,4 @@
-package com.kitzapp.telegram_stats.presentation.ui;
-
-import android.util.SparseArray;
-import com.kitzapp.telegram_stats.BuildConfig;
+package com.kitzapp.telegram_stats.Application.AppManagers;
 
 import java.util.*;
 

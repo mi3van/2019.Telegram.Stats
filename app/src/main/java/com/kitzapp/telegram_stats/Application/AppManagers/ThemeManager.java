@@ -1,6 +1,6 @@
-package com.kitzapp.telegram_stats.presentation.ui;
+package com.kitzapp.telegram_stats.Application.AppManagers;
 
-import com.kitzapp.telegram_stats.AndroidApplication;
+import com.kitzapp.telegram_stats.Application.AndroidApp;
 import com.kitzapp.telegram_stats.presentation.ui.components.AndroidUtilites;
 import com.kitzapp.telegram_stats.presentation.ui.components.RFontTextPaint;
 
@@ -53,7 +53,7 @@ public class ThemeManager {
 
         initThemesHashes();
 
-        applyTheme(AndroidApplication.mainRepository.getCurrentTheme());
+        applyTheme(AndroidApp.mainRepository.getCurrentTheme());
 
     }
 
@@ -79,8 +79,8 @@ public class ThemeManager {
             updateFontsColors();
 
             if (save) {
-                AndroidApplication.mainRepository.saveNewTheme(theme);
-                AndroidApplication.observerManager.notifyMyObservers(ObserverManager.KEY_OBSERVER_THEME_UPDATED);
+                AndroidApp.mainRepository.saveNewTheme(theme);
+                AndroidApp.observerManager.notifyMyObservers(ObserverManager.KEY_OBSERVER_THEME_UPDATED);
             }
         }
     }

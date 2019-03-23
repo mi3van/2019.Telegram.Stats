@@ -1,7 +1,6 @@
 package com.kitzapp.telegram_stats.presentation.ui.components;
 
 import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
@@ -9,10 +8,9 @@ import android.view.View;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
-import com.kitzapp.telegram_stats.AndroidApplication;
-import com.kitzapp.telegram_stats.R;
-import com.kitzapp.telegram_stats.presentation.ui.ObserverManager;
-import com.kitzapp.telegram_stats.presentation.ui.ThemeManager;
+import com.kitzapp.telegram_stats.Application.AndroidApp;
+import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
+import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 
 import java.util.Observable;
 
@@ -64,12 +62,12 @@ public class TToolbar extends Toolbar implements TViewObserver {
 
     @Override
     public void addObserver() {
-        AndroidApplication.observerManager.addObserver(this);
+        AndroidApp.observerManager.addObserver(this);
     }
 
     @Override
     public void deleteObserver() {
-        AndroidApplication.observerManager.deleteObserver(this);
+        AndroidApp.observerManager.deleteObserver(this);
     }
 
     private int getCurrentColor() {
