@@ -2,13 +2,12 @@ package com.kitzapp.telegram_stats.presentation.ui.components;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.AndroidApplication;
 import com.kitzapp.telegram_stats.presentation.ui.ObserverManager;
-import com.kitzapp.telegram_stats.presentation.ui.Theme;
+import com.kitzapp.telegram_stats.presentation.ui.ThemeManager;
 
 import java.util.Observable;
 
@@ -40,7 +39,7 @@ public class TTextView extends TextView implements TViewObserver {
     @Override
     public void init() {
         _oldTextColor = getCurrentColor();
-        this.setTypeface(Theme.simpleTextPaint.getTypeface());
+        this.setTypeface(ThemeManager.simpleTextPaint.getTypeface());
         this.setTextColor(_oldTextColor);
     }
 
@@ -55,7 +54,7 @@ public class TTextView extends TextView implements TViewObserver {
     }
 
     private int getCurrentColor() {
-        return Theme.simpleTextPaint.getColor();
+        return ThemeManager.simpleTextPaint.getColor();
     }
 
     @Override

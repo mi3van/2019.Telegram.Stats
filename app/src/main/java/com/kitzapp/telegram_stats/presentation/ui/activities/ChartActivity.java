@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.kitzapp.telegram_stats.BuildConfig;
 import com.kitzapp.telegram_stats.R;
 import com.kitzapp.telegram_stats.domain.executor.ThreadExecutor;
 import com.kitzapp.telegram_stats.domain.threading.TMainThread;
@@ -49,7 +48,8 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View {
         _toolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(_toolbar);
-        _toolbar.setTitle(getResources().getString(R.string.nav_bar_title));
+        String toolbarTitle = getResources().getString(R.string.toolbar_title);
+        Objects.requireNonNull(getSupportActionBar()).setTitle(toolbarTitle);
 
         _loading.setOnClickListener(l -> _chartPresenter.runAnalyzeJson());
 

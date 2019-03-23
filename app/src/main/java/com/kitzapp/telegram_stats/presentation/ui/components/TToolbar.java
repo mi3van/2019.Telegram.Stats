@@ -1,13 +1,18 @@
 package com.kitzapp.telegram_stats.presentation.ui.components;
 
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
+import android.view.View;
+import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import com.kitzapp.telegram_stats.AndroidApplication;
+import com.kitzapp.telegram_stats.R;
 import com.kitzapp.telegram_stats.presentation.ui.ObserverManager;
-import com.kitzapp.telegram_stats.presentation.ui.Theme;
+import com.kitzapp.telegram_stats.presentation.ui.ThemeManager;
 
 import java.util.Observable;
 
@@ -43,6 +48,20 @@ public class TToolbar extends Toolbar implements TViewObserver {
         this.setBackgroundColor(_oldBackColor);
     }
 
+    private void changeToolbarFont() {
+        for (int i = 0; i < this.getChildCount(); i++) {
+            View view = this.getChildAt(i);
+            if (view instanceof TextView) {
+                TextView tv = (TextView) view;
+                if (tv.getText().equals(this.getTitle())) {
+                    Typeface toolbartypeface = ThemeManager.toolbarTextPaint.getTypeface();
+                    tv.setTypeface(toolbartypeface);
+                    break;
+                }
+            }
+        }
+    }
+
     @Override
     public void addObserver() {
         AndroidApplication.observerManager.addObserver(this);
@@ -54,7 +73,7 @@ public class TToolbar extends Toolbar implements TViewObserver {
     }
 
     private int getCurrentColor() {
-        return Theme.getColor(Theme.key_toolbarBackColor);
+        return ThemeManager.getColor(ThemeManager.key_toolbarBackColor);
     }
 
     @Override
@@ -75,6 +94,7 @@ public class TToolbar extends Toolbar implements TViewObserver {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        this.changeToolbarFont();
         this.addObserver();
     }
 

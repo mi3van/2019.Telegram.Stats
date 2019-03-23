@@ -11,7 +11,7 @@ import java.util.HashMap;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class Theme {
+public class ThemeManager {
     private static int totalInit = 1;
     public final static int LIGHT = totalInit++;
     public final static int DARK = totalInit++;

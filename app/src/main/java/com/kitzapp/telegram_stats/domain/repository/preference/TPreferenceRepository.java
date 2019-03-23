@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.kitzapp.telegram_stats.common.SettingsKeys;
-import com.kitzapp.telegram_stats.presentation.ui.Theme;
+import com.kitzapp.telegram_stats.presentation.ui.ThemeManager;
 
 /**
  * Created by Ivan Kuzmin on 2019-03-20.
@@ -22,7 +22,7 @@ public class TPreferenceRepository implements PreferenceRepository {
 
     @Override
     public int getCurrentTheme() {
-        return _preference.getInt(SettingsKeys.APP_THEME, Theme.LIGHT);
+        return _preference.getInt(SettingsKeys.APP_THEME, ThemeManager.LIGHT);
     }
 
     @Override

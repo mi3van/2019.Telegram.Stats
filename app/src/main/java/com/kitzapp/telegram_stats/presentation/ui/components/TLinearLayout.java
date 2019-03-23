@@ -2,22 +2,16 @@ package com.kitzapp.telegram_stats.presentation.ui.components;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
-import androidx.vectordrawable.graphics.drawable.ArgbEvaluator;
 import com.kitzapp.telegram_stats.AndroidApplication;
-import com.kitzapp.telegram_stats.R;
 import com.kitzapp.telegram_stats.presentation.ui.ObserverManager;
-import com.kitzapp.telegram_stats.presentation.ui.Theme;
+import com.kitzapp.telegram_stats.presentation.ui.ThemeManager;
 
 import androidx.annotation.Nullable;
 
 import java.util.Observable;
-import java.util.Observer;
-
-import static com.kitzapp.telegram_stats.common.AppConts.DELAY_COLOR_ANIM;
 
 /**
  * Created by Ivan Kuzmin on 2019-03-22.
@@ -61,7 +55,7 @@ class TLinearLayout extends LinearLayout implements TViewObserver {
     }
 
     private int getCurrentColor() {
-        return Theme.getColor(Theme.key_totalBackColor);
+        return ThemeManager.getColor(ThemeManager.key_totalBackColor);
     }
 
     @Override
