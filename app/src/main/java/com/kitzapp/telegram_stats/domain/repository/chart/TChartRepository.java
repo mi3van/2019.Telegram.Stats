@@ -1,9 +1,19 @@
 package com.kitzapp.telegram_stats.domain.repository.chart;
 
-import android.content.Context;
+import android.graphics.Color;
+import com.kitzapp.telegram_stats.Application.AppManagers.JsonManager;
+import com.kitzapp.telegram_stats.domain.model.ChartsList;
+import com.kitzapp.telegram_stats.domain.model.chart.Chart;
+import com.kitzapp.telegram_stats.domain.model.chart.impl.AxisX;
+import com.kitzapp.telegram_stats.domain.model.chart.impl.Line;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import static com.kitzapp.telegram_stats.domain.model.chart.Chart.*;
 
 /**
  * Created by Ivan Kuzmin on 2019-03-20.
@@ -12,27 +22,84 @@ import java.io.InputStream;
 
 public class TChartRepository implements ChartRepository {
 
-    private Context _context;
+    @Override
+    public ChartsList getCharts(String fileName) throws Exception {
+        String chartJsonInString = JsonManager.getJsonStringFromFile(fileName);
+        ChartsList chartsList = new ChartsList();
+        if (chartJsonInString != null) {
+            try {
+                JSONArray chartsJsonArray = new JSONArray(chartJsonInString);
 
-    public TChartRepository(Context context) {
-        this._context = context;
+                for (int i = 0; i < chartsJsonArray.length(); i++) {
+                    Chart chart = getChart((JSONObject) chartsJsonArray.get(i));
+                    chartsList.addChart(chart);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                throw new Exception("Working with JSON exception");
+            }
+        } else {
+            throw new Exception("Read JSON file exception");
+        }
+        return chartsList;
     }
 
-    @Override
-    public String getJsonForChart() {
-        String json;
+    private Chart getChart(JSONObject chartJson) throws Exception {
+        HashMap<String, Line> linesMap = new HashMap<>();
+        AxisX axisX = null;
         try {
-            InputStream is = _context.getAssets().open("chart_data.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
+            JSONArray columnsBaseJson = chartJson.getJSONArray(KEY_COLUMNS_CHART);
+            JSONObject typesJson = chartJson.getJSONObject(KEY_TYPES_CHART);
+            JSONObject namesJson = chartJson.getJSONObject(KEY_NAMES_CHART);
+            JSONObject colorsJson = chartJson.getJSONObject(KEY_COLORS_CHART);
 
-            json = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
+            for (int i = 0; i < columnsBaseJson.length(); i++) {
+                JSONArray columnsWithKey = new JSONArray(columnsBaseJson.get(i).toString());
+                String key = columnsWithKey.get(0).toString();
+
+                String type = typesJson.getString(key);
+                byte currentType = this.getTypeInByte(type);
+                switch (currentType) {
+                    case Line.TYPE_LINE:
+                        ArrayList<Integer> dots = new ArrayList<>(columnsWithKey.length() - 1);
+                        for (int j = 1; j < columnsWithKey.length(); j++) {
+                            dots.add(columnsWithKey.getInt(j));
+                        }
+                        String name = namesJson.getString(key);
+                        String hexColor = colorsJson.getString(key);
+                        int normalColor = Color.parseColor(hexColor);
+                        Line line = new Line(key, dots, currentType, name, normalColor);
+                        linesMap.put(key, line);
+                        break;
+
+                    case Line.TYPE_X_AXIS:
+                        ArrayList<Long> dates = new ArrayList<>(columnsWithKey.length() - 1);
+                        for (int j = 1; j < columnsWithKey.length(); j++) {
+                            dates.add(columnsWithKey.getLong(j));
+                        }
+                        axisX = new AxisX(key, dates, currentType);
+                        break;
+                }
+            }
+
+            if (axisX == null) {
+                throw new Exception("Axis X is null exception");
+            }
+            Chart chart = new Chart(axisX, linesMap);
+            return chart;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            throw new Exception("Working with JSON exception");
         }
-        return json;
+    }
+
+    private byte getTypeInByte(String type) throws Exception {
+        if (type.equals("x")) {
+            return Line.TYPE_X_AXIS;
+        } else if (type.equals("line")) {
+            return Line.TYPE_LINE;
+        } else {
+            throw new Exception("Type for object in Chart not found");
+        }
     }
 }

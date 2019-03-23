@@ -14,6 +14,7 @@ import com.kitzapp.telegram_stats.domain.threading.TMainThread;
 import com.kitzapp.telegram_stats.presentation.presenters.impl.ChartPresenter;
 import com.kitzapp.telegram_stats.presentation.presenters.impl.TChartPresenter;
 import com.kitzapp.telegram_stats.presentation.ui.activities.base.BaseActivity;
+import com.kitzapp.telegram_stats.presentation.ui.components.AndroidUtilites;
 
 import java.util.Objects;
 
@@ -34,7 +35,6 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View {
     @Override
     protected void initVariables() {
         _chartPresenter = new TChartPresenter(
-                getApplicationContext(),
                 ThreadExecutor.getInstance(),
                 TMainThread.getInstance(),
                 this);
@@ -54,7 +54,7 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View {
         _loading.setOnClickListener(l -> _chartPresenter.runAnalyzeJson());
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int blackColor = getResources().getColor(R.color.cBlack);
+            int blackColor = AndroidUtilites.getColorSDK(R.color.cBlack);
             Window window = getWindow();
             window.setNavigationBarColor(blackColor);
             window.setStatusBarColor(Color.TRANSPARENT);

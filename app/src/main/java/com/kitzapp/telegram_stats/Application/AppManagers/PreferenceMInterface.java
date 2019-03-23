@@ -1,9 +1,9 @@
-package com.kitzapp.telegram_stats.domain.repository.preference;
+package com.kitzapp.telegram_stats.Application.AppManagers;
 
 /**
  * Preference layer, save data
  */
-public interface PreferenceRepository {
+public interface PreferenceMInterface {
 
     int getCurrentTheme();
 

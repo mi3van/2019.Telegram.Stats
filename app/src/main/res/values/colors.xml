@@ -1,23 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="cActionBarLight">#517da2</color>
-    <color name="cActionBarDark">#212d3b</color>
-    <color name="cTotalBackgrLight">#f0f0f0</color>
-    <color name="cTotalBackgrDark">#151e27</color>
 
-    <color name="cCellBackgrLight">#fff</color>
-    <color name="cCellBackgrDark">#1d2733</color>
-    <color name="cCellSubBackgrLight">#f5f8f9</color>
-    <color name="cCellSubBackgrDark">#19232e</color>
-
-    <color name="cChartDescrLight">#88939a</color>
-    <color name="cChartDescrDark">#4d606f</color>
-    <color name="cSimpleTextLight">#000</color>
-    <color name="cSimpleTextDark">#fff</color>
-
-    <color name="cWhite">#fff</color>
     <color name="cBlack">#000</color>
-    <color name="cNavAndStatusBar">#333</color>
 
-    <color name="cCellTitle">#77bdf2</color>
 </resources>

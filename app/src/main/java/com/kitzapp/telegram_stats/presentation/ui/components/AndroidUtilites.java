@@ -1,12 +1,14 @@
 package com.kitzapp.telegram_stats.presentation.ui.components;
 
 import android.animation.ValueAnimator;
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.util.Log;
 
 import android.util.TypedValue;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.vectordrawable.graphics.drawable.ArgbEvaluator;
 import com.kitzapp.telegram_stats.Application.AndroidApp;
 import com.kitzapp.telegram_stats.BuildConfig;
@@ -21,9 +23,19 @@ import static com.kitzapp.telegram_stats.common.AppConts.DELAY_COLOR_ANIM;
  */
 
 public class AndroidUtilites {
-
     private static final Hashtable<String, Typeface> typefaceCache = new Hashtable<>();
-    public static float density = 1;
+
+    public static int getColorSDK(int idColor){
+        int color = 0;
+        Context context = AndroidApp.applicationContext;
+        if (context != null) {
+            color = ResourcesCompat.getColor(
+                    AndroidApp.applicationContext.getResources(),
+                    idColor,
+                    AndroidApp.applicationContext.getTheme());
+        }
+        return color;
+    }
 
     static ValueAnimator getArgbAnimator(int fromColor, int toColor, ValueAnimator.AnimatorUpdateListener listener){
         ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), fromColor, toColor);

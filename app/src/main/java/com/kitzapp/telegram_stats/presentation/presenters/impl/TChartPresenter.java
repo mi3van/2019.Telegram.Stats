@@ -1,27 +1,24 @@
 package com.kitzapp.telegram_stats.presentation.presenters.impl;
 
-import android.content.Context;
-
+import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.domain.executor.Executor;
 import com.kitzapp.telegram_stats.domain.interactors.impl.ChartInteractor;
 import com.kitzapp.telegram_stats.domain.interactors.impl.TChartInteractor;
+import com.kitzapp.telegram_stats.domain.model.ChartsList;
 import com.kitzapp.telegram_stats.domain.repository.chart.TChartRepository;
 import com.kitzapp.telegram_stats.domain.threading.MainThread;
 import com.kitzapp.telegram_stats.presentation.presenters.base.AbstractPresenter;
-import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 
 public class TChartPresenter extends AbstractPresenter implements ChartPresenter,
         ChartInteractor.Callback {
-
     private TChartRepository _chartRepository;
     private ChartPresenter.View _view;
 
-    public TChartPresenter(Context context,
-                           Executor executor,
+    public TChartPresenter(Executor executor,
                            MainThread mainThread,
                            View view) {
         super(executor, mainThread);
-        _chartRepository = new TChartRepository(context);
+        _chartRepository = new TChartRepository();
         _view = view;
     }
 
@@ -50,9 +47,9 @@ public class TChartPresenter extends AbstractPresenter implements ChartPresenter
     }
 
     @Override
-    public void onJsonRetrieved(String json) {
+    public void onJsonRetrieved(ChartsList chartModel) {
         _view.hideProgress();
-        _view.displayJson(json);
+        _view.displayJson(chartModel.toString());
     }
 
     @Override

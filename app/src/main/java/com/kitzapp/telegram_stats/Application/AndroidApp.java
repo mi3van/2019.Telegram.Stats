@@ -3,13 +3,13 @@ package com.kitzapp.telegram_stats.Application;
 import android.app.Application;
 import android.content.Context;
 
-import com.kitzapp.telegram_stats.domain.repository.preference.TPreferenceRepository;
+import com.kitzapp.telegram_stats.Application.AppManagers.PreferenceManagerT;
 import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
 
 public class AndroidApp extends Application {
 
     public static volatile Context applicationContext;
-    public static volatile TPreferenceRepository mainRepository;
+    public static volatile PreferenceManagerT mainRepository;
     public static volatile ObserverManager observerManager;
 
     @Override
@@ -25,7 +25,7 @@ public class AndroidApp extends Application {
             applicationContext = getApplicationContext();
         }
 
-        mainRepository = new TPreferenceRepository(applicationContext);
+        mainRepository = new PreferenceManagerT(applicationContext);
         observerManager = new ObserverManager();
     }
 

@@ -1,7 +1,10 @@
 package com.kitzapp.telegram_stats.domain.interactors.impl;
 
+import com.kitzapp.telegram_stats.common.AppConts;
 import com.kitzapp.telegram_stats.domain.executor.Executor;
 import com.kitzapp.telegram_stats.domain.interactors.base.AbstractInteractor;
+import com.kitzapp.telegram_stats.domain.model.ChartsList;
+import com.kitzapp.telegram_stats.domain.model.chart.Chart;
 import com.kitzapp.telegram_stats.domain.repository.chart.ChartRepository;
 import com.kitzapp.telegram_stats.domain.threading.MainThread;
 
@@ -26,23 +29,24 @@ public class TChartInteractor extends AbstractInteractor implements ChartInterac
 
     @Override
     public void run() {
-        String jsonForChart = _chartRepository.getJsonForChart();
-        if (jsonForChart == null || jsonForChart.length() == 0) {
-
-            this.notifyError();
-
-        } else {
-
-            this.postJsonString(jsonForChart);
-
+        try {
+            ChartsList chartsList = _chartRepository.getCharts(AppConts.JSON_CHART_FILENAME);
+            if (chartsList != null) {
+                this.postChartModel(chartsList);
+            } else {
+                throw new Exception("Read charts error");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            this.notifyError(e.getMessage());
         }
     }
 
-    private void notifyError() {
-        _mainThread.post(() -> _chartCallback.onRetrievalFailed("Nothing to welcome you with :("));
+    private void notifyError(String errorMessage) {
+        _mainThread.post(() -> _chartCallback.onRetrievalFailed(errorMessage));
     }
 
-    private void postJsonString(final String jsonChart) {
-        _mainThread.post(() -> _chartCallback.onJsonRetrieved(jsonChart));
+    private void postChartModel(final ChartsList chartsList) {
+        _mainThread.post(() -> _chartCallback.onJsonRetrieved(chartsList));
     }
 }

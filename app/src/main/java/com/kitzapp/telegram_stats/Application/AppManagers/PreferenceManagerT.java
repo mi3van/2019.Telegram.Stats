@@ -1,23 +1,21 @@
-package com.kitzapp.telegram_stats.domain.repository.preference;
+package com.kitzapp.telegram_stats.Application.AppManagers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 import com.kitzapp.telegram_stats.common.SettingsKeys;
-import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 
 /**
  * Created by Ivan Kuzmin on 2019-03-20.
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class TPreferenceRepository implements PreferenceRepository {
+public class PreferenceManagerT implements PreferenceMInterface {
 
     private SharedPreferences _preference;
 
-    public TPreferenceRepository(Context context) {
-        _preference = PreferenceManager.getDefaultSharedPreferences(context);
+    public PreferenceManagerT(Context context) {
+        _preference = android.preference.PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     @Override
