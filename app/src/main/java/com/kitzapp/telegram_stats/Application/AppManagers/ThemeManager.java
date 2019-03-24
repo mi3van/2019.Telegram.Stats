@@ -1,8 +1,8 @@
 package com.kitzapp.telegram_stats.Application.AppManagers;
 
 import com.kitzapp.telegram_stats.Application.AndroidApp;
-import com.kitzapp.telegram_stats.presentation.ui.components.AndroidUtilites;
-import com.kitzapp.telegram_stats.presentation.ui.components.RFontTextPaint;
+import com.kitzapp.telegram_stats.common.AndroidUtilites;
+import com.kitzapp.telegram_stats.presentation.ui.components.impl.TTextPaint;
 
 import java.util.HashMap;
 
@@ -12,6 +12,18 @@ import java.util.HashMap;
  */
 
 public class ThemeManager {
+    public static final int TOOLBAR_TEXT_SIZE_DP = 22;
+    public static final int SIMPLE_TEXT_SIZE_DP = 18;
+    public static final int CHART_TITLE_TEXT_SIZE_DP = 16;
+    public static final int CHART_SUB_TEXT_SIZE_DP = 8;
+
+    private static final int CHART_CELL_HEIGHT_DP = 56;
+    private static final int CHART_CELL_RIGHT_LEFT_MARGIN_DP = 16;
+    public static final int CHART_CELL_HEIGHT_PX;
+    public static final int CHART_CELL_BOTTOM_MARGIN_PX;
+    public static final int CHART_CELL_RIGHT_MARGIN_PX;
+    public static final int CHART_CELL_LEFT_MARGIN_PX;
+
     private static int totalInit = 1;
     public final static int LIGHT = totalInit++;
     public final static int DARK = totalInit++;
@@ -33,20 +45,20 @@ public class ThemeManager {
     private static final int colorLightBackup;
     private static final int colorDarkBackup;
 
-    public static RFontTextPaint toolbarTextPaint;
-    public static RFontTextPaint simpleTextPaint;
-    public static RFontTextPaint cellTitleTextPaint;
-    public static RFontTextPaint chartDescrTextPaint;
+    public static TTextPaint toolbarTextPaint;
+    public static TTextPaint simpleTextPaint;
+    public static TTextPaint chartTitleTextPaint;
+    public static TTextPaint chartDescrTextPaint;
 
     static {
         currentColors = new HashMap<>();
         darkThemeColors = new HashMap<>();
         lightThemeColors = new HashMap<>();
 
-        toolbarTextPaint = new RFontTextPaint();
-        simpleTextPaint = new RFontTextPaint();
-        cellTitleTextPaint = new RFontTextPaint();
-        chartDescrTextPaint = new RFontTextPaint();
+        toolbarTextPaint = new TTextPaint();
+        simpleTextPaint = new TTextPaint();
+        chartTitleTextPaint = new TTextPaint();
+        chartDescrTextPaint = new TTextPaint();
 
         colorLightBackup = 0x00000000;
         colorDarkBackup = 0xffffffff;
@@ -55,6 +67,10 @@ public class ThemeManager {
 
         applyTheme(AndroidApp.mainRepository.getCurrentTheme());
 
+        CHART_CELL_HEIGHT_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_CELL_HEIGHT_DP);
+        CHART_CELL_BOTTOM_MARGIN_PX = CHART_CELL_HEIGHT_PX >> 1;
+        CHART_CELL_RIGHT_MARGIN_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_CELL_RIGHT_LEFT_MARGIN_DP);
+        CHART_CELL_LEFT_MARGIN_PX = CHART_CELL_RIGHT_MARGIN_PX;
     }
 
     public static void changeThemeAndSave() {
@@ -87,12 +103,19 @@ public class ThemeManager {
 
     private static void updateFontsColors() {
         simpleTextPaint.setColor(getColor(key_simpleTextColor));
-        cellTitleTextPaint.setColor(getColor(key_cellTitleTextColor));
+        toolbarTextPaint.setColor(getColor(key_toolbarTextColor));
+        chartTitleTextPaint.setColor(getColor(key_cellTitleTextColor));
         chartDescrTextPaint.setColor(getColor(key_chartDescrTextColor));
 
-        cellTitleTextPaint.setTypeface(AndroidUtilites.getTypeface("fonts/rmedium.ttf"));
+        simpleTextPaint.setTypeface(AndroidUtilites.getTypeface("fonts/rregular.ttf"));
         toolbarTextPaint.setTypeface(AndroidUtilites.getTypeface("fonts/rmedium.ttf"));
+        chartTitleTextPaint.setTypeface(AndroidUtilites.getTypeface("fonts/rmedium.ttf"));
         chartDescrTextPaint.setTypeface(AndroidUtilites.getTypeface("fonts/rlight.ttf"));
+
+        simpleTextPaint.setTextSize(SIMPLE_TEXT_SIZE_DP);
+        toolbarTextPaint.setTextSize(TOOLBAR_TEXT_SIZE_DP);
+        chartTitleTextPaint.setTextSize(CHART_TITLE_TEXT_SIZE_DP);
+        chartDescrTextPaint.setTextSize(CHART_SUB_TEXT_SIZE_DP);
     }
 
     public static int getColor(String key) {
@@ -107,7 +130,7 @@ public class ThemeManager {
         darkThemeColors.put(key_totalBackColor, 0xff151e27);
         darkThemeColors.put(key_toolbarBackColor, 0xff212d3b);
         darkThemeColors.put(key_toolbarTextColor, 0xffffffff);
-        darkThemeColors.put(key_cellTitleTextColor, 0xff77bdf2);
+        darkThemeColors.put(key_cellTitleTextColor, 0xff7bc4fb);
         darkThemeColors.put(key_cellBackColor , 0xff1d2733);
         darkThemeColors.put(key_cellSubBackColor , 0xff19232e);
         darkThemeColors.put(key_chartDescrTextColor, 0xff4d606f);
@@ -116,7 +139,7 @@ public class ThemeManager {
         lightThemeColors.put(key_totalBackColor, 0xfff0f0f0);
         lightThemeColors.put(key_toolbarBackColor, 0xff517da2);
         lightThemeColors.put(key_toolbarTextColor, 0xffffffff);
-        lightThemeColors.put(key_cellTitleTextColor, 0xff77bdf2);
+        lightThemeColors.put(key_cellTitleTextColor, 0xff3896d4);
         lightThemeColors.put(key_cellBackColor , 0xffffffff);
         lightThemeColors.put(key_cellSubBackColor , 0xfff5f8f9);
         lightThemeColors.put(key_chartDescrTextColor, 0xff88939a);

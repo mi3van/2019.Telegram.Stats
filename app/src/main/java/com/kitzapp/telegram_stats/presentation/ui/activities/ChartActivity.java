@@ -3,18 +3,19 @@ package com.kitzapp.telegram_stats.presentation.ui.activities;
 import android.graphics.Color;
 import android.os.Build;
 import android.view.*;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-
 import androidx.appcompat.widget.Toolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.kitzapp.telegram_stats.R;
+import com.kitzapp.telegram_stats.common.AndroidUtilites;
 import com.kitzapp.telegram_stats.domain.executor.ThreadExecutor;
 import com.kitzapp.telegram_stats.domain.threading.TMainThread;
 import com.kitzapp.telegram_stats.presentation.presenters.impl.ChartPresenter;
 import com.kitzapp.telegram_stats.presentation.presenters.impl.TChartPresenter;
 import com.kitzapp.telegram_stats.presentation.ui.activities.base.BaseActivity;
-import com.kitzapp.telegram_stats.presentation.ui.components.AndroidUtilites;
+import com.kitzapp.telegram_stats.presentation.ui.components.TChartView;
 
 import java.util.Objects;
 
@@ -22,10 +23,11 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View {
 
     private FloatingActionButton _loading;
 
+    private ViewGroup _baseLayout;
     private TChartPresenter _chartPresenter;
     private ProgressBar _progressBar;
-    private TextView _textView;
     private Toolbar _toolbar;
+    private LinearLayout _containerLayout;
 
     @Override
     protected int getLayoutID() {
@@ -42,10 +44,11 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View {
 
     @Override
     protected void initViews() {
+        _baseLayout = findViewById(R.id.baseLayout);
         _loading = findViewById(R.id.loading);
         _progressBar = findViewById(R.id.progressBar);
-        _textView = findViewById(R.id.test);
         _toolbar = findViewById(R.id.toolbar);
+        _containerLayout = findViewById(R.id.chartsContainer);
 
         setSupportActionBar(_toolbar);
         String toolbarTitle = getResources().getString(R.string.toolbar_title);
@@ -65,23 +68,16 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View {
     @Override
     public void showProgress() {
         _progressBar.setVisibility(View.VISIBLE);
-        _textView.setVisibility(View.GONE);
     }
 
     @Override
     public void hideProgress() {
         _progressBar.setVisibility(View.GONE);
-        _textView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showError(String message) {
-        _textView.setText(message);
-    }
-
-    @Override
-    public void displayJson(String json) {
-        _textView.setText(json);
+        Snackbar.make(_baseLayout, message, Snackbar.LENGTH_LONG).show();
     }
 
     @Override
@@ -99,5 +95,15 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void clearChartsContainer() {
+        _containerLayout.removeAllViews();
+    }
+
+    @Override
+    public void addChartToContainer(TChartView chartView) {
+        _containerLayout.addView(chartView);
     }
 }

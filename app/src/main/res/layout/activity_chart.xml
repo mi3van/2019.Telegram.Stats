@@ -1,60 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.kitzapp.telegram_stats.presentation.ui.components.TLinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/baseLayout"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <com.kitzapp.telegram_stats.presentation.ui.components.TToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"/>
+    <com.kitzapp.telegram_stats.presentation.ui.components.TTotalLinLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <com.kitzapp.telegram_stats.presentation.ui.components.TToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fitsSystemWindows="true"/>
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_marginTop="@dimen/activity_vertical_margin">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <com.kitzapp.telegram_stats.presentation.ui.components.TTextView
-                    android:id="@+id/test"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Press button for loading" />
+                <LinearLayout
+                        android:id="@+id/chartsContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"/>
 
             </ScrollView>
 
             <ProgressBar
-                android:id="@+id/progressBar"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="match_parent"
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="true"
+                    android:visibility="gone"/>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/loading"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:indeterminate="true"
-                android:visibility="gone"/>
+                android:theme="@style/Widget.Design.FloatingActionButton"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"/>
 
         </RelativeLayout>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/loading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:theme="@style/Widget.Design.FloatingActionButton"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+    </com.kitzapp.telegram_stats.presentation.ui.components.TTotalLinLayout>
 
-    </RelativeLayout>
-
-</com.kitzapp.telegram_stats.presentation.ui.components.TLinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -2,8 +2,9 @@ package com.kitzapp.telegram_stats.presentation.ui.components;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Typeface;
+import android.text.TextPaint;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
@@ -11,6 +12,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.kitzapp.telegram_stats.Application.AndroidApp;
 import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
+import com.kitzapp.telegram_stats.common.AndroidUtilites;
 
 import java.util.Observable;
 
@@ -52,8 +54,10 @@ public class TToolbar extends Toolbar implements TViewObserver {
             if (view instanceof TextView) {
                 TextView tv = (TextView) view;
                 if (tv.getText().equals(this.getTitle())) {
-                    Typeface toolbartypeface = ThemeManager.toolbarTextPaint.getTypeface();
-                    tv.setTypeface(toolbartypeface);
+                    TextPaint toolbarTextPaint = ThemeManager.toolbarTextPaint;
+                    tv.setTypeface(toolbarTextPaint.getTypeface());
+                    tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, toolbarTextPaint.getTextSize());
+                    tv.setTextColor(toolbarTextPaint.getColor());
                     break;
                 }
             }

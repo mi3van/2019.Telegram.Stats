@@ -3,44 +3,46 @@ package com.kitzapp.telegram_stats.presentation.ui.components;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.TextView;
-import androidx.annotation.Nullable;
+import android.widget.LinearLayout;
+
 import com.kitzapp.telegram_stats.Application.AndroidApp;
 import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 
+import androidx.annotation.Nullable;
+import com.kitzapp.telegram_stats.common.AndroidUtilites;
+
 import java.util.Observable;
 
 /**
- * Created by Ivan Kuzmin on 22.03.2019;
- * 3van@mail.ru;
+ * Created by Ivan Kuzmin on 2019-03-22.
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class TTextView extends TextView implements TViewObserver {
+class TTotalLinLayout extends LinearLayout implements TViewObserver {
 
-    int _oldTextColor;
+    private int _oldBackColor;
 
-    public TTextView(Context context) {
+    public TTotalLinLayout(Context context) {
         super(context);
         this.init();
     }
 
-    public TTextView(Context context, @Nullable AttributeSet attrs) {
+    public TTotalLinLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.init();
     }
 
-    public TTextView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TTotalLinLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.init();
     }
 
     @Override
     public void init() {
-        _oldTextColor = getCurrentColor();
-        this.setTypeface(ThemeManager.simpleTextPaint.getTypeface());
-        this.setTextColor(_oldTextColor);
+        setWillNotDraw(false);
+        _oldBackColor = getCurrentColor();
+        this.setBackgroundColor(_oldBackColor);
     }
 
     @Override
@@ -54,20 +56,20 @@ public class TTextView extends TextView implements TViewObserver {
     }
 
     private int getCurrentColor() {
-        return ThemeManager.simpleTextPaint.getColor();
+        return ThemeManager.getColor(ThemeManager.key_totalBackColor);
     }
 
     @Override
     public void update(Observable o, Object arg) {
         if ((int) arg == ObserverManager.KEY_OBSERVER_THEME_UPDATED) {
             int newColor = getCurrentColor();
-            if (_oldTextColor != newColor) {
+            if (_oldBackColor != newColor) {
                 ValueAnimator valueAnimator = AndroidUtilites.getArgbAnimator(
-                        _oldTextColor,
+                        _oldBackColor,
                         newColor,
-                        animation -> setTextColor((int) animation.getAnimatedValue()));
+                        animation -> setBackgroundColor((int) animation.getAnimatedValue()));
                 valueAnimator.start();
-                _oldTextColor = newColor;
+                _oldBackColor = newColor;
             }
         }
     }

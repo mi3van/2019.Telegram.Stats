@@ -1,4 +1,4 @@
-package com.kitzapp.telegram_stats.presentation.ui.components;
+package com.kitzapp.telegram_stats.common;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -27,17 +27,17 @@ public class AndroidUtilites {
 
     public static int getColorSDK(int idColor){
         int color = 0;
-        Context context = AndroidApp.applicationContext;
+        Context context = AndroidApp.context;
         if (context != null) {
             color = ResourcesCompat.getColor(
-                    AndroidApp.applicationContext.getResources(),
+                    AndroidApp.context.getResources(),
                     idColor,
-                    AndroidApp.applicationContext.getTheme());
+                    AndroidApp.context.getTheme());
         }
         return color;
     }
 
-    static ValueAnimator getArgbAnimator(int fromColor, int toColor, ValueAnimator.AnimatorUpdateListener listener){
+    public static ValueAnimator getArgbAnimator(int fromColor, int toColor, ValueAnimator.AnimatorUpdateListener listener){
         ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), fromColor, toColor);
         colorAnimation.setDuration(DELAY_COLOR_ANIM);
         colorAnimation.addUpdateListener(listener);
@@ -50,7 +50,7 @@ public class AndroidUtilites {
                 try {
                     Typeface t;
                     if (Build.VERSION.SDK_INT >= 26) {
-                        Typeface.Builder builder = new Typeface.Builder(AndroidApp.applicationContext.getAssets(), assetPath);
+                        Typeface.Builder builder = new Typeface.Builder(AndroidApp.context.getAssets(), assetPath);
                         if (assetPath.contains("medium")) {
                             builder.setWeight(700);
                         }
@@ -59,7 +59,7 @@ public class AndroidUtilites {
                         }
                         t = builder.build();
                     } else {
-                        t = Typeface.createFromAsset(AndroidApp.applicationContext.getAssets(), assetPath);
+                        t = Typeface.createFromAsset(AndroidApp.context.getAssets(), assetPath);
                     }
                     typefaceCache.put(assetPath, t);
                 } catch (Exception e) {

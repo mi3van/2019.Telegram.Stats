@@ -4,8 +4,6 @@ import android.content.Context;
 import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.Application.AndroidApp;
 import com.kitzapp.telegram_stats.BuildConfig;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +20,7 @@ public class JsonManager {
     public static String getJsonStringFromFile(String fileName) {
         String jsonString = null;
         try {
-            Context context = AndroidApp.applicationContext;
+            Context context = AndroidApp.context;
             InputStream is = context.getAssets().open(fileName);
             int size = is.available();
             byte[] buffer = new byte[size];

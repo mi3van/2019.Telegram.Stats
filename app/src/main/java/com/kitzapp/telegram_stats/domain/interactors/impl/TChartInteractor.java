@@ -4,7 +4,6 @@ import com.kitzapp.telegram_stats.common.AppConts;
 import com.kitzapp.telegram_stats.domain.executor.Executor;
 import com.kitzapp.telegram_stats.domain.interactors.base.AbstractInteractor;
 import com.kitzapp.telegram_stats.domain.model.ChartsList;
-import com.kitzapp.telegram_stats.domain.model.chart.Chart;
 import com.kitzapp.telegram_stats.domain.repository.chart.ChartRepository;
 import com.kitzapp.telegram_stats.domain.threading.MainThread;
 
