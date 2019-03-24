@@ -23,6 +23,10 @@ public class Chart {
         return lines.get(key);
     }
 
+    public HashMap<String, Line> getLines() {
+        return lines;
+    }
+
     public AxisX getAxisX() {
         return axisX;
     }

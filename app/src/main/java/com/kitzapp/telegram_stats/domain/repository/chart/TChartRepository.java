@@ -10,7 +10,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.kitzapp.telegram_stats.domain.model.chart.Chart.*;
@@ -61,9 +60,9 @@ public class TChartRepository implements ChartRepository {
                 byte currentType = this.getTypeInByte(type);
                 switch (currentType) {
                     case Line.TYPE_LINE:
-                        ArrayList<Integer> dots = new ArrayList<>(columnsWithKey.length() - 1);
+                        int[] dots = new int[columnsWithKey.length() - 1];
                         for (int j = 1; j < columnsWithKey.length(); j++) {
-                            dots.add(columnsWithKey.getInt(j));
+                            dots[j - 1] = (columnsWithKey.getInt(j));
                         }
                         String name = namesJson.getString(key);
                         String hexColor = colorsJson.getString(key);
@@ -73,9 +72,9 @@ public class TChartRepository implements ChartRepository {
                         break;
 
                     case Line.TYPE_X_AXIS:
-                        ArrayList<Long> dates = new ArrayList<>(columnsWithKey.length() - 1);
+                        long[] dates = new long[columnsWithKey.length() - 1];
                         for (int j = 1; j < columnsWithKey.length(); j++) {
-                            dates.add(columnsWithKey.getLong(j));
+                            dates[j - 1] = columnsWithKey.getLong(j);
                         }
                         axisX = new AxisX(key, dates, currentType);
                         break;

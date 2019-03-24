@@ -1,19 +1,17 @@
 package com.kitzapp.telegram_stats.domain.model.chart.impl;
 
-import java.util.ArrayList;
-
 public class Line implements LineI {
     public static final byte TYPE_LINE = 1;
     public static final byte TYPE_X_AXIS = 2;
 
     private String key;
-    private ArrayList<Integer> data;
+    private int[] data;
     private byte type;
     private String name;
     private int color;
     private boolean isActive = true;
 
-    public Line(String key, ArrayList<Integer> data, byte type, String name, int color) {
+    public Line(String key, int[] data, byte type, String name, int color) {
         this.key = key;
         this.data = data;
         this.type = type;
@@ -21,14 +19,13 @@ public class Line implements LineI {
         this.color = color;
     }
 
-    @Override
-    public int getDotInfo(int position) {
-        return data.get(position);
+    public int[] getData() {
+        return data;
     }
 
     @Override
     public int getCountDots() {
-        return data.size();
+        return data.length;
     }
 
     @Override

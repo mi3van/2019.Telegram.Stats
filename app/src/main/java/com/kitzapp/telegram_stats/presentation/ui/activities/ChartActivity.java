@@ -15,7 +15,7 @@ import com.kitzapp.telegram_stats.domain.threading.TMainThread;
 import com.kitzapp.telegram_stats.presentation.presenters.impl.ChartPresenter;
 import com.kitzapp.telegram_stats.presentation.presenters.impl.TChartPresenter;
 import com.kitzapp.telegram_stats.presentation.ui.activities.base.BaseActivity;
-import com.kitzapp.telegram_stats.presentation.ui.components.TChartView;
+import com.kitzapp.telegram_stats.presentation.ui.components.ChartView.TChartView;
 
 import java.util.Objects;
 

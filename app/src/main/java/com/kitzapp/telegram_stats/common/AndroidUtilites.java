@@ -3,10 +3,10 @@ package com.kitzapp.telegram_stats.common;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.util.Log;
-
 import android.util.TypedValue;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.vectordrawable.graphics.drawable.ArgbEvaluator;
@@ -78,5 +78,15 @@ public class AndroidUtilites {
                 dpValue,
                 r.getDisplayMetrics());
         return (int) px;
+    }
+
+    public static Paint getPaint(int color, int lineWidth) {
+        Paint paint = new Paint();
+        paint.setColor(color);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setAntiAlias(true);
+        paint.setStrokeWidth(lineWidth);
+        paint.setStrokeCap(Paint.Cap.ROUND);
+        return paint;
     }
 }

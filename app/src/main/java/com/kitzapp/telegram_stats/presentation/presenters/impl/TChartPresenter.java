@@ -10,7 +10,7 @@ import com.kitzapp.telegram_stats.domain.model.chart.Chart;
 import com.kitzapp.telegram_stats.domain.repository.chart.TChartRepository;
 import com.kitzapp.telegram_stats.domain.threading.MainThread;
 import com.kitzapp.telegram_stats.presentation.presenters.base.AbstractPresenter;
-import com.kitzapp.telegram_stats.presentation.ui.components.TChartView;
+import com.kitzapp.telegram_stats.presentation.ui.components.ChartView.TChartView;
 
 public class TChartPresenter extends AbstractPresenter implements ChartPresenter,
         ChartInteractor.Callback {

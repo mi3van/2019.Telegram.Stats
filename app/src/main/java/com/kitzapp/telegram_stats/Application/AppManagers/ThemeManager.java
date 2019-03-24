@@ -19,10 +19,16 @@ public class ThemeManager {
 
     private static final int CHART_CELL_HEIGHT_DP = 56;
     private static final int CHART_CELL_RIGHT_LEFT_MARGIN_DP = 16;
+    private static final int CHART_LINE_IN_ZOOM_WIDTH_DP = 2;
+    private static final int CHART_LINE_FULL_WIDTH_DP = 1;
+    private static final int CHART_FULL_TOP_BOTTOM_MARGIN_DP = 4;
+
     public static final int CHART_CELL_HEIGHT_PX;
     public static final int CHART_CELL_BOTTOM_MARGIN_PX;
-    public static final int CHART_CELL_RIGHT_MARGIN_PX;
-    public static final int CHART_CELL_LEFT_MARGIN_PX;
+    public static final int CHART_CELL_RIGHTLEFT_MARGIN_PX;
+    public static final int CHART_LINE_IN_ZOOM_WIDTH_PX;
+    public static final int CHART_LINE_FULL_WIDTH_PX;
+    public static final int CHART_FULL_TOP_BOTTOM_MARGIN_PX;
 
     private static int totalInit = 1;
     public final static int LIGHT = totalInit++;
@@ -69,8 +75,10 @@ public class ThemeManager {
 
         CHART_CELL_HEIGHT_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_CELL_HEIGHT_DP);
         CHART_CELL_BOTTOM_MARGIN_PX = CHART_CELL_HEIGHT_PX >> 1;
-        CHART_CELL_RIGHT_MARGIN_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_CELL_RIGHT_LEFT_MARGIN_DP);
-        CHART_CELL_LEFT_MARGIN_PX = CHART_CELL_RIGHT_MARGIN_PX;
+        CHART_CELL_RIGHTLEFT_MARGIN_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_CELL_RIGHT_LEFT_MARGIN_DP);
+        CHART_LINE_FULL_WIDTH_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_LINE_FULL_WIDTH_DP);
+        CHART_LINE_IN_ZOOM_WIDTH_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_LINE_IN_ZOOM_WIDTH_DP);
+        CHART_FULL_TOP_BOTTOM_MARGIN_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_FULL_TOP_BOTTOM_MARGIN_DP);
     }
 
     public static void changeThemeAndSave() {
