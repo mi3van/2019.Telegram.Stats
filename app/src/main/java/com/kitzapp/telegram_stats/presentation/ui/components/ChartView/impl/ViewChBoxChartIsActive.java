@@ -10,6 +10,7 @@ import com.kitzapp.telegram_stats.domain.model.chart.impl.Line;
 import com.kitzapp.telegram_stats.presentation.ui.components.impl.TCheckBox;
 import com.kitzapp.telegram_stats.presentation.ui.components.impl.TDelimiterLine;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -36,7 +37,10 @@ public class ViewChBoxChartIsActive extends LinearLayout {
         super(context);
         this.init();
 
-        for (Map.Entry<String, Line> entry: chart.getLines().entrySet()) {
+        int count = 0;
+        HashMap<String, Line> lines = chart.getLines();
+        for (Map.Entry<String, Line> entry: lines.entrySet()) {
+            count++;
             Line line = entry.getValue();
             TCheckBox checkBox = new TCheckBox(getContext(),
                     line.getKey(),
@@ -45,8 +49,10 @@ public class ViewChBoxChartIsActive extends LinearLayout {
                     listener);
             this.addView(checkBox);
 
-            TDelimiterLine delimiterLine = new TDelimiterLine(getContext());
-            this.addView(delimiterLine);
+            if (count < lines.size()) {
+                TDelimiterLine delimiterLine = new TDelimiterLine(getContext());
+                this.addView(delimiterLine);
+            }
         }
     }
 

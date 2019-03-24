@@ -29,7 +29,7 @@ import java.util.Observable;
  */
 
 public class ViewFullChart extends View implements TViewObserver {
-    private static final float APPROX_RANGE = 4f;
+    private static final float APPROX_RANGE = 8f;
 
     @NonNull
     private Chart _chart;
@@ -157,13 +157,16 @@ public class ViewFullChart extends View implements TViewObserver {
                 int columnsCount = axisYForGraph.length;
 
 //                this.checkMax(_axisXForGraph[0], axisYForGraph[0]);
+                float oldX = _axisXForGraph[0];
+                float oldY = axisYForGraph[0];
                 for (int i = 1; i < columnsCount; i++) {
 //                    this.checkMax(_axisXForGraph[i], axisYForGraph[i]);
-                    if (isRangeTwoPointsAvailable(_axisXForGraph[i - 1], axisYForGraph[i - 1],
-                                                       _axisXForGraph[i], axisYForGraph[i])) {
-                        canvas.drawLine(_axisXForGraph[i - 1], axisYForGraph[i - 1],
-                                        _axisXForGraph[i], axisYForGraph[i],
-                                        paint);
+                    float currentX = _axisXForGraph[i];
+                    float currentY = axisYForGraph[i];
+                    if (isRangeTwoPointsAvailable(oldX, oldY, currentX, currentY)) {
+                        canvas.drawLine(oldX, oldY, currentX, currentY, paint);
+                        oldX = currentX;
+                        oldY = currentY;
                     }
                 }
             }
@@ -173,7 +176,7 @@ public class ViewFullChart extends View implements TViewObserver {
     private boolean isRangeTwoPointsAvailable(float xStart, float yStart,
                                               float xEnd, float yEnd) {
         boolean isAvailableForDraw;
-        float sub = Math.abs(xStart - xEnd) + Math.abs(yStart - yEnd);
+        float sub = Math.abs(xEnd - xStart) + Math.abs(yEnd - yStart);
         if (sub >= APPROX_RANGE) {
             isAvailableForDraw = true;
         } else {
