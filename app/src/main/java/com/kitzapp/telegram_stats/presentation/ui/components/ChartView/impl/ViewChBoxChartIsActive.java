@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.domain.model.chart.Chart;
 import com.kitzapp.telegram_stats.domain.model.chart.impl.Line;
 import com.kitzapp.telegram_stats.presentation.ui.components.impl.TCheckBox;
+import com.kitzapp.telegram_stats.presentation.ui.components.impl.TDelimiterLine;
 
 import java.util.Map;
 
@@ -43,6 +44,9 @@ public class ViewChBoxChartIsActive extends LinearLayout {
                     line.getColor(),
                     listener);
             this.addView(checkBox);
+
+            TDelimiterLine delimiterLine = new TDelimiterLine(getContext());
+            this.addView(delimiterLine);
         }
     }
 

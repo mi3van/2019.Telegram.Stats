@@ -21,7 +21,7 @@ import java.util.Observable;
 
 public class TSimpleTextView extends TTextView implements TViewObserver {
 
-    int _oldTextColor;
+    private int _oldTextColor;
 
     public TSimpleTextView(Context context) {
         super(context);

@@ -56,8 +56,8 @@ public class TChartView extends LinearLayout implements TViewObserver {
     @Override
     public void init() {
         this.setOrientation(VERTICAL);
-        _oldBackColor = this.getCurrentBackColor();
 
+        _oldBackColor = this.getCurrentBackColor();
         this.setBackgroundColor(_oldBackColor);
 
         int RightLeftPadding = ThemeManager.CHART_CELL_RIGHTLEFT_MARGIN_PX;
