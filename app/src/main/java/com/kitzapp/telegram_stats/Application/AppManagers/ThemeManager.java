@@ -47,6 +47,7 @@ public class ThemeManager {
     public static final String key_cellSubBackColor = "cellSubBackColor";
     private static final String key_chartDescrTextColor = "chartDescrTextColor";
     private static final String key_simpleTextColor = "simpleTextColor";
+    public static final String key_delimiterColor = "delimiterColor";
 
     private static final int colorLightBackup;
     private static final int colorDarkBackup;
@@ -143,6 +144,7 @@ public class ThemeManager {
         darkThemeColors.put(key_cellSubBackColor , 0xff19232e);
         darkThemeColors.put(key_chartDescrTextColor, 0xff4d606f);
         darkThemeColors.put(key_simpleTextColor , 0xffffffff);
+        darkThemeColors.put(key_delimiterColor, 0xff0f1823);
 
         lightThemeColors.put(key_totalBackColor, 0xfff0f0f0);
         lightThemeColors.put(key_toolbarBackColor, 0xff517da2);
@@ -152,5 +154,6 @@ public class ThemeManager {
         lightThemeColors.put(key_cellSubBackColor , 0xfff5f8f9);
         lightThemeColors.put(key_chartDescrTextColor, 0xff88939a);
         lightThemeColors.put(key_simpleTextColor , 0xff000000);
+        lightThemeColors.put(key_delimiterColor, 0xffe7e7e7);
     }
 }

@@ -49,6 +49,11 @@ public class Line implements LineI {
     }
 
     @Override
+    public void setIsActive(boolean active) {
+        isActive = active;
+    }
+
+    @Override
     public String getKey() {
         return key;
     }

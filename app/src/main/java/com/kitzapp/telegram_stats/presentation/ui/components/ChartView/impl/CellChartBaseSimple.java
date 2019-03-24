@@ -1,4 +1,4 @@
-package com.kitzapp.telegram_stats.presentation.ui.components.ChartView.cells;
+package com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl;
 
 import android.content.Context;
 import android.util.AttributeSet;

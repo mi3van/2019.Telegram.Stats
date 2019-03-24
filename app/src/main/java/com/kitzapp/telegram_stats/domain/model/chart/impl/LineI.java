@@ -21,4 +21,6 @@ public interface LineI {
     boolean getIsActive();
 
     String getKey();
+
+    void setIsActive(boolean isChecked);
 }

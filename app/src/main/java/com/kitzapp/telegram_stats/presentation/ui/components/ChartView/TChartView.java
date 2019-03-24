@@ -11,8 +11,8 @@ import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
 import com.kitzapp.telegram_stats.domain.model.chart.Chart;
-import com.kitzapp.telegram_stats.presentation.ui.components.ChartView.cells.CellChartTitle;
-import com.kitzapp.telegram_stats.presentation.ui.components.ChartView.cells.CellFullChart;
+import com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl.CellChartTitle;
+import com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl.CellChart;
 import com.kitzapp.telegram_stats.presentation.ui.components.TViewObserver;
 
 import java.util.Observable;
@@ -25,14 +25,12 @@ import java.util.Observable;
 
 public class TChartView extends LinearLayout implements TViewObserver {
     private CellChartTitle _titleCell;
-    private CellFullChart _fullChartCell;
+    private CellChart _fullChartCell;
 
     @NonNull
     private Chart chart;
 
     private int _oldBackColor;
-    private int _oldTitleColor;
-    private int _oldFullChartBackColor;
 
     public TChartView(Context context) {
         super(context);
@@ -59,8 +57,6 @@ public class TChartView extends LinearLayout implements TViewObserver {
     public void init() {
         this.setOrientation(VERTICAL);
         _oldBackColor = this.getCurrentBackColor();
-        _oldTitleColor = ThemeManager.chartTitleTextPaint.getColor();
-        _oldFullChartBackColor = this.getFullChartBackColor();
 
         this.setBackgroundColor(_oldBackColor);
 
@@ -75,8 +71,7 @@ public class TChartView extends LinearLayout implements TViewObserver {
         _titleCell = new CellChartTitle(getContext());
         this.addView(_titleCell);
 
-        _fullChartCell = new CellFullChart(getContext(), chart);
-        _fullChartCell.setBackgroundColor(_oldFullChartBackColor);
+        _fullChartCell = new CellChart(getContext(), chart);
         this.addView(_fullChartCell);
     }
 
@@ -94,8 +89,6 @@ public class TChartView extends LinearLayout implements TViewObserver {
     public void update(Observable o, Object arg) {
         if ((int) arg == ObserverManager.KEY_OBSERVER_THEME_UPDATED) {
             int newBackColor = getCurrentBackColor();
-            int newTitleColor = ThemeManager.chartTitleTextPaint.getColor();
-            int newFullChartBackColor = getFullChartBackColor();
 
             if (_oldBackColor != newBackColor) {
                 // BACKGROUND CHANGE COLOR
@@ -105,22 +98,6 @@ public class TChartView extends LinearLayout implements TViewObserver {
                         animation -> setBackgroundColor((int) animation.getAnimatedValue()));
                 backRGBAnim.start();
                 _oldBackColor = newBackColor;
-
-                // TITLE CHANGE COLOR
-                ValueAnimator textRGBAnim = AndroidUtilites.getArgbAnimator(
-                        _oldTitleColor,
-                        newTitleColor,
-                        animation -> _titleCell.setTextColor((int) animation.getAnimatedValue()));
-                textRGBAnim.start();
-                _oldTitleColor = newTitleColor;
-
-                // FULL CHART CHANGE BACK COLOR
-                ValueAnimator fullChartRGBAnim = AndroidUtilites.getArgbAnimator(
-                        _oldFullChartBackColor,
-                        newFullChartBackColor,
-                        animation -> _fullChartCell.setBackgroundColor((int) animation.getAnimatedValue()));
-                fullChartRGBAnim.start();
-                _oldFullChartBackColor = newFullChartBackColor;
             }
         }
     }
@@ -142,9 +119,5 @@ public class TChartView extends LinearLayout implements TViewObserver {
 
     private int getCurrentBackColor() {
         return ThemeManager.getColor(ThemeManager.key_cellBackColor);
-    }
-
-    private int getFullChartBackColor() {
-        return ThemeManager.getColor(ThemeManager.key_cellSubBackColor);
     }
 }

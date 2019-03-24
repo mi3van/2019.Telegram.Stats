@@ -1,5 +1,6 @@
-package com.kitzapp.telegram_stats.presentation.ui.components.ChartView.cells;
+package com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -9,13 +10,17 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.kitzapp.telegram_stats.Application.AndroidApp;
+import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
 import com.kitzapp.telegram_stats.domain.model.chart.Chart;
 import com.kitzapp.telegram_stats.domain.model.chart.impl.Line;
+import com.kitzapp.telegram_stats.presentation.ui.components.TViewObserver;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Observable;
 
 /**
  * Created by Ivan Kuzmin on 24.03.2019;
@@ -23,8 +28,8 @@ import java.util.Map;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class ViewFullChart extends View {
-    private static final float APPROX_RANGE = 1.5f;
+public class ViewFullChart extends View implements TViewObserver {
+    private static final float APPROX_RANGE = 4f;
 
     @NonNull
     private Chart _chart;
@@ -39,6 +44,8 @@ public class ViewFullChart extends View {
 
     private float _stepX;
     private float _stepY;
+
+    private int _oldFullChartBackColor;
 
     public ViewFullChart(Context context) {
         super(context);
@@ -58,10 +65,14 @@ public class ViewFullChart extends View {
         this.init();
     }
 
-    private void init() {
+    @Override
+    public void init() {
+        _oldFullChartBackColor = this.getFullChartBackColor();
+        this.setBackgroundColor(_oldFullChartBackColor);
+
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
+                ThemeManager.CHART_CELL_HEIGHT_PX);
         layoutParams.topMargin = ThemeManager.CHART_FULL_TOP_BOTTOM_MARGIN_PX;
         layoutParams.bottomMargin = ThemeManager.CHART_FULL_TOP_BOTTOM_MARGIN_PX;
         this.setLayoutParams(layoutParams);
@@ -94,7 +105,7 @@ public class ViewFullChart extends View {
             int columnsCount = line.getCountDots();
 
             // CHECK FOR AVAILABLE LINE
-            if (line.getIsActive() && columnsCount > 1) {
+            if (columnsCount > 1) {
 
                 if (_columnsCount < columnsCount) {
                     _columnsCount = columnsCount;
@@ -138,11 +149,11 @@ public class ViewFullChart extends View {
     }
 
     private void drawLines(Canvas canvas) {
-        for (Map.Entry<String, float[]> map: _axisesYArrays.entrySet()) {
-
-            Paint paint = _hashPaints.get(map.getKey());
-            if (paint != null) {
-                float[] axisYForGraph = map.getValue();
+        for (Map.Entry<String, float[]> entry: _axisesYArrays.entrySet()) {
+            Line line = _chart.getLines().get(entry.getKey());
+            Paint paint = _hashPaints.get(entry.getKey());
+            if (line != null && line.getIsActive() && paint != null) {
+                float[] axisYForGraph = entry.getValue();
                 int columnsCount = axisYForGraph.length;
 
 //                this.checkMax(_axisXForGraph[0], axisYForGraph[0]);
@@ -197,4 +208,48 @@ public class ViewFullChart extends View {
 //        canvas.restore();
 //    }
 
+    @Override
+    public void addObserver() {
+        AndroidApp.observerManager.addObserver(this);
+    }
+
+    @Override
+    public void deleteObserver() {
+        AndroidApp.observerManager.deleteObserver(this);
+    }
+
+    private int getCurrentColor() {
+        return ThemeManager.simpleTextPaint.getColor();
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        if ((int) arg == ObserverManager.KEY_OBSERVER_THEME_UPDATED) {
+            int newFullChartBackColor = getFullChartBackColor();
+
+            // FULL CHART CHANGE BACK COLOR
+            ValueAnimator fullChartRGBAnim = AndroidUtilites.getArgbAnimator(
+                    _oldFullChartBackColor,
+                    newFullChartBackColor,
+                    animation -> this.setBackgroundColor((int) animation.getAnimatedValue()));
+            fullChartRGBAnim.start();
+            _oldFullChartBackColor = newFullChartBackColor;
+        }
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        this.addObserver();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        this.deleteObserver();
+    }
+
+    private int getFullChartBackColor() {
+        return ThemeManager.getColor(ThemeManager.key_cellSubBackColor);
+    }
 }
