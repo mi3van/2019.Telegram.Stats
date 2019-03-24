@@ -7,7 +7,6 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.domain.model.chart.Chart;
-import com.kitzapp.telegram_stats.presentation.ui.components.impl.TCheckBox;
 
 /**
  * Created by Ivan Kuzmin on 24.03.2019;
@@ -15,9 +14,10 @@ import com.kitzapp.telegram_stats.presentation.ui.components.impl.TCheckBox;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class CellChart extends LinearLayout implements TCheckBox.Listener {
+public class CellChart extends LinearLayout {
 
     private Chart _chart = null;
+    private ViewPartChart _partChart;
     private ViewFullChart _fullChart;
     private ViewChBoxChartIsActive _chBoxChartIsActive;
 
@@ -43,26 +43,31 @@ public class CellChart extends LinearLayout implements TCheckBox.Listener {
         this.setOrientation(VERTICAL);
 
         if (_chart != null) {
-            _fullChart = new ViewFullChart(getContext(), _chart);
-            _chBoxChartIsActive = new ViewChBoxChartIsActive(getContext(), _chart, this);
-
+//            _fullChart = new ViewFullChart(getContext(), _chart, (axisesYArrays,
+//                                                                  _hashPaints,
+//                                                                  _axisXForGraph,
+//                                                                  columnsCount,
+//                                                                  maxAsixY,
+//                                                                  _viewHeight), () - >)
+//                    _partChart.setData(axisesYArrays, _hashPaints, _axisXForGraph, _viewHeight));
             setGravity(Gravity.CENTER_VERTICAL);
-            addView(_fullChart);
+
+            _partChart = new ViewPartChart(getContext(), _chart);
+            _chBoxChartIsActive = new ViewChBoxChartIsActive(getContext(), _chart, (key, isChecked) -> {
+                try {
+                    _chart.getLines().get(key).setIsActive(isChecked);
+//                    _fullChart.invalidate();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+            addView(_partChart);
+//            addView(_fullChart);
             addView(_chBoxChartIsActive);
         }
     }
 
     public void setBackgroundColor(int color) {
         _fullChart.setBackgroundColor(color);
-    }
-
-    @Override
-    public void onBoxWasChecked(String key, boolean isChecked) {
-        try {
-            _chart.getLines().get(key).setIsActive(isChecked);
-            _fullChart.invalidate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

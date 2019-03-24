@@ -31,6 +31,16 @@ import java.util.Observable;
 public class ViewFullChart extends View implements TViewObserver {
     private static final float APPROX_RANGE = 8f;
 
+    public interface Loading {
+        void complete(HashMap<String, float[]> axisesYArrays,
+                      HashMap<String, Paint> _hashPaints,
+                      float[] _axisXForGraph,
+                      int columnsCount,
+                      int maxAsixY,
+                      float _viewHeight);
+    }
+    private Loading loading;
+
     @NonNull
     private Chart _chart;
     private HashMap<String, float[]> _axisesYArrays;
@@ -59,9 +69,10 @@ public class ViewFullChart extends View implements TViewObserver {
         super(context, attrs, defStyleAttr);
     }
 
-    public ViewFullChart(Context context, Chart chart) {
+    public ViewFullChart(Context context, Chart chart, Loading loading) {
         super(context);
         this._chart = chart;
+        this.loading = loading;
         this.init();
     }
 
@@ -171,6 +182,7 @@ public class ViewFullChart extends View implements TViewObserver {
                 }
             }
         }
+        loading.complete((HashMap<String, float[]>) _axisesYArrays.clone(), _hashPaints, _axisXForGraph, _columnsCount, _maxAxisY, _viewHeight);
     }
 
     private boolean isRangeTwoPointsAvailable(float xStart, float yStart,
