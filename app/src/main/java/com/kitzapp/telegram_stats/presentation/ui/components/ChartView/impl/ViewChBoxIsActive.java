@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import androidx.annotation.Nullable;
+import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.domain.model.chart.Chart;
 import com.kitzapp.telegram_stats.domain.model.chart.impl.Line;
 import com.kitzapp.telegram_stats.presentation.ui.components.impl.TCheckBox;
@@ -19,21 +20,21 @@ import java.util.Map;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class ViewChBoxChartIsActive extends LinearLayout {
+public class ViewChBoxIsActive extends LinearLayout {
 
-    public ViewChBoxChartIsActive(Context context) {
+    public ViewChBoxIsActive(Context context) {
         super(context);
     }
 
-    public ViewChBoxChartIsActive(Context context, @Nullable AttributeSet attrs) {
+    public ViewChBoxIsActive(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ViewChBoxChartIsActive(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ViewChBoxIsActive(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public ViewChBoxChartIsActive(Context context, Chart chart, TCheckBox.Listener listener) {
+    public ViewChBoxIsActive(Context context, Chart chart, TCheckBox.Listener listener) {
         super(context);
         this.init();
 
@@ -62,5 +63,8 @@ public class ViewChBoxChartIsActive extends LinearLayout {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         this.setLayoutParams(layoutParams);
+
+        int RightLeftPadding = ThemeManager.CHART_CELL_RIGHTLEFT_MARGIN_PX;
+        setPadding(RightLeftPadding, 0, 0, 0);
     }
 }

@@ -46,7 +46,7 @@ public class TDelimiterLine extends View implements TViewObserver {
         this.setBackgroundColor(_oldBackColor);
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,2);
+                ViewGroup.LayoutParams.MATCH_PARENT, ThemeManager.CHART_DELIMITER_WIDTH_PX);
         layoutParams.setMargins(ThemeManager.CHART_CELL_RIGHTLEFT_MARGIN_PX +
                 ThemeManager.CHART_CELL_RIGHTLEFT_MARGIN_PX, 0, 0, 0);
         setLayoutParams(layoutParams);

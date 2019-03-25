@@ -4,6 +4,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.widget.LinearLayout;
 import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.Application.AndroidApp;
 import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
@@ -22,7 +23,7 @@ import java.util.Observable;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class CellChartTitle extends CellChartBaseSimple implements TViewObserver {
+public class CellChartTitle extends LinearLayout implements TViewObserver {
 
     private int _oldTitleColor;
 
@@ -30,14 +31,17 @@ public class CellChartTitle extends CellChartBaseSimple implements TViewObserver
 
     public CellChartTitle(Context context) {
         super(context);
+        this.init();
     }
 
     public CellChartTitle(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        this.init();
     }
 
     public CellChartTitle(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        this.init();
     }
 
     public void setText(String text) {
@@ -46,6 +50,7 @@ public class CellChartTitle extends CellChartBaseSimple implements TViewObserver
 
     @Override
     public void init() {
+        this.setOrientation(VERTICAL);
         _oldTitleColor = ThemeManager.chartTitleTextPaint.getColor();
 
         tTextView = new TTextView(getContext());
@@ -57,12 +62,16 @@ public class CellChartTitle extends CellChartBaseSimple implements TViewObserver
 
         setGravity(Gravity.CENTER_VERTICAL);
         addView(tTextView);
+
+        int RightLeftPadding = ThemeManager.CHART_CELL_RIGHTLEFT_MARGIN_PX;
+        setPadding(RightLeftPadding, 0, RightLeftPadding, 0);
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         this.addObserver();
+        getLayoutParams().height = ThemeManager.CHART_CELL_HEIGHT_PX;
     }
 
     @Override

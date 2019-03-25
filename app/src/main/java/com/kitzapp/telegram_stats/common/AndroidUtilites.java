@@ -89,4 +89,16 @@ public class AndroidUtilites {
         paint.setStrokeCap(Paint.Cap.ROUND);
         return paint;
     }
+
+    public static boolean isRangeTwoPointsAvailable(float xStart, float yStart,
+                                              float xEnd, float yEnd, float range) {
+        boolean isAvailableForDraw;
+        float sub = Math.abs(xEnd - xStart) + Math.abs(yEnd - yStart);
+        if (sub >= range) {
+            isAvailableForDraw = true;
+        } else {
+            isAvailableForDraw = false;
+        }
+        return isAvailableForDraw;
+    }
 }

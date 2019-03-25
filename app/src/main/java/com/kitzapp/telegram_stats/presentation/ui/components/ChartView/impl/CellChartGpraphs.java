@@ -15,26 +15,26 @@ import com.kitzapp.telegram_stats.presentation.ui.components.impl.TCheckBox;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class CellChart extends LinearLayout implements TCheckBox.Listener {
+public class CellChartGpraphs extends LinearLayout implements TCheckBox.Listener {
 
     private Chart _chart = null;
     private ViewPartChart _partChart;
     private ViewFullChart _fullChart;
-    private ViewChBoxChartIsActive _chBoxChartIsActive;
+    private ViewChBoxIsActive _chBoxChartIsActive;
 
-    public CellChart(Context context) {
+    public CellChartGpraphs(Context context) {
         super(context);
     }
 
-    public CellChart(Context context, @Nullable AttributeSet attrs) {
+    public CellChartGpraphs(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public CellChart(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public CellChartGpraphs(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public CellChart(Context context, @NonNull Chart chart) {
+    public CellChartGpraphs(Context context, @NonNull Chart chart) {
         super(context);
         this._chart = chart;
         this.init();
@@ -45,9 +45,8 @@ public class CellChart extends LinearLayout implements TCheckBox.Listener {
 
         if (_chart != null) {
             _partChart = new ViewPartChart(getContext(), _chart);
-            _fullChart = new ViewFullChart(getContext(), _chart, (axisesYArrays, _hashPaints, _axisXForGraph, columnsCount, _viewHeight) ->
-                    _partChart.setData(axisesYArrays, _hashPaints, _axisXForGraph, columnsCount, _viewHeight));
-            _chBoxChartIsActive = new ViewChBoxChartIsActive(getContext(), _chart, this);
+            _fullChart = new ViewFullChart(getContext(), _chart);
+            _chBoxChartIsActive = new ViewChBoxIsActive(getContext(), _chart, this);
             addView(_partChart);
             addView(_fullChart);
             addView(_chBoxChartIsActive);

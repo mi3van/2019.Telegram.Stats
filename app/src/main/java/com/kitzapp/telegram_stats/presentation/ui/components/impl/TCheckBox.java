@@ -60,7 +60,6 @@ public class TCheckBox extends CheckBox implements TViewObserver {
 
     @Override
     public void init() {
-
         TTextPaint simpleTextPaint = ThemeManager.simpleTextPaint;
         this.setTypeface(simpleTextPaint.getTypeface());
         this.setTextSize(TypedValue.COMPLEX_UNIT_DIP, simpleTextPaint.getTextSize());

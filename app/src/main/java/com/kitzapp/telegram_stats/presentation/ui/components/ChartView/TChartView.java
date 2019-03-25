@@ -12,7 +12,7 @@ import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
 import com.kitzapp.telegram_stats.domain.model.chart.Chart;
 import com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl.CellChartTitle;
-import com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl.CellChart;
+import com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl.CellChartGpraphs;
 import com.kitzapp.telegram_stats.presentation.ui.components.TViewObserver;
 
 import java.util.Observable;
@@ -25,7 +25,7 @@ import java.util.Observable;
 
 public class TChartView extends LinearLayout implements TViewObserver {
     private CellChartTitle _titleCell;
-    private CellChart _fullChartCell;
+    private CellChartGpraphs _fullChartCell;
 
     @NonNull
     private Chart chart;
@@ -60,9 +60,6 @@ public class TChartView extends LinearLayout implements TViewObserver {
         _oldBackColor = this.getCurrentBackColor();
         this.setBackgroundColor(_oldBackColor);
 
-        int RightLeftPadding = ThemeManager.CHART_CELL_RIGHTLEFT_MARGIN_PX;
-        setPadding(RightLeftPadding, 0, RightLeftPadding, 0);
-
         this.initChildViews();
     }
 
@@ -71,7 +68,7 @@ public class TChartView extends LinearLayout implements TViewObserver {
         _titleCell = new CellChartTitle(getContext());
         this.addView(_titleCell);
 
-        _fullChartCell = new CellChart(getContext(), chart);
+        _fullChartCell = new CellChartGpraphs(getContext(), chart);
         this.addView(_fullChartCell);
     }
 
