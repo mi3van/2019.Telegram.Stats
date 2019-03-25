@@ -36,7 +36,6 @@ public class ViewFullChart extends View implements TViewObserver {
                       HashMap<String, Paint> _hashPaints,
                       float[] _axisXForGraph,
                       int columnsCount,
-                      int maxAsixY,
                       float _viewHeight);
     }
     private Loading loading;
@@ -56,6 +55,8 @@ public class ViewFullChart extends View implements TViewObserver {
     private float _stepY;
 
     private int _oldFullChartBackColor;
+    private boolean isNeedInitPartChart = true;
+    private boolean isNeedInitY = true;
 
     public ViewFullChart(Context context) {
         super(context);
@@ -94,14 +95,15 @@ public class ViewFullChart extends View implements TViewObserver {
         super.onDraw(canvas);
 
         this.initVariables(canvas);
-
         drawLines(canvas);
     }
 
     private void initVariables(Canvas canvas) {
         int canvasWidth = canvas.getWidth();
         if (_viewWidth != canvasWidth) {
-            _viewHeight = canvas.getHeight();
+            if (isNeedInitY) {
+                _viewHeight = canvas.getHeight();
+            }
             _viewWidth = canvasWidth;
 
             this.initLinesPaths();
@@ -109,39 +111,9 @@ public class ViewFullChart extends View implements TViewObserver {
     }
 
     private void initLinesPaths() {
-        _axisesYArrays = new HashMap<>();
-        _hashPaints = new HashMap<>();
-        for (Map.Entry<String, Line> entry: _chart.getLines().entrySet()) {
-            Line line = entry.getValue();
-            int columnsCount = line.getCountDots();
+        this.initY();
 
-            // CHECK FOR AVAILABLE LINE
-            if (columnsCount > 1) {
-
-                if (_columnsCount < columnsCount) {
-                    _columnsCount = columnsCount;
-                }
-                // INIT PAINT
-                Paint linePaint = AndroidUtilites.getPaint(
-                        entry.getValue().getColor(),
-                        ThemeManager.CHART_LINE_FULL_WIDTH_PX);
-                _hashPaints.put(entry.getKey(), linePaint);
-
-                // INIT AXIS Y
-                float[] axisY = new float[columnsCount];
-                for (int i = 0; i < columnsCount; i++) {
-                    int currentY = line.getData()[i];
-                    if (_maxAxisY < currentY) {
-                        _maxAxisY = currentY;
-                    }
-                    axisY[i] = currentY;
-                }
-                _axisesYArrays.put(entry.getKey(), axisY);
-            }
-        }
         _stepX = _viewWidth / (_columnsCount - 1);
-        _stepY = _viewHeight / (_maxAxisY - 1);
-
         // CONVERT X AND Y's TO CANVAS SIZE
         _axisXForGraph = new float[_columnsCount];
         _axisXForGraph[0] = 0;
@@ -149,13 +121,54 @@ public class ViewFullChart extends View implements TViewObserver {
             _axisXForGraph[i] = _axisXForGraph[i - 1] + _stepX;
         }
 
-        for (Map.Entry<String, float[]> entry: _axisesYArrays.entrySet()) {
-            float[] axisY = entry.getValue();
-            int count = axisY.length;
+        if (isNeedInitPartChart) {
+            loading.complete(_axisesYArrays, _hashPaints, _axisXForGraph, _columnsCount, _viewHeight);
+            isNeedInitPartChart = false;
+        }
+    }
 
-            for (int i = 0; i < count; i++) {
-                axisY[i] = _viewHeight - axisY[i] * _stepY;
+    private void initY() {
+        if (isNeedInitY) {
+            _axisesYArrays = new HashMap<>();
+            _hashPaints = new HashMap<>();
+            for (Map.Entry<String, Line> entry : _chart.getLines().entrySet()) {
+                Line line = entry.getValue();
+                int columnsCount = line.getCountDots();
+
+                if (columnsCount > 1) {
+
+                    if (_columnsCount < columnsCount) {
+                        _columnsCount = columnsCount;
+                    }
+                    // INIT PAINT
+                    Paint linePaint = AndroidUtilites.getPaint(
+                            entry.getValue().getColor(),
+                            ThemeManager.CHART_LINE_FULL_WIDTH_PX);
+                    _hashPaints.put(entry.getKey(), linePaint);
+
+                    // INIT AXIS Y
+                    float[] axisY = new float[columnsCount];
+                    for (int i = 0; i < columnsCount; i++) {
+                        int currentY = line.getData()[i];
+                        if (_maxAxisY < currentY) {
+                            _maxAxisY = currentY;
+                        }
+                        axisY[i] = currentY;
+                    }
+                    _axisesYArrays.put(entry.getKey(), axisY);
+                }
             }
+            _stepY = _viewHeight / (_maxAxisY - 1);
+
+            for (Map.Entry<String, float[]> entry: _axisesYArrays.entrySet()) {
+                float[] axisY = entry.getValue();
+                int count = axisY.length;
+
+                for (int i = 0; i < count; i++) {
+                    axisY[i] = _viewHeight - axisY[i] * _stepY;
+                }
+            }
+            isNeedInitY = false;
         }
     }
 
@@ -182,7 +195,6 @@ public class ViewFullChart extends View implements TViewObserver {
                 }
             }
         }
-        loading.complete((HashMap<String, float[]>) _axisesYArrays.clone(), _hashPaints, _axisXForGraph, _columnsCount, _maxAxisY, _viewHeight);
     }
 
     private boolean isRangeTwoPointsAvailable(float xStart, float yStart,

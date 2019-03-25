@@ -7,6 +7,7 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.domain.model.chart.Chart;
+import com.kitzapp.telegram_stats.presentation.ui.components.impl.TCheckBox;
 
 /**
  * Created by Ivan Kuzmin on 24.03.2019;
@@ -14,7 +15,7 @@ import com.kitzapp.telegram_stats.domain.model.chart.Chart;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class CellChart extends LinearLayout {
+public class CellChart extends LinearLayout implements TCheckBox.Listener {
 
     private Chart _chart = null;
     private ViewPartChart _partChart;
@@ -43,31 +44,30 @@ public class CellChart extends LinearLayout {
         this.setOrientation(VERTICAL);
 
         if (_chart != null) {
-//            _fullChart = new ViewFullChart(getContext(), _chart, (axisesYArrays,
-//                                                                  _hashPaints,
-//                                                                  _axisXForGraph,
-//                                                                  columnsCount,
-//                                                                  maxAsixY,
-//                                                                  _viewHeight), () - >)
-//                    _partChart.setData(axisesYArrays, _hashPaints, _axisXForGraph, _viewHeight));
-            setGravity(Gravity.CENTER_VERTICAL);
-
             _partChart = new ViewPartChart(getContext(), _chart);
-            _chBoxChartIsActive = new ViewChBoxChartIsActive(getContext(), _chart, (key, isChecked) -> {
-                try {
-                    _chart.getLines().get(key).setIsActive(isChecked);
-//                    _fullChart.invalidate();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
+            _fullChart = new ViewFullChart(getContext(), _chart, (axisesYArrays, _hashPaints, _axisXForGraph, columnsCount, _viewHeight) ->
+                    _partChart.setData(axisesYArrays, _hashPaints, _axisXForGraph, columnsCount, _viewHeight));
+            _chBoxChartIsActive = new ViewChBoxChartIsActive(getContext(), _chart, this);
             addView(_partChart);
-//            addView(_fullChart);
+            addView(_fullChart);
             addView(_chBoxChartIsActive);
+
+            setGravity(Gravity.CENTER_VERTICAL);
         }
     }
 
     public void setBackgroundColor(int color) {
         _fullChart.setBackgroundColor(color);
+    }
+
+    @Override
+    public void onBoxWasChecked(String key, boolean isChecked) {
+        try {
+            _chart.getLines().get(key).setIsActive(isChecked);
+            _fullChart.invalidate();
+            _partChart.invalidate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

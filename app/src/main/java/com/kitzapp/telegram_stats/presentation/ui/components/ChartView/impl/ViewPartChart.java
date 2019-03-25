@@ -15,6 +15,7 @@ import com.kitzapp.telegram_stats.domain.model.chart.Chart;
 import com.kitzapp.telegram_stats.domain.model.chart.impl.Line;
 import com.kitzapp.telegram_stats.presentation.ui.components.TViewObserver;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
@@ -31,7 +32,7 @@ public class ViewPartChart extends View implements TViewObserver {
     @NonNull
     private Chart _chart;
 
-    private HashMap<String, float[]> _axisesYArrays;
+    private HashMap<String, float[]> _axisesYArrays = null;
     private HashMap<String, Paint> _hashPaints;
     private float[] _axisXForGraph;
 
@@ -40,8 +41,10 @@ public class ViewPartChart extends View implements TViewObserver {
     private float _viewWidth = 0;
     private int _columnsCount;
 
-//    private float _stepX;
+    private float _stepX;
     private float _stepY;
+
+    private boolean isNeedInitY = true;
 
     public ViewPartChart(Context context) {
         super(context);
@@ -62,19 +65,26 @@ public class ViewPartChart extends View implements TViewObserver {
         this.init();
     }
 
-    private boolean isNeedUpdate = false;
-
     public void setData(
             HashMap<String, float[]> axisesYArrays,
             HashMap<String, Paint> hashPaints,
             float[] axisXForGraph,
+            int columnsCount,
             float viewHeight) {
+
         _axisesYArrays = new HashMap<>();
-        _axisesYArrays = (HashMap<String, float[]>) axisesYArrays.clone();
-        _hashPaints = hashPaints;
-        _axisXForGraph = axisXForGraph;
-        _smallViewHeight = viewHeight;
-        isNeedUpdate = true;
+        Map tmp = new HashMap(axisesYArrays);
+        tmp.keySet().removeAll(_axisesYArrays.keySet());
+        _axisesYArrays.putAll(tmp);
+
+        _hashPaints = new HashMap<>();
+        tmp = new HashMap(hashPaints);
+        tmp.keySet().removeAll(_hashPaints.keySet());
+        _hashPaints.putAll(tmp);
+
+        _axisXForGraph = Arrays.copyOf(axisXForGraph, axisesYArrays.size());
+        _columnsCount = new Integer(columnsCount);
+        _smallViewHeight = new Float(viewHeight);
         this.invalidate();
     }
 
@@ -90,18 +100,18 @@ public class ViewPartChart extends View implements TViewObserver {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if (isNeedUpdate) {
+        if (_axisesYArrays != null) {
             this.initVariables(canvas);
-
             drawLines(canvas);
-            isNeedUpdate = false;
         }
     }
 
     private void initVariables(Canvas canvas) {
         int canvasWidth = canvas.getWidth();
         if (_viewWidth != canvasWidth) {
-            _viewHeight = canvas.getHeight();
+            if (isNeedInitY) {
+                _viewHeight = canvas.getHeight();
+            }
             _viewWidth = canvasWidth;
 
             this.initLinesPaths();
@@ -109,16 +119,35 @@ public class ViewPartChart extends View implements TViewObserver {
     }
 
     private void initLinesPaths() {
-//        _stepX = _viewWidth / (_columnsCount - 1);
-        _stepY = _viewHeight / _smallViewHeight;
+        this.initY();
+        this.initX();
+    }
 
-        // CONVERT Y's TO CANVAS SIZE
-        for (Map.Entry<String, float[]> entry: _axisesYArrays.entrySet()) {
-            float[] axisY = entry.getValue();
-            int count = axisY.length;
+    private void initX() {
+        _stepX = _viewWidth / (_columnsCount - 1);
 
-            for (int i = 0; i < count; i++) {
-                axisY[i] = axisY[i] * _stepY;
+        _axisXForGraph = new float[_columnsCount];
+        _axisXForGraph[0] = 0;
+        for (int i = 1; i < _columnsCount; i++) {
+            _axisXForGraph[i] = _axisXForGraph[i - 1] + _stepX;
+        }
+    }
+
+    private void initY() {
+        if (isNeedInitY) {
+            synchronized (this) {
+                _stepY = _viewHeight / _smallViewHeight;
+
+                // CONVERT Y's TO CANVAS SIZE
+                for (Map.Entry<String, float[]> entry : _axisesYArrays.entrySet()) {
+                    float[] axisY = entry.getValue();
+                    int count = axisY.length;
+
+                    for (int i = 0; i < count; i++) {
+                        axisY[i] = axisY[i] * _stepY;
+                    }
+                }
+                isNeedInitY = false;
             }
         }
     }
