@@ -31,56 +31,25 @@ class AndroidUtilitesTest extends BaseTest {
     /**
     *  Check 2 point for available in range and not available, 9 reps
     * */
-    @SuppressLint("DefaultLocale")
     private static void isRangeLineAvailableTest() throws Exception {
+        checkTwoPoints(0, 0, 20, 0);
+        checkTwoPoints(0, 0, 10, -10);
+        checkTwoPoints(0, 0, 0, -20);
+        checkTwoPoints(0, 0, -10, -10);
+
+        checkTwoPoints(0, 0, -20, 0);
+        checkTwoPoints(0, 0, -10, 10);
+        checkTwoPoints(0, 0, 0,20);
+        checkTwoPoints(0, 0, 10, 10);
+    }
+    
+    @SuppressLint("DefaultLocale")
+    private static void checkTwoPoints(float x0, float y0, float x1, float y1) throws Exception {
         String availableRangeString = "IS AVAILABLE RANGE (%d) ERROR: x0: \"%.1f\", y0: \"%.1f\", x1: \"%.1f\", y1: \"%.1f\".";
         String notAvailableRangeString = "IS NOT AVAILABLE RANGE (%d) ERROR: x0: \"%.1f\", y0: \"%.1f\", x1: \"%.1f\", y1: \"%.1f\".";
 
-        float x0 = 0, y0 = 0, x1 = 20, y1 = 0;
         String messageErrorAvail = String.format(availableRangeString, AVAILABLE_RANGE, x0, y0, x1, y1);
         String messageErrorNotAvail = String.format(notAvailableRangeString, NOT_AVAILABLE_RANGE, x0, y0, x1, y1);
-        assertEquals(true, AndroidUtilites.isRangeLineAvailable(x0, y0, x1, y1, AVAILABLE_RANGE), messageErrorAvail);
-        assertNotEquals(true, AndroidUtilites.isRangeLineAvailable(x0, y0, x1, y1, NOT_AVAILABLE_RANGE), messageErrorNotAvail);
-
-        x0 = 0; y0 = 0; x1 = 10; y1 = -10;
-        messageErrorAvail = String.format(availableRangeString, AVAILABLE_RANGE, x0, y0, x1, y1);
-        messageErrorNotAvail = String.format(notAvailableRangeString, NOT_AVAILABLE_RANGE, x0, y0, x1, y1);
-        assertEquals(true, AndroidUtilites.isRangeLineAvailable(x0, y0, x1, y1, AVAILABLE_RANGE), messageErrorAvail);
-        assertNotEquals(true, AndroidUtilites.isRangeLineAvailable(x0, y0, x1, y1, NOT_AVAILABLE_RANGE), messageErrorNotAvail);
-
-        x0 = 0; y0 = 0; x1 = 0; y1 = -20;
-        messageErrorAvail = String.format(availableRangeString, AVAILABLE_RANGE, x0, y0, x1, y1);
-        messageErrorNotAvail = String.format(notAvailableRangeString, NOT_AVAILABLE_RANGE, x0, y0, x1, y1);
-        assertEquals(true, AndroidUtilites.isRangeLineAvailable(x0, y0, x1, y1, AVAILABLE_RANGE), messageErrorAvail);
-        assertNotEquals(true, AndroidUtilites.isRangeLineAvailable(x0, y0, x1, y1, NOT_AVAILABLE_RANGE), messageErrorNotAvail);
-
-        x0 = 0; y0 = 0; x1 = -10; y1 = -10;
-        messageErrorAvail = String.format(availableRangeString, AVAILABLE_RANGE, x0, y0, x1, y1);
-        messageErrorNotAvail = String.format(notAvailableRangeString, NOT_AVAILABLE_RANGE, x0, y0, x1, y1);
-        assertEquals(true, AndroidUtilites.isRangeLineAvailable(x0, y0, x1, y1, AVAILABLE_RANGE), messageErrorAvail);
-        assertNotEquals(true, AndroidUtilites.isRangeLineAvailable(x0, y0, x1, y1, NOT_AVAILABLE_RANGE), messageErrorNotAvail);
-
-        x0 = 0; y0 = 0; x1 = -20; y1 = 0;
-        messageErrorAvail = String.format(availableRangeString, AVAILABLE_RANGE, x0, y0, x1, y1);
-        messageErrorNotAvail = String.format(notAvailableRangeString, NOT_AVAILABLE_RANGE, x0, y0, x1, y1);
-        assertEquals(true, AndroidUtilites.isRangeLineAvailable(x0, y0, x1, y1, AVAILABLE_RANGE), messageErrorAvail);
-        assertNotEquals(true, AndroidUtilites.isRangeLineAvailable(x0, y0, x1, y1, NOT_AVAILABLE_RANGE), messageErrorNotAvail);
-
-        x0 = 0; y0 = 0; x1 = -10; y1 = 10;
-        messageErrorAvail = String.format(availableRangeString, AVAILABLE_RANGE, x0, y0, x1, y1);
-        messageErrorNotAvail = String.format(notAvailableRangeString, NOT_AVAILABLE_RANGE, x0, y0, x1, y1);
-        assertEquals(true, AndroidUtilites.isRangeLineAvailable(x0, y0, x1, y1, AVAILABLE_RANGE), messageErrorAvail);
-        assertNotEquals(true, AndroidUtilites.isRangeLineAvailable(x0, y0, x1, y1, NOT_AVAILABLE_RANGE), messageErrorNotAvail);
-
-        x0 = 0; y0 = 0; x1 = 0; y1 = 20;
-        messageErrorAvail = String.format(availableRangeString, AVAILABLE_RANGE, x0, y0, x1, y1);
-        messageErrorNotAvail = String.format(notAvailableRangeString, NOT_AVAILABLE_RANGE, x0, y0, x1, y1);
-        assertEquals(true, AndroidUtilites.isRangeLineAvailable(x0, y0, x1, y1, AVAILABLE_RANGE), messageErrorAvail);
-        assertNotEquals(true, AndroidUtilites.isRangeLineAvailable(x0, y0, x1, y1, NOT_AVAILABLE_RANGE), messageErrorNotAvail);
-
-        x0 = 0; y0 = 0; x1 = 10; y1 = 10;
-        messageErrorAvail = String.format(availableRangeString, AVAILABLE_RANGE, x0, y0, x1, y1);
-        messageErrorNotAvail = String.format(notAvailableRangeString, NOT_AVAILABLE_RANGE, x0, y0, x1, y1);
         assertEquals(true, AndroidUtilites.isRangeLineAvailable(x0, y0, x1, y1, AVAILABLE_RANGE), messageErrorAvail);
         assertNotEquals(true, AndroidUtilites.isRangeLineAvailable(x0, y0, x1, y1, NOT_AVAILABLE_RANGE), messageErrorNotAvail);
     }

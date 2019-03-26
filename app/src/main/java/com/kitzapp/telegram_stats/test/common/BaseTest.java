@@ -5,7 +5,7 @@ package com.kitzapp.telegram_stats.test.common;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-abstract class BaseTest {
+class BaseTest {
     static void assertEquals(boolean expected, boolean actual, String message) throws Exception {
         if (expected != actual) {
             throw new Exception(message);
