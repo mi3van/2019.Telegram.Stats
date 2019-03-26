@@ -15,6 +15,7 @@ import com.kitzapp.telegram_stats.domain.model.chart.Chart;
 import com.kitzapp.telegram_stats.domain.model.chart.impl.Line;
 import com.kitzapp.telegram_stats.presentation.ui.components.TViewObserver;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +35,7 @@ abstract public class ViewChartBase extends View implements TViewObserver {
     protected Chart _chart;
 
     protected float[] _axisXForGraph = null;
-    protected HashMap<String, float[]> _axisesYArrays;
+    protected HashMap<String, int[]> _axisesYArrays;
     protected HashMap<String, Paint> _paints;
 
     protected float _viewHeight, _viewWidth;
@@ -74,7 +75,7 @@ abstract public class ViewChartBase extends View implements TViewObserver {
 
     abstract int getLinePaintWidth();
 
-    abstract float getApproxRange();
+    abstract int getMaxCountDotsInScreen();
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -83,7 +84,6 @@ abstract public class ViewChartBase extends View implements TViewObserver {
         int canvasWidth = canvas.getWidth();
 
         boolean isNeedInitAxises = true;
-
         if (_axisXForGraph != null) {
             if (_viewHeight == canvasHeight && _viewWidth == canvasWidth) {
                 isNeedInitAxises = false;
@@ -101,7 +101,7 @@ abstract public class ViewChartBase extends View implements TViewObserver {
 
 //    isNeedInitPaints
     private void initAxisesAndVariables() {
-        _axisesYArrays = new HashMap<>();
+        HashMap<String, float[]> tempResultsForY = new HashMap<>();
         _paints = new HashMap<>();
         for (Map.Entry<String, Line> entry : _chart.getLines().entrySet()) {
             Line line = entry.getValue();
@@ -126,38 +126,71 @@ abstract public class ViewChartBase extends View implements TViewObserver {
                     }
                     axisY[i] = currentY;
                 }
-                _axisesYArrays.put(entry.getKey(), axisY);
+                tempResultsForY.put(entry.getKey(), axisY);
             }
         }
 
         this.initAxisX();
 
 //      CONFIGURE Y ARRAYS FOR CANVAS
-        if (!_axisesYArrays.isEmpty()) {
+        _axisesYArrays = new HashMap<>();
+        if (!tempResultsForY.isEmpty()) {
             float _stepY = _viewHeight / (_maxAxisY - 1);
-            for (Map.Entry<String, float[]> entry : _axisesYArrays.entrySet()) {
-                float[] axisY = entry.getValue();
-                int count = axisY.length;
+            for (Map.Entry<String, float[]> entry : tempResultsForY.entrySet()) {
+//                FILLING CURRENT AXISY ARRAY
+                float[] tempAxisY = entry.getValue();
+                int countDots = tempAxisY.length;
+                int[] axisY = new int[countDots];
 
-                float oldX = _axisXForGraph[0];
-                float oldY = axisY[0] = _viewHeight - axisY[0] * _stepY;
-
-                for (int i = 1; i < count; i++) {
-                    float currentX = _axisXForGraph[i];
-                    float currentY =  _viewHeight - axisY[i] * _stepY;
-
-                    boolean rangePointsIsAvailable = AndroidUtilites.isRangeLineAvailable(
-                            oldX, oldY, currentX, currentY, this.getApproxRange());
-
-                    if (rangePointsIsAvailable) {
-                        oldX = currentX;
-                        oldY = axisY[i] = currentY;
-                    } else {
-                        axisY[i] = VALUE_Y_NOT_IN_RANGE;
+                for (int i = 0; i < countDots; i++) {
+                    int convertedY = Math.round(_viewHeight - tempAxisY[i] * _stepY);
+                    if (convertedY < 0) {
+                        convertedY = 0;
                     }
+                    axisY[i] = convertedY;
+                }
+
+//                APPROXIMATE POINTS AXISY ARRAY
+                axisY = this.getApproximateArray(axisY,
+                        this.getMaxCountDotsInScreen()
+                );
+
+                _axisesYArrays.put(entry.getKey(), axisY);
+            }
+        }
+    }
+
+    private int[] getApproximateArray(int[] arrayY, int maxCountDots) {
+        int pointsCount = _axisXForGraph.length - 1; // -1 for save last point
+        int[] approxArrayY = Arrays.copyOf(arrayY, arrayY.length);
+        int countDotsForApprox = _axisXForGraph.length;
+        float currentApproxRange = 0;
+
+        while (countDotsForApprox > maxCountDots) {
+            currentApproxRange += 1;
+
+            float oldX = _axisXForGraph[0], oldY = approxArrayY[0];
+            float currentX, currentY;
+            for (int i = 1; i < pointsCount; i++) {
+                currentY = approxArrayY[i];
+                if (currentY >= 0) {
+                    currentX = _axisXForGraph[i];
+                    boolean rangePointsIsAvailable = AndroidUtilites.isRangeLineAvailable(
+                            oldX, oldY, currentX, currentY, currentApproxRange);
+
+                    if (!rangePointsIsAvailable) {
+                        countDotsForApprox--;
+                        approxArrayY[i] = ViewChartBase.VALUE_Y_NOT_IN_RANGE;
+                        if (countDotsForApprox <= maxCountDots) {
+                            break;
+                        }
+                    }
+                    oldX = currentX;
+                    oldY = currentY;
                 }
             }
         }
+        return approxArrayY;
     }
 
     private void initAxisX() {
@@ -172,11 +205,11 @@ abstract public class ViewChartBase extends View implements TViewObserver {
 
     private void drawLines(Canvas canvas) {
         if (!_axisesYArrays.isEmpty()) {
-            for (Map.Entry<String, float[]> entry : _axisesYArrays.entrySet()) {
+            for (Map.Entry<String, int[]> entry : _axisesYArrays.entrySet()) {
                 Line line = _chart.getLines().get(entry.getKey());
                 Paint paint = _paints.get(entry.getKey());
                 if (line != null && line.getIsActive() && paint != null) {
-                    float[] axisYForGraph = entry.getValue();
+                    int[] axisYForGraph = entry.getValue();
                     int columnsCount = axisYForGraph.length;
 
                     float oldX = _axisXForGraph[0];

@@ -18,7 +18,7 @@ import androidx.annotation.Nullable;
  */
 
 public class ViewChartPart extends ViewChartBase {
-    private static final float APPROX_RANGE = 20f;
+    private static final int MAX_DOTS_FOR_APPROX_CHART_PART = 100;
 
     public ViewChartPart(Context context) {
         super(context);
@@ -47,8 +47,8 @@ public class ViewChartPart extends ViewChartBase {
     }
 
     @Override
-    float getApproxRange() {
-        return APPROX_RANGE;
+    int getMaxCountDotsInScreen() {
+        return MAX_DOTS_FOR_APPROX_CHART_PART;
     }
 
     @Override

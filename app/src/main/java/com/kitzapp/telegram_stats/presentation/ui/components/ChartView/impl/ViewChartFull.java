@@ -15,8 +15,6 @@ import java.util.Observable;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-;
-
 /**
  * Created by Ivan Kuzmin on 24.03.2019;
  * 3van@mail.ru;
@@ -24,7 +22,7 @@ import androidx.annotation.Nullable;
  */
 
 public class ViewChartFull extends ViewChartBase {
-    private static final float APPROX_RANGE = 10f;
+    private static final int MAX_DOTS_FOR_APPROX_CHART_FULL = 100;
 
     private int _oldFullChartBackColor;
 
@@ -67,8 +65,8 @@ public class ViewChartFull extends ViewChartBase {
     }
 
     @Override
-    float getApproxRange() {
-        return APPROX_RANGE;
+    int getMaxCountDotsInScreen() {
+        return MAX_DOTS_FOR_APPROX_CHART_FULL;
     }
 
     @Override
