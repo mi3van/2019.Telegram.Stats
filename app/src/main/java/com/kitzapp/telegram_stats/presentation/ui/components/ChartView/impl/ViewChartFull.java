@@ -4,14 +4,16 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
 import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
 import com.kitzapp.telegram_stats.domain.model.chart.Chart;
 
 import java.util.Observable;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 ;
 
@@ -21,24 +23,24 @@ import java.util.Observable;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class ViewFullChart extends ViewBaseChart {
-    private static final float APPROX_RANGE = 0f;
+public class ViewChartFull extends ViewChartBase {
+    private static final float APPROX_RANGE = 10f;
 
     private int _oldFullChartBackColor;
 
-    public ViewFullChart(Context context) {
+    public ViewChartFull(Context context) {
         super(context);
     }
 
-    public ViewFullChart(Context context, @Nullable AttributeSet attrs) {
+    public ViewChartFull(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ViewFullChart(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ViewChartFull(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public ViewFullChart(Context context, @NonNull Chart chart) {
+    public ViewChartFull(Context context, @NonNull Chart chart) {
         super(context, chart);
     }
 

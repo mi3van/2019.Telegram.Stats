@@ -2,12 +2,14 @@ package com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.domain.model.chart.Chart;
 
 import java.util.Observable;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Created by Ivan Kuzmin on 24.03.2019;
@@ -15,22 +17,22 @@ import java.util.Observable;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class ViewPartChart extends ViewBaseChart {
-    private static final float APPROX_RANGE = 0f;
+public class ViewChartPart extends ViewChartBase {
+    private static final float APPROX_RANGE = 20f;
 
-    public ViewPartChart(Context context) {
+    public ViewChartPart(Context context) {
         super(context);
     }
 
-    public ViewPartChart(Context context, @Nullable AttributeSet attrs) {
+    public ViewChartPart(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ViewPartChart(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ViewChartPart(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public ViewPartChart(Context context, @NonNull Chart chart) {
+    public ViewChartPart(Context context, @NonNull Chart chart) {
         super(context, chart);
     }
 

@@ -8,12 +8,14 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.util.Log;
 import android.util.TypedValue;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.vectordrawable.graphics.drawable.ArgbEvaluator;
+
 import com.kitzapp.telegram_stats.Application.AndroidApp;
 import com.kitzapp.telegram_stats.BuildConfig;
 
 import java.util.Hashtable;
+
+import androidx.core.content.res.ResourcesCompat;
+import androidx.vectordrawable.graphics.drawable.ArgbEvaluator;
 
 import static com.kitzapp.telegram_stats.common.AppConts.DELAY_COLOR_ANIM;
 
@@ -90,8 +92,8 @@ public class AndroidUtilites {
         return paint;
     }
 
-    public static boolean isRangeTwoPointsAvailable(float xStart, float yStart,
-                                              float xEnd, float yEnd, float range) {
+    public static boolean isRangeLineAvailable(float xStart, float yStart,
+                                               float xEnd, float yEnd, float range) {
         boolean isAvailableForDraw;
         float sub = Math.abs(xEnd - xStart) + Math.abs(yEnd - yStart);
         if (sub >= range) {

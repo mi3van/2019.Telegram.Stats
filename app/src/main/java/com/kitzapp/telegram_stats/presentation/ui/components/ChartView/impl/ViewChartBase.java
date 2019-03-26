@@ -7,8 +7,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
 import com.kitzapp.telegram_stats.Application.AndroidApp;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
@@ -19,15 +18,18 @@ import com.kitzapp.telegram_stats.presentation.ui.components.TViewObserver;
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 /**
  * Created by Ivan Kuzmin on 25.03.2019;
  * 3van@mail.ru;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-abstract public class ViewBaseChart extends View implements TViewObserver {
+abstract public class ViewChartBase extends View implements TViewObserver {
+    public static final int VALUE_Y_NOT_IN_RANGE = -5;
 
-    public static final int VALUE_Y_NOT_IN_RANGE = -1;
     @NonNull
     protected Chart _chart;
 
@@ -38,22 +40,22 @@ abstract public class ViewBaseChart extends View implements TViewObserver {
     protected float _viewHeight, _viewWidth;
     protected int _maxAxisXx, _maxAxisY;
 
-    public ViewBaseChart(Context context) {
+    public ViewChartBase(Context context) {
         super(context);
         this.init();
     }
 
-    public ViewBaseChart(Context context, @Nullable AttributeSet attrs) {
+    public ViewChartBase(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.init();
     }
 
-    public ViewBaseChart(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ViewChartBase(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.init();
     }
 
-    public ViewBaseChart(Context context, @NonNull Chart chart) {
+    public ViewChartBase(Context context, @NonNull Chart chart) {
         super(context);
         _chart = chart;
         this.init();
@@ -142,15 +144,14 @@ abstract public class ViewBaseChart extends View implements TViewObserver {
 
                 for (int i = 1; i < count; i++) {
                     float currentX = _axisXForGraph[i];
-                    float currentY = axisY[i];
+                    float currentY =  _viewHeight - axisY[i] * _stepY;
 
-                    boolean rangePointsIsAvailable = AndroidUtilites.isRangeTwoPointsAvailable(
+                    boolean rangePointsIsAvailable = AndroidUtilites.isRangeLineAvailable(
                             oldX, oldY, currentX, currentY, this.getApproxRange());
 
                     if (rangePointsIsAvailable) {
-                        axisY[i] = _viewHeight - axisY[i] * _stepY;
                         oldX = currentX;
-                        oldY = currentY;
+                        oldY = axisY[i] = currentY;
                     } else {
                         axisY[i] = VALUE_Y_NOT_IN_RANGE;
                     }
@@ -181,9 +182,9 @@ abstract public class ViewBaseChart extends View implements TViewObserver {
                     float oldX = _axisXForGraph[0];
                     float oldY = axisYForGraph[0];
                     for (int i = 1; i < columnsCount; i++) {
-                        if (oldY != VALUE_Y_NOT_IN_RANGE) {
+                        float currentY = axisYForGraph[i];
+                        if (currentY >= 0) {
                             float currentX = _axisXForGraph[i];
-                            float currentY = axisYForGraph[i];
                             canvas.drawLine(oldX, oldY, currentX, currentY, paint);
                             oldX = currentX;
                             oldY = currentY;
