@@ -31,7 +31,6 @@ import androidx.annotation.Nullable;
 
 abstract public class ViewChartBase extends View implements TViewObserver {
     private static final int FLAG_Y_NOT_AVAILABLE = -5;
-    private static final int MAX_DOTS_FOR_APPROX_CHART = 200;
 
     @NonNull
     protected Chart _chart;
@@ -76,6 +75,8 @@ abstract public class ViewChartBase extends View implements TViewObserver {
     abstract int getViewHeightForLayout();
 
     abstract int getLinePaintWidth();
+
+    abstract int getMaxDotsForApproxChart();
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -149,9 +150,7 @@ abstract public class ViewChartBase extends View implements TViewObserver {
                     axisY[i] = convertedY;
                 }
 //                APPROXIMATE POINTS AXISY ARRAY
-                axisY = this.getApproximateArray(axisY,
-                        MAX_DOTS_FOR_APPROX_CHART
-                );
+                axisY = this.getApproximateArray(axisY, this.getMaxDotsForApproxChart());
 
                 entry.setValue(axisY);
             }

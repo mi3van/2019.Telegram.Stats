@@ -49,13 +49,19 @@ public class ThemeManager {
     private static HashMap<String, Integer> darkThemeColors;
     private static HashMap<String, Integer> lightThemeColors;
 
+//    COLORS BASIC VIEWS
     public static final String key_totalBackColor = "totalBackColor";
     public static final String key_toolbarBackColor = "actionBarBackColor";
     private static final String key_toolbarTextColor = "actionBarTextColor";
+
+    //    COLORS CELLS
     private static final String key_cellTitleTextColor = "cellTitleTextColor";
     public static final String key_cellBackColor = "cellBackColor";
     public static final String key_cellSubBackColor = "cellSubBackColor";
     private static final String key_chartDescrTextColor = "chartDescrTextColor";
+    public static final String key_rectSelectColor = "rectSelectColor";
+
+    //    COLORS OTHER VIEWS
     private static final String key_simpleTextColor = "simpleTextColor";
     public static final String key_delimiterColor = "delimiterColor";
 
@@ -158,6 +164,7 @@ public class ThemeManager {
         darkThemeColors.put(key_chartDescrTextColor, 0xff4d606f);
         darkThemeColors.put(key_simpleTextColor , 0xffffffff);
         darkThemeColors.put(key_delimiterColor, 0xff0f1823);
+        darkThemeColors.put(key_rectSelectColor, 0x7Fa5c3d9);
 
         lightThemeColors.put(key_totalBackColor, 0xfff0f0f0);
         lightThemeColors.put(key_toolbarBackColor, 0xff517da2);
@@ -168,5 +175,6 @@ public class ThemeManager {
         lightThemeColors.put(key_chartDescrTextColor, 0xff88939a);
         lightThemeColors.put(key_simpleTextColor , 0xff000000);
         lightThemeColors.put(key_delimiterColor, 0xffe7e7e7);
+        lightThemeColors.put(key_rectSelectColor, 0x7Fa5c3d9);
     }
 }
