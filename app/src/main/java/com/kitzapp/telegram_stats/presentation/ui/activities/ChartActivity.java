@@ -76,7 +76,7 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View {
     }
 
     @Override
-    public void showError(String message) {
+    public void showMessageSnackbar(String message) {
         Snackbar.make(_baseLayout, message, Snackbar.LENGTH_LONG).show();
     }
 

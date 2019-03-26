@@ -1,7 +1,9 @@
 package com.kitzapp.telegram_stats.presentation.presenters.impl;
 
+import android.annotation.SuppressLint;
 import com.kitzapp.telegram_stats.Application.AndroidApp;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
+import com.kitzapp.telegram_stats.BuildConfig;
 import com.kitzapp.telegram_stats.domain.executor.Executor;
 import com.kitzapp.telegram_stats.domain.interactors.impl.ChartInteractor;
 import com.kitzapp.telegram_stats.domain.interactors.impl.TChartInteractor;
@@ -12,10 +14,15 @@ import com.kitzapp.telegram_stats.domain.threading.MainThread;
 import com.kitzapp.telegram_stats.presentation.presenters.base.AbstractPresenter;
 import com.kitzapp.telegram_stats.presentation.ui.components.ChartView.TChartView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class TChartPresenter extends AbstractPresenter implements ChartPresenter,
         ChartInteractor.Callback {
     private TChartRepository _chartRepository;
     private ChartPresenter.View _view;
+
+    private long _dateNanoForCheck;
 
     public TChartPresenter(Executor executor,
                            MainThread mainThread,
@@ -46,7 +53,7 @@ public class TChartPresenter extends AbstractPresenter implements ChartPresenter
 
     @Override
     public void onError(String message) {
-        _view.showError(message);
+        _view.showMessageSnackbar(message);
     }
 
     @Override
@@ -68,6 +75,9 @@ public class TChartPresenter extends AbstractPresenter implements ChartPresenter
 
     @Override
     public void runAnalyzeJson() {
+        if (BuildConfig.DEBUG) {
+            _dateNanoForCheck = System.currentTimeMillis();
+        }
         _view.showProgress();
 
         TChartInteractor interactor = new TChartInteractor(
@@ -88,7 +98,15 @@ public class TChartPresenter extends AbstractPresenter implements ChartPresenter
                 _view.addChartToContainer(chartView);
             }
         } catch (Exception e) {
-            _view.showError(e.getMessage());
+            _view.showMessageSnackbar(e.getMessage());
+        } finally {
+            if (BuildConfig.DEBUG) {
+                _dateNanoForCheck = System.currentTimeMillis() - _dateNanoForCheck;
+                String dateFormat = "mm:ss.SSS";
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
+                String dateString = formatter.format(new Date(_dateNanoForCheck));
+                _view.showMessageSnackbar(dateString);
+            }
         }
     }
 
