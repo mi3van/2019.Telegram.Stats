@@ -3,6 +3,7 @@ package com.kitzapp.telegram_stats.common;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.CornerPathEffect;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -89,6 +90,7 @@ public class AndroidUtilites {
         paint.setAntiAlias(true);
         paint.setStrokeWidth(lineWidth);
         paint.setStrokeCap(Paint.Cap.ROUND);
+        paint.setStrokeJoin(Paint.Join.ROUND);
         return paint;
     }
 

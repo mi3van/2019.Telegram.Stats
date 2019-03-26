@@ -22,7 +22,6 @@ import androidx.annotation.Nullable;
  */
 
 public class ViewChartFull extends ViewChartBase {
-    private static final int MAX_DOTS_FOR_APPROX_CHART_FULL = 100;
 
     private int _oldFullChartBackColor;
 
@@ -62,11 +61,6 @@ public class ViewChartFull extends ViewChartBase {
     @Override
     int getLinePaintWidth() {
         return ThemeManager.CHART_LINE_FULL_WIDTH_PX;
-    }
-
-    @Override
-    int getMaxCountDotsInScreen() {
-        return MAX_DOTS_FOR_APPROX_CHART_FULL;
     }
 
     @Override

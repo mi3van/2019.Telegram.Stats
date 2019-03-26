@@ -18,7 +18,6 @@ import androidx.annotation.Nullable;
  */
 
 public class ViewChartPart extends ViewChartBase {
-    private static final int MAX_DOTS_FOR_APPROX_CHART_PART = 100;
 
     public ViewChartPart(Context context) {
         super(context);
@@ -44,11 +43,6 @@ public class ViewChartPart extends ViewChartBase {
     @Override
     int getLinePaintWidth() {
         return ThemeManager.CHART_LINE_IN_PART_WIDTH_PX;
-    }
-
-    @Override
-    int getMaxCountDotsInScreen() {
-        return MAX_DOTS_FOR_APPROX_CHART_PART;
     }
 
     @Override

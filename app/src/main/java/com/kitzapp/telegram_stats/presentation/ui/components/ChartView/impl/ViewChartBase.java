@@ -3,6 +3,7 @@ package com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,8 @@ import androidx.annotation.Nullable;
  */
 
 abstract public class ViewChartBase extends View implements TViewObserver {
-    public static final int VALUE_Y_NOT_IN_RANGE = -5;
+    private static final int FLAG_Y_NOT_AVAILABLE = -5;
+    private static final int MAX_DOTS_FOR_APPROX_CHART = 200;
 
     @NonNull
     protected Chart _chart;
@@ -75,8 +77,6 @@ abstract public class ViewChartBase extends View implements TViewObserver {
 
     abstract int getLinePaintWidth();
 
-    abstract int getMaxCountDotsInScreen();
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -101,7 +101,7 @@ abstract public class ViewChartBase extends View implements TViewObserver {
 
 //    isNeedInitPaints
     private void initAxisesAndVariables() {
-        HashMap<String, float[]> tempResultsForY = new HashMap<>();
+        _axisesYArrays = new HashMap<>();
         _paints = new HashMap<>();
         for (Map.Entry<String, Line> entry : _chart.getLines().entrySet()) {
             Line line = entry.getValue();
@@ -118,7 +118,7 @@ abstract public class ViewChartBase extends View implements TViewObserver {
                 _paints.put(entry.getKey(), linePaint);
 
                 // INIT AXIS Y AND FIND MAX Y
-                float[] axisY = new float[currentColumnsCount];
+                int[] axisY = new int[currentColumnsCount];
                 for (int i = 0; i < currentColumnsCount; i++) {
                     int currentY = line.getData()[i];
                     if (_maxAxisY < currentY) {
@@ -126,19 +126,18 @@ abstract public class ViewChartBase extends View implements TViewObserver {
                     }
                     axisY[i] = currentY;
                 }
-                tempResultsForY.put(entry.getKey(), axisY);
+                _axisesYArrays.put(entry.getKey(), axisY);
             }
         }
 
         this.initAxisX();
 
 //      CONFIGURE Y ARRAYS FOR CANVAS
-        _axisesYArrays = new HashMap<>();
-        if (!tempResultsForY.isEmpty()) {
+        if (!_axisesYArrays.isEmpty()) {
             float _stepY = _viewHeight / (_maxAxisY - 1);
-            for (Map.Entry<String, float[]> entry : tempResultsForY.entrySet()) {
+            for (Map.Entry<String, int[]> entry : _axisesYArrays.entrySet()) {
 //                FILLING CURRENT AXISY ARRAY
-                float[] tempAxisY = entry.getValue();
+                int[] tempAxisY = entry.getValue();
                 int countDots = tempAxisY.length;
                 int[] axisY = new int[countDots];
 
@@ -149,13 +148,12 @@ abstract public class ViewChartBase extends View implements TViewObserver {
                     }
                     axisY[i] = convertedY;
                 }
-
 //                APPROXIMATE POINTS AXISY ARRAY
                 axisY = this.getApproximateArray(axisY,
-                        this.getMaxCountDotsInScreen()
+                        MAX_DOTS_FOR_APPROX_CHART
                 );
 
-                _axisesYArrays.put(entry.getKey(), axisY);
+                entry.setValue(axisY);
             }
         }
     }
@@ -164,13 +162,13 @@ abstract public class ViewChartBase extends View implements TViewObserver {
         int pointsCount = _axisXForGraph.length - 1; // -1 for save last point
         int[] approxArrayY = Arrays.copyOf(arrayY, arrayY.length);
         int countDotsForApprox = _axisXForGraph.length;
-        float currentApproxRange = 0;
+        int currentApproxRange = 0;
 
         while (countDotsForApprox > maxCountDots) {
             currentApproxRange += 1;
 
-            float oldX = _axisXForGraph[0], oldY = approxArrayY[0];
-            float currentX, currentY;
+            float oldX = _axisXForGraph[0], currentX;
+            int oldY = approxArrayY[0], currentY;
             for (int i = 1; i < pointsCount; i++) {
                 currentY = approxArrayY[i];
                 if (currentY >= 0) {
@@ -180,7 +178,7 @@ abstract public class ViewChartBase extends View implements TViewObserver {
 
                     if (!rangePointsIsAvailable) {
                         countDotsForApprox--;
-                        approxArrayY[i] = ViewChartBase.VALUE_Y_NOT_IN_RANGE;
+                        approxArrayY[i] = ViewChartBase.FLAG_Y_NOT_AVAILABLE;
                         if (countDotsForApprox <= maxCountDots) {
                             break;
                         }
@@ -207,21 +205,26 @@ abstract public class ViewChartBase extends View implements TViewObserver {
         if (!_axisesYArrays.isEmpty()) {
             for (Map.Entry<String, int[]> entry : _axisesYArrays.entrySet()) {
                 Line line = _chart.getLines().get(entry.getKey());
-                Paint paint = _paints.get(entry.getKey());
-                if (line != null && line.getIsActive() && paint != null) {
+                if (line != null && line.getIsActive()) {
                     int[] axisYForGraph = entry.getValue();
                     int columnsCount = axisYForGraph.length;
 
-                    float oldX = _axisXForGraph[0];
-                    float oldY = axisYForGraph[0];
-                    for (int i = 1; i < columnsCount; i++) {
-                        float currentY = axisYForGraph[i];
+                    Path pathLine = new Path();
+                    float firstX = _axisXForGraph[0];
+                    int firstY = axisYForGraph[0];
+
+                    pathLine.moveTo(firstX, firstY);
+
+                    for (int i = 0; i < columnsCount; i++) {
+                        int currentY = axisYForGraph[i];
                         if (currentY >= 0) {
                             float currentX = _axisXForGraph[i];
-                            canvas.drawLine(oldX, oldY, currentX, currentY, paint);
-                            oldX = currentX;
-                            oldY = currentY;
+                            pathLine.lineTo(currentX, currentY);
                         }
+                    }
+                    Paint paint = _paints.get(entry.getKey());
+                    if (paint != null) {
+                        canvas.drawPath(pathLine, paint);
                     }
                 }
             }
@@ -250,7 +253,7 @@ abstract public class ViewChartBase extends View implements TViewObserver {
         AndroidApp.observerManager.deleteObserver(this);
     }
 
-//    private void checkMax(float x, float y) {
+//    private void checkMax(int x, int y) {
 //        if (x > _viewWidth + 0.01f) {
 //            try {
 //                throw new Exception("X is not a range: " + x + "; Max: " + _viewWidth);
