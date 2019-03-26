@@ -5,10 +5,10 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-
+import android.widget.FrameLayout;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.Application.AndroidApp;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
@@ -20,16 +20,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 /**
  * Created by Ivan Kuzmin on 25.03.2019;
  * 3van@mail.ru;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-abstract public class ViewChartBase extends View implements TViewObserver {
+abstract public class ViewChartBase extends FrameLayout implements TViewObserver {
     private static final int FLAG_Y_NOT_AVAILABLE = -5;
 
     @NonNull
@@ -65,7 +62,8 @@ abstract public class ViewChartBase extends View implements TViewObserver {
 
     @Override
     public void init() {
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+        setWillNotDraw(false);
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, this.getViewHeightForLayout());
         int padding = ThemeManager.CHART_CELL_RIGHTLEFT_MARGIN_PX;
         layoutParams.setMargins(padding, 0, padding, 0);

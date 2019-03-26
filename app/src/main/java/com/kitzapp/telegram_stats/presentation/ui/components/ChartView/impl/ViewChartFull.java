@@ -3,17 +3,15 @@ package com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.LinearLayout;
-
+import android.widget.FrameLayout;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
 import com.kitzapp.telegram_stats.domain.model.chart.Chart;
 
 import java.util.Observable;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 /**
  * Created by Ivan Kuzmin on 24.03.2019;
@@ -25,6 +23,7 @@ public class ViewChartFull extends ViewChartBase {
     private static final int MAX_DOTS_FOR_APPROX_CHART_FULL = 1024;
 
     private int _oldFullChartBackColor;
+    private ViewRectSelect _viewRectSelect;
 
     public ViewChartFull(Context context) {
         super(context);
@@ -45,8 +44,10 @@ public class ViewChartFull extends ViewChartBase {
     @Override
     public void init() {
         super.init();
+        _viewRectSelect = new ViewRectSelect(getContext());
+        this.addView(_viewRectSelect);
 
-        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) getLayoutParams();
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) getLayoutParams();
         layoutParams.topMargin = ThemeManager.CHART_FULL_TOP_BOTTOM_MARGIN_PX;
         layoutParams.bottomMargin = ThemeManager.CHART_FULL_TOP_BOTTOM_MARGIN_PX;
 

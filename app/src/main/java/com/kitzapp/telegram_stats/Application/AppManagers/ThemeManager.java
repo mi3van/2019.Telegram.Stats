@@ -33,12 +33,16 @@ public class ThemeManager {
     private static final int CHART_FULL_TOP_BOTTOM_MARGIN_DP = 4;
     private static final int CHART_PART_HEIGHT_DP = 280;
     private static final int CHART_DELIMITER_WIDTH_DP = 1;
+    private static final int CHART_RECT_SELECT_WIDTH_DP = 4;
+
 //    CHART VIEWS PX
     public static final int CHART_LINE_IN_PART_WIDTH_PX;
     public static final int CHART_LINE_FULL_WIDTH_PX;
     public static final int CHART_FULL_TOP_BOTTOM_MARGIN_PX;
     public static final int CHART_PART_HEIGHT_PX;
+
     public static final int CHART_DELIMITER_WIDTH_PX;
+    public static final int CHART_RECT_SELECT_WIDTH_PX;
 
     private static int totalInit = 1;
     public final static int LIGHT = totalInit++;
@@ -98,7 +102,9 @@ public class ThemeManager {
         CHART_LINE_IN_PART_WIDTH_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_LINE_IN_PART_WIDTH_DP);
         CHART_FULL_TOP_BOTTOM_MARGIN_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_FULL_TOP_BOTTOM_MARGIN_DP);
         CHART_PART_HEIGHT_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_PART_HEIGHT_DP);
+
         CHART_DELIMITER_WIDTH_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_DELIMITER_WIDTH_DP);
+        CHART_RECT_SELECT_WIDTH_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_RECT_SELECT_WIDTH_DP);
     }
 
     public static void changeThemeAndSave() {
@@ -164,7 +170,7 @@ public class ThemeManager {
         darkThemeColors.put(key_chartDescrTextColor, 0xff4d606f);
         darkThemeColors.put(key_simpleTextColor , 0xffffffff);
         darkThemeColors.put(key_delimiterColor, 0xff0f1823);
-        darkThemeColors.put(key_rectSelectColor, 0x7Fa5c3d9);
+        darkThemeColors.put(key_rectSelectColor, 0x5Fa5c3d9);
 
         lightThemeColors.put(key_totalBackColor, 0xfff0f0f0);
         lightThemeColors.put(key_toolbarBackColor, 0xff517da2);
@@ -175,6 +181,6 @@ public class ThemeManager {
         lightThemeColors.put(key_chartDescrTextColor, 0xff88939a);
         lightThemeColors.put(key_simpleTextColor , 0xff000000);
         lightThemeColors.put(key_delimiterColor, 0xffe7e7e7);
-        lightThemeColors.put(key_rectSelectColor, 0x7Fa5c3d9);
+        lightThemeColors.put(key_rectSelectColor, 0x5Fa5c3d9);
     }
 }
