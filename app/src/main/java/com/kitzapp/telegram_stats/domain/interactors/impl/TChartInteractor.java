@@ -1,5 +1,6 @@
 package com.kitzapp.telegram_stats.domain.interactors.impl;
 
+import android.content.Context;
 import com.kitzapp.telegram_stats.common.AppConts;
 import com.kitzapp.telegram_stats.domain.executor.Executor;
 import com.kitzapp.telegram_stats.domain.interactors.base.AbstractInteractor;
@@ -15,13 +16,15 @@ public class TChartInteractor extends AbstractInteractor implements ChartInterac
 
     private ChartInteractor.Callback _chartCallback;
     private ChartRepository _chartRepository;
+    private Context _context;
 
-    public TChartInteractor(
+    public TChartInteractor(Context context,
                             Executor threadExecutor,
                             MainThread mainThread,
                             Callback callback,
                             ChartRepository repository) {
         super(threadExecutor, mainThread);
+        _context = context;
         _chartCallback = callback;
         _chartRepository = repository;
     }
@@ -29,7 +32,7 @@ public class TChartInteractor extends AbstractInteractor implements ChartInterac
     @Override
     public void run() {
         try {
-            ChartsList chartsList = _chartRepository.getCharts(AppConts.JSON_CHART_FILENAME);
+            ChartsList chartsList = _chartRepository.getCharts(AppConts.JSON_CHART_FILENAME, _context);
             if (chartsList != null) {
                 this.postChartModel(chartsList);
             } else {

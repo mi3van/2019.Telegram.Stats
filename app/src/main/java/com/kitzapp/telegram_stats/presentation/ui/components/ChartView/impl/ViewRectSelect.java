@@ -26,11 +26,11 @@ import java.util.Observable;
  */
 
 class ViewRectSelect extends View implements TViewObserver, MotionMagic.MotionListener {
-    private final float MAX_CURSORS_WIDTH = 0.3f;
     private final float MIN_LEFT_CURSOR_VALUE = 0f;
     private final float MAX_LEFT_CURSOR_VALUE = 0.7f;
     private final float MIN_RIGHT_CURSOR = 0.3f;
     private final float MAX_RIGHT_CURSOR = 1f;
+    private MotionMagic _motionMagic;
 
     interface RectListener {
         void onRectCursorsWasChanged(float leftCursor, float rightCursor);
@@ -49,8 +49,6 @@ class ViewRectSelect extends View implements TViewObserver, MotionMagic.MotionLi
 
     private float _leftCursor;  // 0 - 0.7 % is available
     private float _rightCursor; // 0.3 - 1 % is available
-    private int _leftCursorInPX;
-    private int _rightCursorInPX;
     private int _canvasWidth;
 
     private RectListener _rectListener;
@@ -94,7 +92,7 @@ class ViewRectSelect extends View implements TViewObserver, MotionMagic.MotionLi
         int _widthVPaint = (int) _verticalPaint.getStrokeWidth();
         _halfWidthVPaint = _widthVPaint >> 1;
 
-        setOnClickListener(l -> this.setCursorsAndDraw(_leftCursor - 0.02f, _rightCursor - 0.01f));
+        _motionMagic = new MotionMagic(getContext(), this, this);
     }
 
     @Override
@@ -157,16 +155,6 @@ class ViewRectSelect extends View implements TViewObserver, MotionMagic.MotionLi
         this.setCursorsAndDraw(newLeftCursor, newRightCursor);
     }
 
-    @Override
-    public float getLeftCursor() {
-        return _leftCursor;
-    }
-
-    @Override
-    public float getRightCursor() {
-        return _rightCursor;
-    }
-
     private void recalculateCursorsAndDraw() {
         this.setCursors(_leftCursor, _rightCursor, true, true);
     }
@@ -209,8 +197,8 @@ class ViewRectSelect extends View implements TViewObserver, MotionMagic.MotionLi
     }
 
     private void setLeftCursor(float leftCursor, boolean calculateAnyway, boolean needInvalidate) {
-        boolean isCursorAvailWidth = (_rightCursor - leftCursor >= MAX_CURSORS_WIDTH);
-        if (isCursorAvailWidth) {
+//        boolean isCursorAvailWidth = (_rightCursor - leftCursor >= MAX_CURSORS_WIDTH); // CHECKED IN MOTION MAGIC
+//        if (isCursorAvailWidth) {
             boolean leftAvail = (leftCursor != _leftCursor) || calculateAnyway;
             if (leftAvail) {
 
@@ -220,8 +208,8 @@ class ViewRectSelect extends View implements TViewObserver, MotionMagic.MotionLi
                     _leftCursor = MAX_LEFT_CURSOR_VALUE;
                 }
                 // CONFIGURE VALUES
-                _leftCursorInPX = (int) (_canvasWidth * _leftCursor);
-                int leftCurrentV = _halfWidthVPaint + _leftCursorInPX;
+                int leftCursorInPX = (int) (_canvasWidth * _leftCursor);
+                int leftCurrentV = _halfWidthVPaint + leftCursorInPX;
                 _centerRect.left = leftCurrentV;
 
                 // CONFIGURE LEFT BACKGR
@@ -235,12 +223,12 @@ class ViewRectSelect extends View implements TViewObserver, MotionMagic.MotionLi
                     invalidate();
                 }
             }
-        }
+//        }
     }
 
     private void setRightCursor(float rightCursor, boolean calculateAnyway, boolean needInvalidate) {
-        boolean isCursorAvailWidth = (rightCursor - _leftCursor >= MAX_CURSORS_WIDTH);
-        if (isCursorAvailWidth) {
+//        boolean isCursorAvailWidth = (rightCursor - _leftCursor >= MAX_CURSORS_WIDTH); // CHECKED IN MOTION MAGIC
+//        if (isCursorAvailWidth) {
             boolean rightAvail = (rightCursor != _rightCursor) || calculateAnyway;
             if (rightAvail) {
 
@@ -250,8 +238,8 @@ class ViewRectSelect extends View implements TViewObserver, MotionMagic.MotionLi
                     _rightCursor = MAX_RIGHT_CURSOR;
                 }
                 // CONFIGURE VALUES
-                _rightCursorInPX = (int) (_canvasWidth * _rightCursor);
-                int currentRightV = _rightCursorInPX - _halfWidthVPaint;
+                int rightCursorInPX = (int) (_canvasWidth * _rightCursor);
+                int currentRightV = rightCursorInPX - _halfWidthVPaint;
                 _centerRect.right = currentRightV;
 
                 // CONFIGURE RIGHT BACKGR
@@ -265,13 +253,14 @@ class ViewRectSelect extends View implements TViewObserver, MotionMagic.MotionLi
                     invalidate();
                 }
             }
-        }
+//        }
     }
 
     @Override
     protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
+        _motionMagic.deattachView();
         this.deleteObserver();
+        super.onDetachedFromWindow();
     }
 
     private int getCurrentBackgrColor() {
@@ -306,5 +295,20 @@ class ViewRectSelect extends View implements TViewObserver, MotionMagic.MotionLi
     @Override
     public void deleteObserver() {
         AndroidApp.observerManager.deleteObserver(this);
+    }
+
+    @Override
+    public float getLeftCursor() {
+        return _leftCursor;
+    }
+
+    @Override
+    public float getRightCursor() {
+        return _rightCursor;
+    }
+
+    @Override
+    public float getCanvasWidth() {
+        return _canvasWidth;
     }
 }

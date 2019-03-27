@@ -3,20 +3,16 @@ package com.kitzapp.telegram_stats.common;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.CornerPathEffect;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.util.Log;
 import android.util.TypedValue;
-
-import com.kitzapp.telegram_stats.Application.AndroidApp;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.vectordrawable.graphics.drawable.ArgbEvaluator;
 import com.kitzapp.telegram_stats.BuildConfig;
 
 import java.util.Hashtable;
-
-import androidx.core.content.res.ResourcesCompat;
-import androidx.vectordrawable.graphics.drawable.ArgbEvaluator;
 
 import static com.kitzapp.telegram_stats.common.AppConts.DELAY_COLOR_ANIM;
 
@@ -28,14 +24,13 @@ import static com.kitzapp.telegram_stats.common.AppConts.DELAY_COLOR_ANIM;
 public class AndroidUtilites {
     private static final Hashtable<String, Typeface> typefaceCache = new Hashtable<>();
 
-    public static int getColorSDK(int idColor){
+    public static int getColorSDK(Context context, int idColor){
         int color = 0;
-        Context context = AndroidApp.context;
         if (context != null) {
             color = ResourcesCompat.getColor(
-                    AndroidApp.context.getResources(),
+                    context.getResources(),
                     idColor,
-                    AndroidApp.context.getTheme());
+                    context.getTheme());
         }
         return color;
     }
@@ -47,13 +42,13 @@ public class AndroidUtilites {
         return colorAnimation;
     }
 
-    public static Typeface getTypeface(String assetPath) {
+    public static Typeface getTypeface(Context context, String assetPath) {
         synchronized (typefaceCache) {
             if (!typefaceCache.containsKey(assetPath)) {
                 try {
                     Typeface t;
                     if (Build.VERSION.SDK_INT >= 26) {
-                        Typeface.Builder builder = new Typeface.Builder(AndroidApp.context.getAssets(), assetPath);
+                        Typeface.Builder builder = new Typeface.Builder(context.getAssets(), assetPath);
                         if (assetPath.contains("medium")) {
                             builder.setWeight(700);
                         }
@@ -62,7 +57,7 @@ public class AndroidUtilites {
                         }
                         t = builder.build();
                     } else {
-                        t = Typeface.createFromAsset(AndroidApp.context.getAssets(), assetPath);
+                        t = Typeface.createFromAsset(context.getAssets(), assetPath);
                     }
                     typefaceCache.put(assetPath, t);
                 } catch (Exception e) {

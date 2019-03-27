@@ -2,17 +2,12 @@ package com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl;
 
 import android.content.Context;
 import android.util.AttributeSet;
-
-import android.widget.Toast;
-import com.kitzapp.telegram_stats.Application.AndroidApp;
-import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.domain.model.chart.Chart;
 
 import java.util.Observable;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 /**
  * Created by Ivan Kuzmin on 24.03.2019;
@@ -56,9 +51,9 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
 
     @Override
     public void onRectCursorsWasChanged(float leftCursor, float rightCursor) {
-        Toast.makeText(AndroidApp.context,
-                String.format("Left cursor: \"%.3f\"; Right cursor: \"%.3f\"", leftCursor, rightCursor),
-                Toast.LENGTH_LONG).show();
+//        Toast.makeText(getContext(),
+//                String.format("Left cursor: \"%.3f\"; Right cursor: \"%.3f\"", leftCursor, rightCursor),
+//                Toast.LENGTH_LONG).show();
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.kitzapp.telegram_stats.presentation.presenters.impl;
 
 import android.annotation.SuppressLint;
-import com.kitzapp.telegram_stats.Application.AndroidApp;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.BuildConfig;
 import com.kitzapp.telegram_stats.domain.executor.Executor;
@@ -80,7 +79,7 @@ public class TChartPresenter extends AbstractPresenter implements ChartPresenter
         }
         _view.showProgress();
 
-        TChartInteractor interactor = new TChartInteractor(
+        TChartInteractor interactor = new TChartInteractor(_view.getContext(),
                 mExecutor,
                 mMainThread,
                 this,
@@ -111,7 +110,7 @@ public class TChartPresenter extends AbstractPresenter implements ChartPresenter
     }
 
     private TChartView createChartView(Chart chart) {
-        TChartView chartView = new TChartView(AndroidApp.context, chart);
+        TChartView chartView = new TChartView(_view.getContext(), chart);
         return chartView;
     }
 }

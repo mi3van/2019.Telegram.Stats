@@ -1,7 +1,14 @@
 package com.kitzapp.telegram_stats.Application.AppManagers;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
 import android.view.MotionEvent;
 import android.view.View;
+import com.kitzapp.telegram_stats.Application.AndroidApp;
+import com.kitzapp.telegram_stats.presentation.ui.activities.ChartActivity;
+
+import java.util.Observable;
 
 /**
  * Created by Ivan Kuzmin on 27.03.2019;
@@ -9,13 +16,15 @@ import android.view.View;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class MotionMagic implements View.OnTouchListener {
+public class MotionMagic extends Observable implements View.OnTouchListener {
     private final byte MOTION_UNDEFINED = -2;
     private final byte MOTION_CENTER = 0;
     private final byte MOTION_LEFT = 2;
     private final byte MOTION_RIGHT = 4;
 
-    private final float COEF_CURSOR_PX = 15;
+    private final float MAX_CURSORS_WIDTH = 0.3f;
+    private final float COEF_CURSOR_PX = 0.05f;
+    private boolean isAllowTouchEventForScrollView;
 
     public interface MotionListener {
         void onMoveLeftSide(float newLeftCursor);
@@ -27,66 +36,96 @@ public class MotionMagic implements View.OnTouchListener {
         float getLeftCursor();
 
         float getRightCursor();
+
+        float getCanvasWidth();
     }
 
-    private float _oldX;
+    private float _oldPersentX;
+    private float _widthViewForCenter;
 
     private MotionListener _motionListener;
     private byte _currentMotion = MOTION_UNDEFINED;
+    private Context _context;
 
-    public MotionMagic(View motionView) {
+    public MotionMagic(Context context, View motionView, MotionListener motionListener) {
+        _motionListener = motionListener;
+        _context = context;
+
+        this.addObserver();
+
         motionView.setOnTouchListener(this);
-//        motionView.set
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-
+        if (_motionListener == null) {
+            return false;
+        }
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (_currentMotion == MOTION_UNDEFINED) {
-                    _oldX = event.getX();
-                    _currentMotion = this.getNewMotion(_oldX);
+                    _oldPersentX = event.getX() / _motionListener.getCanvasWidth();
+                    _currentMotion = this.getNewMotion(_oldPersentX);
+                    _widthViewForCenter = _motionListener.getRightCursor() - _motionListener.getLeftCursor();
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
-                this.wasMove(event.getX());
+                if (_currentMotion != MOTION_UNDEFINED) {
+                    this.updateIsAllowTouchAndNotifyObservers(true);
+                    this.wasMove(event.getX() / _motionListener.getCanvasWidth());
+                }
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                _currentMotion = MOTION_UNDEFINED;
+                if (_currentMotion != MOTION_UNDEFINED) {
+                    this.updateIsAllowTouchAndNotifyObservers(true);
+                    _currentMotion = MOTION_UNDEFINED;
+                }
                 break;
         }
-        return false;
+        return true;
     }
 
-    private void wasMove(float x) {
+    private void wasMove(float persentX) {
         if (_motionListener == null) {
             return;
         }
         float leftCursor = _motionListener.getLeftCursor();
         float rightCursor = _motionListener.getRightCursor();
-        float differencePX = x - _oldX;
+        float difference = persentX - _oldPersentX;
 
         switch (_currentMotion) {
             case MOTION_LEFT:
-//                leftCursor += differencePX;
+                leftCursor += difference;
+                float limitToLeftCursor = rightCursor - MAX_CURSORS_WIDTH;
+                if (leftCursor > limitToLeftCursor) {
+                    leftCursor = limitToLeftCursor;
+                }
                 _motionListener.onMoveLeftSide(leftCursor);
                 break;
             case MOTION_RIGHT:
-//                rightCursor += differencePX;
+                rightCursor += difference;
+                float limitToRightCursor = leftCursor + MAX_CURSORS_WIDTH;
+                if (rightCursor < limitToRightCursor) {
+                    rightCursor = limitToRightCursor;
+                }
                 _motionListener.onMoveRightSide(rightCursor);
                 break;
             case MOTION_CENTER:
-//                leftCursor += differencePX;
-//                rightCursor += differencePX;
-                _motionListener.onMoveCenter(leftCursor, rightCursor);
+                leftCursor += difference;
+                rightCursor += difference;
+
+                float sub = rightCursor - leftCursor;
+                if (sub > _widthViewForCenter) {
+                    _motionListener.onMoveCenter(leftCursor, rightCursor);
+                }
                 break;
         }
-        _oldX = x;
+        _oldPersentX = persentX;
     }
 
-    private byte getNewMotion(float x) {
+    private byte getNewMotion(float persentX) {
         byte motion = MOTION_UNDEFINED;
         if (_motionListener == null) {
             return motion;
@@ -94,15 +133,47 @@ public class MotionMagic implements View.OnTouchListener {
 
         float leftCursor = _motionListener.getLeftCursor();
         float rightCursor = _motionListener.getRightCursor();
-        if (x > leftCursor - COEF_CURSOR_PX && x < rightCursor + COEF_CURSOR_PX) {
-            if (x < leftCursor + COEF_CURSOR_PX) {
+        if (persentX > leftCursor - COEF_CURSOR_PX && persentX < rightCursor + COEF_CURSOR_PX) {
+            if (persentX < leftCursor + COEF_CURSOR_PX) {
                 motion = MOTION_LEFT;
-            } else if (x > rightCursor - COEF_CURSOR_PX) {
+            } else if (persentX > rightCursor - COEF_CURSOR_PX) {
                 motion = MOTION_RIGHT;
             } else {
                 motion = MOTION_CENTER;
             }
         }
         return motion;
+    }
+
+    private void updateIsAllowTouchAndNotifyObservers(boolean isAllowTouchEventForScrollView) {
+        this.isAllowTouchEventForScrollView = isAllowTouchEventForScrollView;
+        this.setChanged();
+        this.notifyObservers(ObserverManager.KEY_OBSERVER_DISSALLOW_TOUCH_SCROLLVIEW);
+    }
+
+    public boolean getIsAllowTouchEventForScrollView() {
+        return isAllowTouchEventForScrollView;
+    }
+
+    public void deattachView() {
+        this.deleteObserver();
+    }
+
+    private void addObserver() {
+        if (_context.getApplicationContext() instanceof AndroidApp) {
+            Activity currentActivity = ((AndroidApp) _context.getApplicationContext()).getCurrentActivity();
+            if (currentActivity instanceof ChartActivity) {
+                addObserver((ChartActivity) currentActivity);
+            }
+        }
+    }
+
+    private void deleteObserver() {
+        if (_context.getApplicationContext() instanceof AndroidApp) {
+            Activity currentActivity = ((AndroidApp) _context.getApplicationContext()).getCurrentActivity();
+            if (currentActivity instanceof ChartActivity) {
+                deleteObserver((ChartActivity) currentActivity);
+            }
+        }
     }
 }

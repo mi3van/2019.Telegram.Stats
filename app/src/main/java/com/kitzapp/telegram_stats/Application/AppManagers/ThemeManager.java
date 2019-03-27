@@ -1,5 +1,6 @@
 package com.kitzapp.telegram_stats.Application.AppManagers;
 
+import android.content.Context;
 import com.kitzapp.telegram_stats.Application.AndroidApp;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
 import com.kitzapp.telegram_stats.presentation.ui.components.simple.TTextPaint;
@@ -85,10 +86,7 @@ public class ThemeManager {
         darkThemeColors = new HashMap<>();
         lightThemeColors = new HashMap<>();
 
-        toolbarTextPaint = new TTextPaint();
-        simpleTextPaint = new TTextPaint();
-        chartTitleTextPaint = new TTextPaint();
-        chartDescrTextPaint = new TTextPaint();
+        initTextPaints();
 
         colorLightBackup = 0x00000000;
         colorDarkBackup = 0xffffffff;
@@ -143,16 +141,6 @@ public class ThemeManager {
         toolbarTextPaint.setColor(getColor(key_toolbarTextColor));
         chartTitleTextPaint.setColor(getColor(key_cellTitleTextColor));
         chartDescrTextPaint.setColor(getColor(key_chartDescrTextColor));
-
-        simpleTextPaint.setTypeface(AndroidUtilites.getTypeface("fonts/rregular.ttf"));
-        toolbarTextPaint.setTypeface(AndroidUtilites.getTypeface("fonts/rmedium.ttf"));
-        chartTitleTextPaint.setTypeface(AndroidUtilites.getTypeface("fonts/rmedium.ttf"));
-        chartDescrTextPaint.setTypeface(AndroidUtilites.getTypeface("fonts/rlight.ttf"));
-
-        simpleTextPaint.setTextSize(SIMPLE_TEXT_SIZE_DP);
-        toolbarTextPaint.setTextSize(TOOLBAR_TEXT_SIZE_DP);
-        chartTitleTextPaint.setTextSize(CHART_TITLE_TEXT_SIZE_DP);
-        chartDescrTextPaint.setTextSize(CHART_SUB_TEXT_SIZE_DP);
     }
 
     public static int getColor(String key) {
@@ -187,5 +175,24 @@ public class ThemeManager {
         lightThemeColors.put(key_delimiterColor, 0xffe7e7e7);
         lightThemeColors.put(key_rectSelectColor, 0x5Fa5c3d9);
         lightThemeColors.put(key_rectBackColor, 0xafeeeeee);
+    }
+
+    static void initTextPaints() {
+        toolbarTextPaint = new TTextPaint();
+        simpleTextPaint = new TTextPaint();
+        chartTitleTextPaint = new TTextPaint();
+        chartDescrTextPaint = new TTextPaint();
+
+        simpleTextPaint.setTextSize(SIMPLE_TEXT_SIZE_DP);
+        toolbarTextPaint.setTextSize(TOOLBAR_TEXT_SIZE_DP);
+        chartTitleTextPaint.setTextSize(CHART_TITLE_TEXT_SIZE_DP);
+        chartDescrTextPaint.setTextSize(CHART_SUB_TEXT_SIZE_DP);
+    }
+
+    public static void initTextFonts(Context context) {
+        simpleTextPaint.setTypeface(AndroidUtilites.getTypeface(context, "fonts/rregular.ttf"));
+        toolbarTextPaint.setTypeface(AndroidUtilites.getTypeface(context, "fonts/rmedium.ttf"));
+        chartTitleTextPaint.setTypeface(AndroidUtilites.getTypeface(context, "fonts/rmedium.ttf"));
+        chartDescrTextPaint.setTypeface(AndroidUtilites.getTypeface(context, "fonts/rlight.ttf"));
     }
 }

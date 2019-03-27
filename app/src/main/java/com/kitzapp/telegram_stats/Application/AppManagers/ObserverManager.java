@@ -12,6 +12,7 @@ public class ObserverManager extends Observable {
 
     private static int totalInit = 1;
     public final static int KEY_OBSERVER_THEME_UPDATED = totalInit++;
+    public final static int KEY_OBSERVER_DISSALLOW_TOUCH_SCROLLVIEW = totalInit++;
 
     public void notifyMyObservers(int keyObserver) {
         this.setChanged();

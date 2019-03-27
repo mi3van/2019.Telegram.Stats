@@ -1,5 +1,6 @@
 package com.kitzapp.telegram_stats.domain.repository.chart;
 
+import android.content.Context;
 import android.graphics.Color;
 import com.kitzapp.telegram_stats.Application.AppManagers.JsonManager;
 import com.kitzapp.telegram_stats.domain.model.ChartsList;
@@ -22,8 +23,8 @@ import static com.kitzapp.telegram_stats.domain.model.chart.Chart.*;
 public class TChartRepository implements ChartRepository {
 
     @Override
-    public ChartsList getCharts(String fileName) throws Exception {
-        String chartJsonInString = JsonManager.getJsonStringFromFile(fileName);
+    public ChartsList getCharts(String fileName, Context context) throws Exception {
+        String chartJsonInString = JsonManager.getJsonStringFromFile(fileName, context);
         ChartsList chartsList = new ChartsList();
         if (chartJsonInString != null) {
             try {

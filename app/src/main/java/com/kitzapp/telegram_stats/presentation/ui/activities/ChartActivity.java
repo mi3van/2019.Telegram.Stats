@@ -1,13 +1,17 @@
 package com.kitzapp.telegram_stats.presentation.ui.activities;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.view.*;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import androidx.appcompat.widget.Toolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.kitzapp.telegram_stats.Application.AppManagers.MotionMagic;
+import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
 import com.kitzapp.telegram_stats.R;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
 import com.kitzapp.telegram_stats.domain.executor.ThreadExecutor;
@@ -18,8 +22,10 @@ import com.kitzapp.telegram_stats.presentation.ui.activities.base.BaseActivity;
 import com.kitzapp.telegram_stats.presentation.ui.components.TChartView;
 
 import java.util.Objects;
+import java.util.Observable;
+import java.util.Observer;
 
-public class ChartActivity extends BaseActivity implements ChartPresenter.View {
+public class ChartActivity extends BaseActivity implements ChartPresenter.View, Observer {
 
     private FloatingActionButton _loading;
 
@@ -28,6 +34,7 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View {
     private ProgressBar _progressBar;
     private Toolbar _toolbar;
     private LinearLayout _containerLayout;
+    private ScrollView _mainScrollView;
 
     @Override
     protected int getLayoutID() {
@@ -40,6 +47,7 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View {
                 ThreadExecutor.getInstance(),
                 TMainThread.getInstance(),
                 this);
+
     }
 
     @Override
@@ -49,6 +57,7 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View {
         _progressBar = findViewById(R.id.progressBar);
         _toolbar = findViewById(R.id.toolbar);
         _containerLayout = findViewById(R.id.chartsContainer);
+        _mainScrollView = findViewById(R.id.mainScrollView);
 
         setSupportActionBar(_toolbar);
         String toolbarTitle = getResources().getString(R.string.toolbar_title);
@@ -57,7 +66,7 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View {
         _loading.setOnClickListener(l -> _chartPresenter.runAnalyzeJson());
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int blackColor = AndroidUtilites.getColorSDK(R.color.cBlack);
+            int blackColor = AndroidUtilites.getColorSDK(getBaseContext(), R.color.cBlack);
             Window window = getWindow();
             window.setNavigationBarColor(blackColor);
             window.setStatusBarColor(Color.TRANSPARENT);
@@ -105,5 +114,21 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View {
     @Override
     public void addChartToContainer(TChartView chartView) {
         _containerLayout.addView(chartView);
+    }
+
+    @Override
+    public Context getContext() {
+        return getBaseContext();
+    }
+
+    @Override
+    public void update(Observable observable, Object arg) {
+        if ((int) arg == ObserverManager.KEY_OBSERVER_DISSALLOW_TOUCH_SCROLLVIEW) {
+            if (observable instanceof MotionMagic) {
+                MotionMagic motionMagic = (MotionMagic) observable;
+                boolean isAllowTouchEventForScrollView = motionMagic.getIsAllowTouchEventForScrollView();
+                _mainScrollView.requestDisallowInterceptTouchEvent(isAllowTouchEventForScrollView);
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.kitzapp.telegram_stats.domain.repository.chart;
 
+import android.content.Context;
 import com.kitzapp.telegram_stats.domain.model.ChartsList;
 
 /**
@@ -7,6 +8,6 @@ import com.kitzapp.telegram_stats.domain.model.ChartsList;
  */
 public interface ChartRepository {
 
-    ChartsList getCharts(String fileName) throws Exception;
+    ChartsList getCharts(String fileName, Context context) throws Exception;
 
 }

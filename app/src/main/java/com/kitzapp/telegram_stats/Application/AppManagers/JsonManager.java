@@ -2,7 +2,6 @@ package com.kitzapp.telegram_stats.Application.AppManagers;
 
 import android.content.Context;
 import androidx.annotation.Nullable;
-import com.kitzapp.telegram_stats.Application.AndroidApp;
 import com.kitzapp.telegram_stats.BuildConfig;
 
 import java.io.IOException;
@@ -17,10 +16,9 @@ import java.io.InputStream;
 public class JsonManager {
 
     @Nullable
-    public static String getJsonStringFromFile(String fileName) {
+    public static String getJsonStringFromFile(String fileName, Context context) {
         String jsonString = null;
         try {
-            Context context = AndroidApp.context;
             InputStream is = context.getAssets().open(fileName);
             int size = is.available();
             byte[] buffer = new byte[size];
