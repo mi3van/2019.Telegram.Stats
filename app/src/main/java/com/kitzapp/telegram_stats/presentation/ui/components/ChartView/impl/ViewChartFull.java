@@ -20,7 +20,7 @@ import java.util.Observable;
  */
 
 class ViewChartFull extends ViewChartBase {
-    private final int MAX_DOTS_FOR_APPROX_CHART_FULL = 1024;
+    private final int MAX_DOTS_FOR_APPROX_CHART_FULL = 256;
 
     private int _oldFullChartBackColor;
     private ViewRectSelect _viewRectSelect;
