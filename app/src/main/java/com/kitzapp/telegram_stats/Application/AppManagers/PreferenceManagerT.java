@@ -10,6 +10,11 @@ import com.kitzapp.telegram_stats.common.SettingsKeys;
  * Copyright © 2019 Example. All rights reserved.
  */
 
+interface PreferenceMInterface {
+    int getCurrentTheme();
+    void saveNewTheme(int theme);
+}
+
 public class PreferenceManagerT implements PreferenceMInterface {
 
     private SharedPreferences _preference;

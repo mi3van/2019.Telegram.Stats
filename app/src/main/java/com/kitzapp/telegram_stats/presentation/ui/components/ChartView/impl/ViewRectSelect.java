@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.Application.AndroidApp;
+import com.kitzapp.telegram_stats.Application.AppManagers.MotionMagic;
 import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
@@ -24,12 +25,12 @@ import java.util.Observable;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-class ViewRectSelect extends View implements TViewObserver {
+class ViewRectSelect extends View implements TViewObserver, MotionMagic.MotionListener {
+    private final float MAX_CURSORS_WIDTH = 0.3f;
     private final float MIN_LEFT_CURSOR_VALUE = 0f;
     private final float MAX_LEFT_CURSOR_VALUE = 0.7f;
     private final float MIN_RIGHT_CURSOR = 0.3f;
     private final float MAX_RIGHT_CURSOR = 1f;
-    private int _oldBackColor;
 
     interface RectListener {
         void onRectCursorsWasChanged(float leftCursor, float rightCursor);
@@ -38,17 +39,19 @@ class ViewRectSelect extends View implements TViewObserver {
     private Rect _centerRect = new Rect();
     private Rect _rectLeftBack = new Rect();
     private Rect _rectRightBack = new Rect();
+    private boolean _isRightBackroundDraw;
+    private boolean _isLeftBackgroundDraw;
 
+    private int _oldBackColor;
     private Paint _backPaint;
     private Paint _verticalPaint;
     private int _halfWidthVPaint;
 
     private float _leftCursor;  // 0 - 0.7 % is available
     private float _rightCursor; // 0.3 - 1 % is available
+    private int _leftCursorInPX;
+    private int _rightCursorInPX;
     private int _canvasWidth;
-
-    private boolean _isNeedCalculateValues = false;
-    private boolean _isNeedDrawOnly = false;
 
     private RectListener _rectListener;
 
@@ -75,10 +78,13 @@ class ViewRectSelect extends View implements TViewObserver {
 
     @Override
     public void init() {
+
+        // LAYOUT PARAMS
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         this.setLayoutParams(layoutParams);
 
+        // PAINTS AND COLORS
         int colorPaintRect = ThemeManager.getColor(ThemeManager.key_rectSelectColor);
         _verticalPaint = AndroidUtilites.getPaint(colorPaintRect, ThemeManager.CHART_RECT_SELECT_WIDTH_PX);
 
@@ -88,7 +94,7 @@ class ViewRectSelect extends View implements TViewObserver {
         int _widthVPaint = (int) _verticalPaint.getStrokeWidth();
         _halfWidthVPaint = _widthVPaint >> 1;
 
-        setOnClickListener(l -> this.setCursors(_leftCursor - 0.02f, _rightCursor - 0.01f));
+        setOnClickListener(l -> this.setCursorsAndDraw(_leftCursor - 0.02f, _rightCursor - 0.01f));
     }
 
     @Override
@@ -98,80 +104,89 @@ class ViewRectSelect extends View implements TViewObserver {
         this.drawRect(canvas);
     }
 
-    private void setLeftCursor(float leftCursor) {
-        this.setCursors(leftCursor, _rightCursor);
-    }
-
-    private void setRightCursor(float rightCursor) {
-        this.setCursors(_leftCursor, rightCursor);
-    }
-
-    private void setCursors(float leftCursor, float rightCursor) {
-        boolean isCursorAvailableChange = (leftCursor != _leftCursor || rightCursor != _rightCursor)
-                                                    && (rightCursor - leftCursor >= 0.3f);
-        if (isCursorAvailableChange) {
-            _leftCursor = Math.max(leftCursor, MIN_LEFT_CURSOR_VALUE);
-            if (_leftCursor > MAX_LEFT_CURSOR_VALUE) {
-                _leftCursor = MAX_LEFT_CURSOR_VALUE;
-            }
-            _rightCursor = Math.max(rightCursor, MIN_RIGHT_CURSOR);
-            if (_rightCursor > MAX_RIGHT_CURSOR) {
-                _rightCursor = MAX_RIGHT_CURSOR;
-            }
-
-            _isNeedCalculateValues = true;
-            this.sendNewCursors(_leftCursor, _rightCursor);
-
-            invalidate();
-        }
-    }
-
     private void drawRect(Canvas canvas) {
-        if (!_isNeedDrawOnly) {
-            if (canvas.getWidth() == _canvasWidth && !_isNeedCalculateValues) {
-                return;
-            }
-        }
-        _isNeedCalculateValues = false;
-        int leftCurrentV = 0, currentRightV = 0;
-        if (!_isNeedDrawOnly) {
+        if (canvas.getWidth() != _canvasWidth) {
             _canvasWidth = canvas.getWidth();
-            int leftCursorInPX = (int) (_canvasWidth * _leftCursor);
-            int rightCursorInPX = (int) (_canvasWidth * _rightCursor);
-            leftCurrentV = _halfWidthVPaint + leftCursorInPX;
-            currentRightV = rightCursorInPX - _halfWidthVPaint;
 
-            // RECT
-            int _vertCoeff = 1;
-            _centerRect.top = -_vertCoeff;
-            _centerRect.bottom = canvas.getHeight() + _vertCoeff;
-            _centerRect.left = leftCurrentV;
-            _centerRect.right = currentRightV;
+            this.initRectangles(canvas.getHeight());
+            this.recalculateCursorsAndDraw();
+            return;
         }
+        // DRAW CENTER RECT
         canvas.drawRect(_centerRect, _verticalPaint);
-
-//         LEFT BACK
-        boolean isLeftBackAvailableDraw = _centerRect.left - _halfWidthVPaint > 0;
-        if (isLeftBackAvailableDraw) {
-            if (!_isNeedDrawOnly) {
-                _rectLeftBack.top = 0;
-                _rectLeftBack.bottom = canvas.getHeight();
-                _rectLeftBack.left = 0;
-                _rectLeftBack.right = leftCurrentV - _halfWidthVPaint;
-            }
+        // DRAW LEFT RECT
+        if (_isLeftBackgroundDraw) {
             canvas.drawRect(_rectLeftBack, _backPaint);
         }
-
-        // RIGHT BACK
-        boolean isRightBackAvailableDraw = _centerRect.right + _halfWidthVPaint < _canvasWidth;
-        if (isRightBackAvailableDraw) {
-            if (!_isNeedDrawOnly) {
-                _rectRightBack.top = 0;     _rectRightBack.bottom = canvas.getHeight();
-                _rectRightBack.left = currentRightV + _halfWidthVPaint; _rectRightBack.right = _canvasWidth;
-            }
+        // DRAW RIGHT RECT
+        if (_isRightBackroundDraw) {
             canvas.drawRect(_rectRightBack, _backPaint);
         }
-        _isNeedDrawOnly = false;
+    }
+
+    private void initRectangles(int heightCanvas) {
+        int _vertCoeff = 1;
+
+//            CENTER RECT SETUP
+        _centerRect.top = -_vertCoeff;
+        _centerRect.bottom = heightCanvas + _vertCoeff;
+
+//            INIT LEFT BACKGR RECT
+        _rectLeftBack.top = 0;
+        _rectLeftBack.bottom = heightCanvas;
+        _rectLeftBack.left = 0;
+
+//            INIT RIGHT BACKGR RECT
+        _rectRightBack.top = 0;
+        _rectRightBack.bottom = heightCanvas;
+        _rectRightBack.right = _canvasWidth;
+    }
+
+    @Override
+    public void onMoveLeftSide(float newLeftCursor) {
+        this.setLeftCursorAndDraw(newLeftCursor);
+    }
+
+    @Override
+    public void onMoveRightSide(float newRightCursor) {
+        this.setRightCursorAndDraw(newRightCursor);
+    }
+
+    @Override
+    public void onMoveCenter(float newLeftCursor, float newRightCursor) {
+        this.setCursorsAndDraw(newLeftCursor, newRightCursor);
+    }
+
+    @Override
+    public float getLeftCursor() {
+        return _leftCursor;
+    }
+
+    @Override
+    public float getRightCursor() {
+        return _rightCursor;
+    }
+
+    private void recalculateCursorsAndDraw() {
+        this.setCursors(_leftCursor, _rightCursor, true, true);
+    }
+
+    private void setCursorsAndDraw(float leftCursor, float rightCursor) {
+        this.setCursors(leftCursor, rightCursor, false, true);
+    }
+
+    private void setCursors(float leftCursor, float rightCursor, boolean calculateAnyway, boolean needInvalidate) {
+        this.setLeftCursor(leftCursor, calculateAnyway, false);
+
+        this.setRightCursor(rightCursor, calculateAnyway, needInvalidate);
+    }
+
+    private void setLeftCursorAndDraw(float leftCursor) {
+        this.setLeftCursor(leftCursor, false, true);
+    }
+
+    private void setRightCursorAndDraw(float rightCursor) {
+        this.setRightCursor(rightCursor, false, true);
     }
 
     private void sendNewCursors(float leftCursor, float rightCursor) {
@@ -179,12 +194,78 @@ class ViewRectSelect extends View implements TViewObserver {
             _rectListener.onRectCursorsWasChanged(leftCursor, rightCursor);
         }
     }
+
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         this.addObserver();
         // first init
-        this.setCursors(MAX_LEFT_CURSOR_VALUE, MAX_RIGHT_CURSOR);
+        this.setCursorsFirstInit();
+    }
+
+    private void setCursorsFirstInit() {
+        _leftCursor = MAX_LEFT_CURSOR_VALUE;
+        _rightCursor = MAX_RIGHT_CURSOR;
+    }
+
+    private void setLeftCursor(float leftCursor, boolean calculateAnyway, boolean needInvalidate) {
+        boolean isCursorAvailWidth = (_rightCursor - leftCursor >= MAX_CURSORS_WIDTH);
+        if (isCursorAvailWidth) {
+            boolean leftAvail = (leftCursor != _leftCursor) || calculateAnyway;
+            if (leftAvail) {
+
+                // SETUP LEFT CURSOR
+                _leftCursor = Math.max(leftCursor, MIN_LEFT_CURSOR_VALUE);
+                if (_leftCursor > MAX_LEFT_CURSOR_VALUE) {
+                    _leftCursor = MAX_LEFT_CURSOR_VALUE;
+                }
+                // CONFIGURE VALUES
+                _leftCursorInPX = (int) (_canvasWidth * _leftCursor);
+                int leftCurrentV = _halfWidthVPaint + _leftCursorInPX;
+                _centerRect.left = leftCurrentV;
+
+                // CONFIGURE LEFT BACKGR
+                _isLeftBackgroundDraw = _centerRect.left - _halfWidthVPaint > 0;
+                if (_isLeftBackgroundDraw) {
+                    _rectLeftBack.right = leftCurrentV - _halfWidthVPaint;
+                }
+
+                if (needInvalidate) {
+                    this.sendNewCursors(_leftCursor, _rightCursor);
+                    invalidate();
+                }
+            }
+        }
+    }
+
+    private void setRightCursor(float rightCursor, boolean calculateAnyway, boolean needInvalidate) {
+        boolean isCursorAvailWidth = (rightCursor - _leftCursor >= MAX_CURSORS_WIDTH);
+        if (isCursorAvailWidth) {
+            boolean rightAvail = (rightCursor != _rightCursor) || calculateAnyway;
+            if (rightAvail) {
+
+                // SETUP RIGHT CURSOR
+                _rightCursor = Math.max(rightCursor, MIN_RIGHT_CURSOR);
+                if (_rightCursor > MAX_RIGHT_CURSOR) {
+                    _rightCursor = MAX_RIGHT_CURSOR;
+                }
+                // CONFIGURE VALUES
+                _rightCursorInPX = (int) (_canvasWidth * _rightCursor);
+                int currentRightV = _rightCursorInPX - _halfWidthVPaint;
+                _centerRect.right = currentRightV;
+
+                // CONFIGURE RIGHT BACKGR
+                _isRightBackroundDraw = _centerRect.right + _halfWidthVPaint < _canvasWidth;
+                if (_isRightBackroundDraw) {
+                    _rectRightBack.left = currentRightV + _halfWidthVPaint;
+                }
+
+                if (needInvalidate) {
+                    this.sendNewCursors(_leftCursor, _rightCursor);
+                    invalidate();
+                }
+            }
+        }
     }
 
     @Override
@@ -209,7 +290,6 @@ class ViewRectSelect extends View implements TViewObserver {
                         newBackColor,
                         animation -> {
                             _backPaint.setColor((int) animation.getAnimatedValue());
-                            _isNeedDrawOnly = true;
                             invalidate();
                         });
                 textRGBAnim.start();
