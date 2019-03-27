@@ -94,6 +94,14 @@ public class AndroidUtilites {
         return paint;
     }
 
+    public static Paint getPaintFill(int color) {
+        Paint paint = new Paint();
+        paint.setColor(color);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setAntiAlias(true);
+        return paint;
+    }
+
     public static boolean isRangeLineAvailable(float xStart, float yStart,
                                                float xEnd, float yEnd, float range) {
         boolean isAvailableForDraw;

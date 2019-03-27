@@ -81,16 +81,18 @@ class ViewChartFull extends ViewChartBase {
             int newFullChartBackColor = getFullChartBackColor();
 
             // FULL CHART CHANGE BACK COLOR
-            ValueAnimator fullChartRGBAnim = AndroidUtilites.getArgbAnimator(
-                    _oldFullChartBackColor,
-                    newFullChartBackColor,
-                    animation -> this.setBackgroundColor((int) animation.getAnimatedValue()));
-            fullChartRGBAnim.start();
-            _oldFullChartBackColor = newFullChartBackColor;
+            if (newFullChartBackColor != _oldFullChartBackColor) {
+                ValueAnimator fullChartRGBAnim = AndroidUtilites.getArgbAnimator(
+                        _oldFullChartBackColor,
+                        newFullChartBackColor,
+                        animation -> this.setBackgroundColor((int) animation.getAnimatedValue()));
+                fullChartRGBAnim.start();
+                _oldFullChartBackColor = newFullChartBackColor;
+            }
         }
     }
 
     private int getFullChartBackColor() {
-        return ThemeManager.getColor(ThemeManager.key_cellSubBackColor);
+        return ThemeManager.getColor(ThemeManager.key_cellChartFullBackColor);
     }
 }

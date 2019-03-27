@@ -62,9 +62,11 @@ public class ThemeManager {
     //    COLORS CELLS
     private static final String key_cellTitleTextColor = "cellTitleTextColor";
     public static final String key_cellBackColor = "cellBackColor";
-    public static final String key_cellSubBackColor = "cellSubBackColor";
+    public static final String key_cellChartFullBackColor = "cellChartFullBackColor";
     private static final String key_chartDescrTextColor = "chartDescrTextColor";
+
     public static final String key_rectSelectColor = "rectSelectColor";
+    public static final String key_rectBackColor = "rectBackColor";
 
     //    COLORS OTHER VIEWS
     private static final String key_simpleTextColor = "simpleTextColor";
@@ -167,21 +169,23 @@ public class ThemeManager {
         darkThemeColors.put(key_toolbarTextColor, 0xffffffff);
         darkThemeColors.put(key_cellTitleTextColor, 0xff7bc4fb);
         darkThemeColors.put(key_cellBackColor , 0xff1d2733);
-        darkThemeColors.put(key_cellSubBackColor , 0xff19232e);
+        darkThemeColors.put(key_cellChartFullBackColor , 0xff19232e);
         darkThemeColors.put(key_chartDescrTextColor, 0xff4d606f);
         darkThemeColors.put(key_simpleTextColor , 0xffffffff);
         darkThemeColors.put(key_delimiterColor, 0xff0f1823);
         darkThemeColors.put(key_rectSelectColor, 0x5Fa5c3d9);
+        darkThemeColors.put(key_rectBackColor, 0xaf19232e);
 
         lightThemeColors.put(key_totalBackColor, 0xfff0f0f0);
         lightThemeColors.put(key_toolbarBackColor, 0xff517da2);
         lightThemeColors.put(key_toolbarTextColor, 0xffffffff);
         lightThemeColors.put(key_cellTitleTextColor, 0xff3896d4);
         lightThemeColors.put(key_cellBackColor , 0xffffffff);
-        lightThemeColors.put(key_cellSubBackColor , 0xfff5f8f9);
+        lightThemeColors.put(key_cellChartFullBackColor, 0xffffffff);
         lightThemeColors.put(key_chartDescrTextColor, 0xff88939a);
         lightThemeColors.put(key_simpleTextColor , 0xff000000);
         lightThemeColors.put(key_delimiterColor, 0xffe7e7e7);
         lightThemeColors.put(key_rectSelectColor, 0x5Fa5c3d9);
+        lightThemeColors.put(key_rectBackColor, 0xafeeeeee);
     }
 }

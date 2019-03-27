@@ -86,12 +86,14 @@ public class CellChartTitle extends LinearLayout implements TViewObserver {
             int newTitleColor = ThemeManager.chartTitleTextPaint.getColor();
 
             // TITLE CHANGE COLOR
-            ValueAnimator textRGBAnim = AndroidUtilites.getArgbAnimator(
-                    _oldTitleColor,
-                    newTitleColor,
-                    animation -> tTextView.setTextColor((int) animation.getAnimatedValue()));
-            textRGBAnim.start();
-            _oldTitleColor = newTitleColor;
+            if (newTitleColor != _oldTitleColor) {
+                ValueAnimator textRGBAnim = AndroidUtilites.getArgbAnimator(
+                        _oldTitleColor,
+                        newTitleColor,
+                        animation -> tTextView.setTextColor((int) animation.getAnimatedValue()));
+                textRGBAnim.start();
+                _oldTitleColor = newTitleColor;
+            }
         }
     }
 
