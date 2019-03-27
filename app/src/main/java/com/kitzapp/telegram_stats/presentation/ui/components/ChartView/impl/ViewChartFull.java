@@ -19,11 +19,12 @@ import java.util.Observable;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class ViewChartFull extends ViewChartBase {
-    private static final int MAX_DOTS_FOR_APPROX_CHART_FULL = 1024;
+class ViewChartFull extends ViewChartBase {
+    private final int MAX_DOTS_FOR_APPROX_CHART_FULL = 1024;
 
     private int _oldFullChartBackColor;
     private ViewRectSelect _viewRectSelect;
+    private ViewRectSelect.RectListener _rectListener;
 
     public ViewChartFull(Context context) {
         super(context);
@@ -37,22 +38,26 @@ public class ViewChartFull extends ViewChartBase {
         super(context, attrs, defStyleAttr);
     }
 
-    public ViewChartFull(Context context, @NonNull Chart chart) {
+    ViewChartFull(Context context, @NonNull Chart chart, ViewRectSelect.RectListener rectListener) {
         super(context, chart);
+        _rectListener = rectListener;
+        this.init();
     }
 
     @Override
     public void init() {
-        super.init();
-        _viewRectSelect = new ViewRectSelect(getContext());
-        this.addView(_viewRectSelect);
+        if (_rectListener != null) {
+            super.init();
+            _viewRectSelect = new ViewRectSelect(getContext(), _rectListener);
+            this.addView(_viewRectSelect);
 
-        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) getLayoutParams();
-        layoutParams.topMargin = ThemeManager.CHART_FULL_TOP_BOTTOM_MARGIN_PX;
-        layoutParams.bottomMargin = ThemeManager.CHART_FULL_TOP_BOTTOM_MARGIN_PX;
+            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) getLayoutParams();
+            layoutParams.topMargin = ThemeManager.CHART_FULL_TOP_BOTTOM_MARGIN_PX;
+            layoutParams.bottomMargin = ThemeManager.CHART_FULL_TOP_BOTTOM_MARGIN_PX;
 
-        _oldFullChartBackColor = this.getFullChartBackColor();
-        this.setBackgroundColor(_oldFullChartBackColor);
+            _oldFullChartBackColor = this.getFullChartBackColor();
+            this.setBackgroundColor(_oldFullChartBackColor);
+        }
     }
 
     @Override

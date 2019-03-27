@@ -8,8 +8,8 @@ import com.kitzapp.telegram_stats.Application.AndroidApp;
 import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
-import com.kitzapp.telegram_stats.presentation.ui.components.impl.TTextPaint;
-import com.kitzapp.telegram_stats.presentation.ui.components.impl.TTextView;
+import com.kitzapp.telegram_stats.presentation.ui.components.simple.TTextPaint;
+import com.kitzapp.telegram_stats.presentation.ui.components.simple.TTextView;
 
 import java.util.Observable;
 

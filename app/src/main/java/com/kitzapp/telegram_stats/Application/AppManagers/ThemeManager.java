@@ -2,7 +2,7 @@ package com.kitzapp.telegram_stats.Application.AppManagers;
 
 import com.kitzapp.telegram_stats.Application.AndroidApp;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
-import com.kitzapp.telegram_stats.presentation.ui.components.impl.TTextPaint;
+import com.kitzapp.telegram_stats.presentation.ui.components.simple.TTextPaint;
 
 import java.util.HashMap;
 
@@ -33,6 +33,7 @@ public class ThemeManager {
     private static final int CHART_FULL_TOP_BOTTOM_MARGIN_DP = 4;
     private static final int CHART_PART_HEIGHT_DP = 280;
     private static final int CHART_DELIMITER_WIDTH_DP = 1;
+
     private static final int CHART_RECT_SELECT_WIDTH_DP = 4;
 
 //    CHART VIEWS PX
@@ -40,8 +41,8 @@ public class ThemeManager {
     public static final int CHART_LINE_FULL_WIDTH_PX;
     public static final int CHART_FULL_TOP_BOTTOM_MARGIN_PX;
     public static final int CHART_PART_HEIGHT_PX;
-
     public static final int CHART_DELIMITER_WIDTH_PX;
+
     public static final int CHART_RECT_SELECT_WIDTH_PX;
 
     private static int totalInit = 1;

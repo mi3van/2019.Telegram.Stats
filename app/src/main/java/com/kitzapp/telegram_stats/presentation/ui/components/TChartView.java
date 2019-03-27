@@ -1,4 +1,4 @@
-package com.kitzapp.telegram_stats.presentation.ui.components.ChartView;
+package com.kitzapp.telegram_stats.presentation.ui.components;
 
 import android.animation.ValueAnimator;
 import android.content.Context;

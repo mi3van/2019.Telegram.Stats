@@ -3,6 +3,9 @@ package com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import android.widget.Toast;
+import com.kitzapp.telegram_stats.Application.AndroidApp;
+import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.domain.model.chart.Chart;
 
@@ -17,8 +20,8 @@ import androidx.annotation.Nullable;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class ViewChartPart extends ViewChartBase {
-    private static final int MAX_DOTS_FOR_APPROX_CHART_PART = 512;
+class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener {
+    private final int MAX_DOTS_FOR_APPROX_CHART_PART = 512;
 
     public ViewChartPart(Context context) {
         super(context);
@@ -32,7 +35,7 @@ public class ViewChartPart extends ViewChartBase {
         super(context, attrs, defStyleAttr);
     }
 
-    public ViewChartPart(Context context, @NonNull Chart chart) {
+    ViewChartPart(Context context, @NonNull Chart chart) {
         super(context, chart);
     }
 
@@ -52,8 +55,19 @@ public class ViewChartPart extends ViewChartBase {
     }
 
     @Override
+    public void onRectCursorsWasChanged(float leftCursor, float rightCursor) {
+        Toast.makeText(AndroidApp.context,
+                String.format("Left cursor: \"%.3f\"; Right cursor: \"%.3f\"", leftCursor, rightCursor),
+                Toast.LENGTH_LONG).show();
+    }
+
+    @Override
     public void update(Observable o, Object arg) {
 
+    }
+
+    ViewRectSelect.RectListener getRectListener() {
+        return this;
     }
 
 //    private void drawText(Canvas canvas){

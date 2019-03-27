@@ -6,7 +6,7 @@ import android.view.Gravity;
 import android.widget.LinearLayout;
 
 import com.kitzapp.telegram_stats.domain.model.chart.Chart;
-import com.kitzapp.telegram_stats.presentation.ui.components.impl.TCheckBox;
+import com.kitzapp.telegram_stats.presentation.ui.components.simple.TCheckBox;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -47,7 +47,7 @@ public class CellChartGpraphs extends LinearLayout implements TCheckBox.Listener
 
         if (_chart != null) {
             _partChart = new ViewChartPart(getContext(), _chart);
-            _fullChart = new ViewChartFull(getContext(), _chart);
+            _fullChart = new ViewChartFull(getContext(), _chart, _partChart.getRectListener());
             _chBoxChartIsActive = new ViewChBoxIsActive(getContext(), _chart, this);
             addView(_partChart);
             addView(_fullChart);

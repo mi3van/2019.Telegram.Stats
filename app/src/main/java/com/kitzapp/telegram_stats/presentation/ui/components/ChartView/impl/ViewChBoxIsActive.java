@@ -8,8 +8,8 @@ import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.domain.model.chart.Chart;
 import com.kitzapp.telegram_stats.domain.model.chart.impl.Line;
-import com.kitzapp.telegram_stats.presentation.ui.components.impl.TCheckBox;
-import com.kitzapp.telegram_stats.presentation.ui.components.impl.TDelimiterLine;
+import com.kitzapp.telegram_stats.presentation.ui.components.simple.TCheckBox;
+import com.kitzapp.telegram_stats.presentation.ui.components.simple.TDelimiterLine;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +20,7 @@ import java.util.Map;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class ViewChBoxIsActive extends LinearLayout {
+class ViewChBoxIsActive extends LinearLayout {
 
     public ViewChBoxIsActive(Context context) {
         super(context);
@@ -34,7 +34,7 @@ public class ViewChBoxIsActive extends LinearLayout {
         super(context, attrs, defStyleAttr);
     }
 
-    public ViewChBoxIsActive(Context context, Chart chart, TCheckBox.Listener listener) {
+    ViewChBoxIsActive(Context context, Chart chart, TCheckBox.Listener listener) {
         super(context);
         this.init();
 

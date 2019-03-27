@@ -26,18 +26,18 @@ import java.util.Map;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-abstract public class ViewChartBase extends FrameLayout implements TViewObserver {
-    private static final int FLAG_Y_NOT_AVAILABLE = -5;
+abstract class ViewChartBase extends FrameLayout implements TViewObserver {
+    private final int FLAG_Y_NOT_AVAILABLE = -5;
 
     @NonNull
-    protected Chart _chart;
+    private Chart _chart;
 
-    protected float[] _axisXForGraph = null;
-    protected HashMap<String, int[]> _axisesYArrays;
-    protected HashMap<String, Paint> _paints;
+    private float[] _axisXForGraph = null;
+    private HashMap<String, int[]> _axisesYArrays;
+    private HashMap<String, Paint> _paints;
 
-    protected float _viewHeight, _viewWidth;
-    protected int _maxAxisXx, _maxAxisY;
+    private float _viewHeight, _viewWidth;
+    private int _maxAxisXx, _maxAxisY;
 
     public ViewChartBase(Context context) {
         super(context);
@@ -54,7 +54,7 @@ abstract public class ViewChartBase extends FrameLayout implements TViewObserver
         this.init();
     }
 
-    public ViewChartBase(Context context, @NonNull Chart chart) {
+    ViewChartBase(Context context, @NonNull Chart chart) {
         super(context);
         _chart = chart;
         this.init();
@@ -175,7 +175,7 @@ abstract public class ViewChartBase extends FrameLayout implements TViewObserver
 
                     if (!rangePointsIsAvailable) {
                         countDotsForApprox--;
-                        approxArrayY[i] = ViewChartBase.FLAG_Y_NOT_AVAILABLE;
+                        approxArrayY[i] = FLAG_Y_NOT_AVAILABLE;
                         if (countDotsForApprox <= maxCountDots) {
                             break;
                         }
