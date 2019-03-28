@@ -24,15 +24,12 @@ class ViewFollowersDelimiterVert extends LinearLayout {
     private final String MMM_D_FORMAT = "MMM d";
     private final String MMM_Y_FORMAT = "MMM y";
 
-    public interface Listener {
-        void onDatesWasChecked(long[] dates);
-    }
-
     private TChartTextView _tTextView1;
     private TChartTextView _tTextView2;
     private TChartTextView _tTextView3;
     private TChartTextView _tTextView4;
     private TChartTextView _tTextView5;
+    private TChartTextView _tTextView6;
 
     private long[] _dates = null;
     private int hashCodeDates;
@@ -61,6 +58,7 @@ class ViewFollowersDelimiterVert extends LinearLayout {
         _tTextView3 = this.getNewTextView();
         _tTextView4 = this.getNewTextView();
         _tTextView5 = this.getNewTextView();
+        _tTextView6 = this.getNewTextView();
 
         this.addView(_tTextView1);
         this.addView(this.getDelimiterLine());
@@ -71,6 +69,8 @@ class ViewFollowersDelimiterVert extends LinearLayout {
         this.addView(_tTextView4);
         this.addView(this.getDelimiterLine());
         this.addView(_tTextView5);
+        this.addView(this.getDelimiterLine());
+        this.addView(_tTextView6);
         this.addView(this.getDelimiterLine(true));
     }
 
@@ -134,25 +134,28 @@ class ViewFollowersDelimiterVert extends LinearLayout {
     }
 
     private TChartTextView getCurrentTextView(int index) {
-        TChartTextView TChartTextView = null;
+        TChartTextView tChartTextView = null;
         switch (index) {
             case 0:
-                TChartTextView = _tTextView1;
+                tChartTextView = _tTextView1;
                 break;
             case 1:
-                TChartTextView = _tTextView2;
+                tChartTextView = _tTextView2;
                 break;
             case 2:
-                TChartTextView = _tTextView3;
+                tChartTextView = _tTextView3;
                 break;
             case 3:
-                TChartTextView = _tTextView4;
+                tChartTextView = _tTextView4;
                 break;
             case 4:
-                TChartTextView = _tTextView5;
+                tChartTextView = _tTextView5;
+                break;
+            case 5:
+                tChartTextView = _tTextView6;
                 break;
         }
-        return TChartTextView;
+        return tChartTextView;
     }
 
     @Override
@@ -182,9 +185,15 @@ class ViewFollowersDelimiterVert extends LinearLayout {
 
     private TDelimiterLine getDelimiterLine(boolean isLast) {
         TDelimiterLine delimiterLine = new TDelimiterLine(getContext());
-        float alpha = isLast? 1f : 0.4f;
-        delimiterLine.setAlpha(alpha);
         LinearLayout.LayoutParams layoutParams = (LayoutParams) delimiterLine.getLayoutParams();
+        float alpha;
+        if (isLast) {
+            alpha = 1f;
+        } else {
+            layoutParams.height = 1;
+            alpha = 1f;
+        }
+        delimiterLine.setAlpha(alpha);
         layoutParams.setMargins(0, 0, 0, 0);
         return delimiterLine;
     }

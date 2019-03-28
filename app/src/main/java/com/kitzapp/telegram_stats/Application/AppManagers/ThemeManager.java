@@ -34,8 +34,8 @@ public class ThemeManager {
     private static final int CHART_LINE_IN_PART_WIDTH_DP = 2;
     private static final int CHART_LINE_FULL_WIDTH_DP = 1;
     private static final int CHART_FULL_TOP_BOTTOM_MARGIN_DP = 4;
-    private static final int CHART_PART_HEIGHT_DP = 280;
-    private static final int CHART_DELIMITER_WIDTH_DP = 1;
+    private static final int CHART_PART_HEIGHT_DP = 320;
+    private static final int CHART_DELIMITER_FATNESS_DP = 1;
 
     private static final int CHART_RECT_SELECT_WIDTH_DP = 4;
     private static final int CHART_PART_VERTICAL_PADDING_SUM_DP = 7;
@@ -45,7 +45,7 @@ public class ThemeManager {
     public static final int CHART_LINE_FULL_WIDTH_PX;
     public static final int CHART_FULL_TOP_BOTTOM_MARGIN_PX;
     public static final int CHART_PART_HEIGHT_PX;
-    public static final int CHART_DELIMITER_WIDTH_PX;
+    public static final int CHART_DELIMITER_FATNESS_PX;
 
     public static final int CHART_RECT_SELECT_WIDTH_PX;
     public static final int CHART_PART_VERTICAL_PADDING_SUM_PX;
@@ -110,7 +110,7 @@ public class ThemeManager {
         CHART_FULL_TOP_BOTTOM_MARGIN_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_FULL_TOP_BOTTOM_MARGIN_DP);
         CHART_PART_HEIGHT_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_PART_HEIGHT_DP);
 
-        CHART_DELIMITER_WIDTH_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_DELIMITER_WIDTH_DP);
+        CHART_DELIMITER_FATNESS_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_DELIMITER_FATNESS_DP);
         CHART_RECT_SELECT_WIDTH_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_RECT_SELECT_WIDTH_DP);
         CHART_PART_VERTICAL_PADDING_SUM_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_PART_VERTICAL_PADDING_SUM_DP);
         CHART_PART_VERTICAL_PADDING_HALF_PX = CHART_PART_VERTICAL_PADDING_SUM_PX >> 1;

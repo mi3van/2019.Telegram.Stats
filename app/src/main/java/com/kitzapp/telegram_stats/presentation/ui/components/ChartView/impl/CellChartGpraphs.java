@@ -77,7 +77,7 @@ public class CellChartGpraphs extends LinearLayout implements TCheckBox.Listener
     }
 
     @Override
-    public void onDatesWasChecked(long[] dates) {
+    public void onDatesWasChanged(long[] dates) {
         _chartDates.setDatesAndInit(dates);
     }
 }

@@ -29,7 +29,7 @@ class ViewChartDates extends LinearLayout {
     private final String M_Y_FORMAT = "M/y";
 
     public interface Listener {
-        void onDatesWasChecked(long[] dates);
+        void onDatesWasChanged(long[] dates);
     }
 
     private TChartTextView _tTextView1;
@@ -152,25 +152,25 @@ class ViewChartDates extends LinearLayout {
     }
 
     private TChartTextView getCurrentTextView(int index) {
-        TChartTextView TChartTextView = null;
+        TChartTextView _tChartTextView = null;
         switch (index) {
             case 0:
-                TChartTextView = _tTextView1;
+                _tChartTextView = _tTextView1;
                 break;
             case 1:
-                TChartTextView = _tTextView2;
+                _tChartTextView = _tTextView2;
                 break;
             case 2:
-                TChartTextView = _tTextView3;
+                _tChartTextView = _tTextView3;
                 break;
             case 3:
-                TChartTextView = _tTextView4;
+                _tChartTextView = _tTextView4;
                 break;
             case 4:
-                TChartTextView = _tTextView5;
+                _tChartTextView = _tTextView5;
                 break;
         }
-        return TChartTextView;
+        return _tChartTextView;
     }
 
 

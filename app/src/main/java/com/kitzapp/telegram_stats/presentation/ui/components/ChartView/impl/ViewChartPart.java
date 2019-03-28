@@ -84,7 +84,7 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
 
         if (_datesListener != null) {
             long[] dates = this.getDatesForSend(leftInArray, rightInArray);
-            _datesListener.onDatesWasChecked(dates);
+            _datesListener.onDatesWasChanged(dates);
             _followersDelimiterVert.setDatesAndInit(dates);
         }
 
