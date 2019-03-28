@@ -1,25 +1,19 @@
 package com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl;
 
-import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import androidx.annotation.Nullable;
-import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
-import com.kitzapp.telegram_stats.common.AndroidUtilites;
-import com.kitzapp.telegram_stats.presentation.ui.components.TTotalLinLayout;
-import com.kitzapp.telegram_stats.presentation.ui.components.simple.TTextPaint;
-import com.kitzapp.telegram_stats.presentation.ui.components.simple.TTextView;
+import com.kitzapp.telegram_stats.presentation.ui.components.simple.TChartTextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Observable;
 
 /**
  * Created by Ivan Kuzmin on 28.03.2019;
@@ -27,7 +21,10 @@ import java.util.Observable;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-class ViewChartDates extends TTotalLinLayout {
+class ViewChartDates extends LinearLayout {
+    private final int TEXT_VIEW_TYPE_DEFAULT = 0;
+    private final int TEXT_VIEW_TYPE_LEFT = -2;
+    private final int TEXT_VIEW_TYPE_RIGHT = 2;
     private final String MMM_D_FORMAT = "MMM d";
     private final String MMM_Y_FORMAT = "MMM y";
 
@@ -35,39 +32,39 @@ class ViewChartDates extends TTotalLinLayout {
         void onDatesWasChecked(long[] dates);
     }
 
-    private TTextView _tTextView1;
-    private TTextView _tTextView2;
-    private TTextView _tTextView3;
-    private TTextView _tTextView4;
-    private TTextView _tTextView5;
+    private TChartTextView _tTextView1;
+    private TChartTextView _tTextView2;
+    private TChartTextView _tTextView3;
+    private TChartTextView _tTextView4;
+    private TChartTextView _tTextView5;
 
-    private int _oldTitleColor;
     private long[] _dates = null;
     private int hashCodeDates;
 
     public ViewChartDates(Context context) {
         super(context);
+        this.init();
     }
 
     public ViewChartDates(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        this.init();
     }
 
     public ViewChartDates(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        this.init();
     }
 
-    @Override
-    public void init() {
+    private void init() {
         setWillNotDraw(false);
         this.setOrientation(HORIZONTAL);
-        _oldTitleColor = getCurrentColor();
 
-        _tTextView1 = this.getNewTextView();
-        _tTextView2 = this.getNewTextView();
-        _tTextView3 = this.getNewTextView();
-        _tTextView4 = this.getNewTextView();
-        _tTextView5 = this.getNewTextView();
+        _tTextView1 = this.getNewTextView(TEXT_VIEW_TYPE_LEFT);
+        _tTextView2 = this.getNewTextView(TEXT_VIEW_TYPE_DEFAULT);
+        _tTextView3 = this.getNewTextView(TEXT_VIEW_TYPE_DEFAULT);
+        _tTextView4 = this.getNewTextView(TEXT_VIEW_TYPE_DEFAULT);
+        _tTextView5 = this.getNewTextView(TEXT_VIEW_TYPE_RIGHT);
 
         this.addView(_tTextView1);
         this.addView(_tTextView2);
@@ -94,7 +91,7 @@ class ViewChartDates extends TTotalLinLayout {
         Calendar calendar = Calendar.getInstance();
 
         int datesLength = dates.length;
-        TTextView currentTextView;
+        TChartTextView currentTextView;
         String dateFormat; String dateString;
         SimpleDateFormat formatter;
 
@@ -154,77 +151,60 @@ class ViewChartDates extends TTotalLinLayout {
         return newDate;
     }
 
-    private TTextView getCurrentTextView(int index) {
-        TTextView tTextView = null;
+    private TChartTextView getCurrentTextView(int index) {
+        TChartTextView TChartTextView = null;
         switch (index) {
             case 0:
-                tTextView = _tTextView1;
+                TChartTextView = _tTextView1;
                 break;
             case 1:
-                tTextView = _tTextView2;
+                TChartTextView = _tTextView2;
                 break;
             case 2:
-                tTextView = _tTextView3;
+                TChartTextView = _tTextView3;
                 break;
             case 3:
-                tTextView = _tTextView4;
+                TChartTextView = _tTextView4;
                 break;
             case 4:
-                tTextView = _tTextView5;
+                TChartTextView = _tTextView5;
                 break;
         }
-        return tTextView;
+        return TChartTextView;
     }
 
-    @Override
-    public void update(Observable observable, Object arg) {
-        if ((int) arg == ObserverManager.KEY_OBSERVER_THEME_UPDATED) {
-            int newTitleColor = getCurrentColor();
-            // TITLE CHANGE COLOR
-            if (newTitleColor != _oldTitleColor) {
-                ValueAnimator textRGBAnim = AndroidUtilites.getArgbAnimator(
-                        _oldTitleColor,
-                        newTitleColor,
-                        animation -> {
-                            int animColor = (int) animation.getAnimatedValue();
-                            this.setTextsColor(animColor);
-                        });
-                textRGBAnim.start();
-                _oldTitleColor = newTitleColor;
-            }
-        }
-    }
-
-    @Override
-    protected int getCurrentColor() {
-        return ThemeManager.chartDescrTextPaint.getColor();
-    }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        getLayoutParams().height = ThemeManager.CHART_CELL_HEIGHT_PX >> 1;
+        LinearLayout.LayoutParams layoutParams = (LayoutParams) getLayoutParams();
+        layoutParams.height = ThemeManager.CHART_CELL_HEIGHT_PX >> 1;
+        int marginPx = ThemeManager.CHART_CELL_RIGHTLEFT_MARGIN_PX;
+        layoutParams.setMargins(marginPx, 0, marginPx, 0);
     }
 
-    private TTextView getNewTextView() {
-        TTextView tTextView = new TTextView(getContext());
+    private TChartTextView getNewTextView(int typeTexView) {
+        TChartTextView tChartTextView = new TChartTextView(getContext());
 
-        TTextPaint chartDescrTextPaint = ThemeManager.chartDescrTextPaint;
-        tTextView.setTypeface(chartDescrTextPaint.getTypeface());
-        tTextView.setTextColor(_oldTitleColor);
-        tTextView.setTextSizeDP(chartDescrTextPaint.getTextSize());
-        tTextView.setGravity(Gravity.CENTER);
-        LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
-        tTextView.setLayoutParams(layoutParams);
+        float weight;
+        switch (typeTexView) {
+            case TEXT_VIEW_TYPE_LEFT:
+                tChartTextView.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+                weight = 1.1f;
+                break;
+            case TEXT_VIEW_TYPE_RIGHT:
+                tChartTextView.setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
+                weight = 1.1f;
+                break;
+            default:
+                tChartTextView.setGravity(Gravity.CENTER);
+                weight = 1f;
+                break;
+        }
 
-        return tTextView;
-    }
+        LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, weight);
+        tChartTextView.setLayoutParams(layoutParams);
 
-    private void setTextsColor(int color) {
-        _tTextView1.setTextColor(color);
-        _tTextView2.setTextColor(color);
-        _tTextView3.setTextColor(color);
-        _tTextView4.setTextColor(color);
-        _tTextView5.setTextColor(color);
+        return tChartTextView;
     }
 }

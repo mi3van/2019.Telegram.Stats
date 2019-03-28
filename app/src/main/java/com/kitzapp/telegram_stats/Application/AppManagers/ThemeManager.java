@@ -17,7 +17,7 @@ public class ThemeManager {
     public static final int TOOLBAR_TEXT_SIZE_DP = 22;
     public static final int SIMPLE_TEXT_SIZE_DP = 18;
     public static final int CHART_TITLE_TEXT_SIZE_DP = 18;
-    public static final int CHART_SUB_TEXT_SIZE_DP = 16;
+    public static final int CHART_SUB_TEXT_SIZE_DP = 14;
 
 //    CHART CELLS DP
     private static final int CHART_CELL_HEIGHT_DP = 56;
