@@ -2,7 +2,6 @@ package com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.util.AttributeSet;
 import androidx.annotation.NonNull;
@@ -49,7 +48,6 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
     @Override
     protected void firstInitAxisesAndVariables(boolean isNeedInitForCanvas) {
         super.firstInitAxisesAndVariables(false);
-        this.setBackgroundColor(Color.CYAN);
     }
 
     @Override

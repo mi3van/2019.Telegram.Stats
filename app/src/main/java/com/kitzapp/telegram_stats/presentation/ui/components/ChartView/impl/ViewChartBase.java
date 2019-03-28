@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.Application.AndroidApp;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
-import com.kitzapp.telegram_stats.common.AppConts;
 import com.kitzapp.telegram_stats.common.ArraysUtilites;
 import com.kitzapp.telegram_stats.domain.model.chart.Chart;
 import com.kitzapp.telegram_stats.domain.model.chart.impl.Line;
@@ -92,7 +91,7 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
 //            RECALCULATE
             boolean isNeedInitAxises = _viewHeight != canvasHeight || _viewWidth != canvasWidth;
             if (isNeedInitAxises) {
-                _viewHeight = canvasHeight ;
+                _viewHeight = canvasHeight;
                 _viewWidth = canvasWidth;
                 this.initAxisX();
             }
@@ -118,7 +117,7 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
         }
     }
 
-    HashMap<String, int[]> getInitAxysesYAndInitPaints() {
+    private HashMap<String, int[]> getInitAxysesYAndInitPaints() {
         HashMap<String, int[]> tempAxyses = new HashMap<>();
 
         _paints = new HashMap<>();
@@ -163,7 +162,7 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
     }
 
     private HashMap<String, int[]> getAxisesForCanvas(HashMap<String, int[]> tempArray, int maxAxisY) {
-        return this.getAxisesForCanvas(tempArray, maxAxisY, AppConts.INTEGER_MAX_VALUE);
+        return this.getAxisesForCanvas(tempArray, maxAxisY, 0);
     }
 
     protected HashMap<String, int[]> getAxisesForCanvas(HashMap<String, int[]> tempArray,
@@ -173,7 +172,8 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
             tempArray = new HashMap<>();
         }
         if (!tempArray.isEmpty()) {
-            float stepY = _viewHeight / (maxAxisY);
+            float widthInPx = maxAxisY - minAxisY;
+            float persent = widthInPx / _viewHeight;
 
             for (Map.Entry<String, int[]> entry : tempArray.entrySet()) {
 //                FILLING CURRENT AXISY ARRAY
@@ -182,7 +182,9 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
                 int[] axisY = new int[countDots];
 
                 for (int i = 0; i < countDots; i++) {
-                    int convertedY = Math.round(_viewHeight - tempAxisY[i] * stepY) + CHART_PART_VERTICAL_PADDING_HALF_PX;
+                    float tempValue = tempAxisY[i] - minAxisY;
+                    tempValue /= persent;
+                    int convertedY = (int) (_viewHeight - tempValue + CHART_PART_VERTICAL_PADDING_HALF_PX);
                     if (convertedY < 0) {
                         convertedY = 0;
                     }
