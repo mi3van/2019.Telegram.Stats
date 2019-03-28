@@ -2,13 +2,13 @@ package com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Point;
 import android.util.AttributeSet;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.common.ArraysUtilites;
 import com.kitzapp.telegram_stats.domain.model.chart.Chart;
+import com.kitzapp.telegram_stats.domain.model.chart.impl.MyLongPoint;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +27,7 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
 
     private ViewFollowersDelimiterVert _followersDelimiterVert;
 
-    private HashMap<String, int[]> _partAxisesY = new HashMap<>();
+    private HashMap<String, long[]> _partAxisesY = new HashMap<>();
     private float[] _partAxisXForGraph = null;
     private float _leftCursor;
     private float _rightCursor;
@@ -59,7 +59,7 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
     }
 
     @Override
-    protected void drawLines(Canvas canvas, float[] axisX, HashMap<String, int[]> partAxisesY) {
+    protected void drawLines(Canvas canvas, float[] axisX, HashMap<String, long[]> partAxisesY) {
         if (_partAxisXForGraph != null) {
             super.drawLines(canvas, _partAxisXForGraph, _partAxisesY);
         }
@@ -120,29 +120,29 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
 
     private void updateMaxAndMin() {
 
-        Point maxAndMinInPoint = this.getMaxAndMinInHashMap(_partAxisesY);
+        MyLongPoint maxAndMinInPoint = this.getMaxAndMinInHashMap(_partAxisesY);
 
-        int _tempMaxAxisY = maxAndMinInPoint.x;
+        long _tempMaxAxisY = maxAndMinInPoint.getMax();
         if (_tempMaxAxisY == INTEGER_MIN_VALUE) {
             return;
         }
-        int _tempMinAxisY = maxAndMinInPoint.y;
+        long _tempMinAxisY = maxAndMinInPoint.getMin();
 
         _partAxisesY = getAxisesForCanvas(_partAxisesY, _tempMaxAxisY, _tempMinAxisY);
     }
 
-    private Point getMaxAndMinInHashMap(HashMap<String, int[]> hashMap) {
-        int max = INTEGER_MIN_VALUE;
-        int min = INTEGER_MAX_VALUE;
+    private MyLongPoint getMaxAndMinInHashMap(HashMap<String, long[]> hashMap) {
+        long max = INTEGER_MIN_VALUE;
+        long min = INTEGER_MAX_VALUE;
         boolean isActiveChart;
-        int[] valuesArray;
-        for (Map.Entry<String, int[]> entry: hashMap.entrySet()) {
+        long[] valuesArray;
+        for (Map.Entry<String, long[]> entry: hashMap.entrySet()) {
             isActiveChart = getChartIsActive(entry.getKey());
             if (!isActiveChart) {
                 continue;
             }
             valuesArray = hashMap.get(entry.getKey());
-            for (int value : valuesArray) {
+            for (long value : valuesArray) {
                 if (value > max) {
                     max = value;
                 }
@@ -151,7 +151,7 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
                 }
             }
         }
-        return new Point(max, min);
+        return new MyLongPoint(max, min);
     }
 
     @Override

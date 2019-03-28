@@ -36,13 +36,13 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
     protected Chart _chart;
 
     private float[] _axisXForGraph = null;
-    private HashMap<String, int[]> _axisesYArrays = new HashMap<>();
+    private HashMap<String, long[]> _axisesYArrays = new HashMap<>();
     private HashMap<String, Paint> _paints;
 
     private float _viewHeight;
     protected float _viewWidth;
     protected int _maxAxisXx;
-    private int _maxAxisY;
+    private long _maxAxisY;
 
     public ViewChartBase(Context context) {
         super(context);
@@ -117,8 +117,8 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
         }
     }
 
-    private HashMap<String, int[]> getInitAxysesYAndInitPaints() {
-        HashMap<String, int[]> tempAxyses = new HashMap<>();
+    private HashMap<String, long[]> getInitAxysesYAndInitPaints() {
+        HashMap<String, long[]> tempAxyses = new HashMap<>();
 
         _paints = new HashMap<>();
         Line line;
@@ -139,8 +139,8 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
                 _paints.put(entry.getKey(), linePaint);
 
                 // INIT AXIS Y AND FIND MAX Y
-                int[] axisY = new int[currentColumnsCount];
-                int currentY;
+                long[] axisY = new long[currentColumnsCount];
+                long currentY;
                 for (int i = 0; i < currentColumnsCount; i++) {
                     currentY = line.getData()[i];
                     if (_maxAxisY < currentY) {
@@ -164,34 +164,34 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
         }
     }
 
-    private HashMap<String, int[]> getAxisesForCanvas(HashMap<String, int[]> tempArray, int maxAxisY) {
+    private HashMap<String, long[]> getAxisesForCanvas(HashMap<String, long[]> tempArray, long maxAxisY) {
         return this.getAxisesForCanvas(tempArray, maxAxisY, 0);
     }
 
-    protected HashMap<String, int[]> getAxisesForCanvas(HashMap<String, int[]> tempArray,
-                                                        int maxAxisY,
-                                                        int minAxisY) {
+    protected HashMap<String, long[]> getAxisesForCanvas(HashMap<String, long[]> tempArray,
+                                                        long maxAxisY,
+                                                        long minAxisY) {
         if (tempArray == null) {
             tempArray = new HashMap<>();
         }
         if (!tempArray.isEmpty()) {
             float widthInPx = maxAxisY - minAxisY;
             float persent = widthInPx / _viewHeight;
-            int[] tempAxisY;
+            long[] tempAxisY;
             int countDots;
-            int[] axisY;
+            long[] axisY;
             float tempValue;
-            int convertedY;
-            for (Map.Entry<String, int[]> entry : tempArray.entrySet()) {
+            long convertedY;
+            for (Map.Entry<String, long[]> entry : tempArray.entrySet()) {
 //                FILLING CURRENT AXISY ARRAY
                 tempAxisY = entry.getValue();
                 countDots = tempAxisY.length;
-                axisY = new int[countDots];
+                axisY = new long[countDots];
 
                 for (int i = 0; i < countDots; i++) {
                     tempValue = tempAxisY[i] - minAxisY;
                     tempValue /= persent;
-                    convertedY = (int) (_viewHeight - tempValue + CHART_PART_VERTICAL_PADDING_HALF_PX);
+                    convertedY = (long) (_viewHeight - tempValue + CHART_PART_VERTICAL_PADDING_HALF_PX);
                     if (convertedY < 0) {
                         convertedY = 0;
                     }
@@ -207,13 +207,13 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
         return tempArray;
     }
 
-    private int[] getApproximateArray(int[] arrayY, int maxCountDots) {
+    private long[] getApproximateArray(long[] arrayY, int maxCountDots) {
         int countDotsForApprox = _axisXForGraph.length;
         if (countDotsForApprox > maxCountDots) {
             int pointsCount = _axisXForGraph.length - 1; // -1 for save last point
             int currentApproxRange = 0;
             float oldX, currentX;
-            int oldY, currentY;
+            long oldY, currentY;
             while (countDotsForApprox > maxCountDots) {
                 currentApproxRange += 1;
                 oldX = _axisXForGraph[0];
@@ -245,23 +245,23 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
         }
     }
 
-    protected void drawLines(Canvas canvas, float[] axisX, HashMap<String, int[]> partAxisesY) {
+    protected void drawLines(Canvas canvas, float[] axisX, HashMap<String, long[]> partAxisesY) {
         if (!partAxisesY.isEmpty()) {
             Line line;
             boolean isActiveChart;
-            for (Map.Entry<String, int[]> entry : partAxisesY.entrySet()) {
+            for (Map.Entry<String, long[]> entry : partAxisesY.entrySet()) {
                 line = _chart.getLines().get(entry.getKey());
                 isActiveChart = getChartIsActive(entry.getKey());
                 if (line != null && isActiveChart) {
-                    int[] axisYForGraph = entry.getValue();
+                    long[] axisYForGraph = entry.getValue();
                     int columnsCount = axisYForGraph.length;
 
                     Path pathLine = new Path();
                     float firstX = axisX[0];
-                    int firstY = axisYForGraph[0];
+                    long firstY = axisYForGraph[0];
 
                     pathLine.moveTo(firstX, firstY);
-                    int currentY; float currentX;
+                    long currentY; float currentX;
                     for (int i = 0; i < columnsCount; i++) {
                         currentY = axisYForGraph[i];
                         if (currentY >= 0) {
@@ -279,11 +279,11 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
     }
 
 //    METHOD FOR PART VIEW
-    protected HashMap<String, int[]> getPartOfFullHashAxisY(int leftInArray, int rightInArray) {
-        HashMap<String, int[]> tempHashMap = new HashMap<>();
+    protected HashMap<String, long[]> getPartOfFullHashAxisY(int leftInArray, int rightInArray) {
+        HashMap<String, long[]> tempHashMap = new HashMap<>();
         Line line;
         int currentColumnsCount;
-        int[] partInt;
+        long[] partInt;
         for (Map.Entry<String, Line> entry : _chart.getLines().entrySet()) {
             line = entry.getValue();
             currentColumnsCount = line.getCountDots();
@@ -334,20 +334,4 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
         AndroidApp.observerManager.deleteObserver(this);
     }
 
-//    private void checkMax(int x, int y) {
-//        if (x > _viewWidth + 0.01f) {
-//            try {
-//                throw new Exception("X is not a range: " + x + "; Max: " + _viewWidth);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        if (y > _viewHeight + 0.01f) {
-//            try {
-//                throw new Exception("Y is not a range: " + y + "; Max: " + _viewHeight);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
 }

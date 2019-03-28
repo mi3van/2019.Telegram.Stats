@@ -61,7 +61,7 @@ public class TChartRepository implements ChartRepository {
                 byte currentType = this.getTypeInByte(type);
                 switch (currentType) {
                     case Line.TYPE_LINE:
-                        int[] dots = new int[columnsWithKey.length() - 1];
+                        long[] dots = new long[columnsWithKey.length() - 1];
                         for (int j = 1; j < columnsWithKey.length(); j++) {
                             dots[j - 1] = (columnsWithKey.getInt(j));
                         }

@@ -8,7 +8,7 @@ package com.kitzapp.telegram_stats.domain.model.chart.impl;
 
 public interface LineI {
 
-    int[] getData();
+    long[] getData();
 
     int getCountDots();
 
