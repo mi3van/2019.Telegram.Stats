@@ -47,8 +47,8 @@ class ViewRectSelect extends View implements TViewObserver, MotionMagic.MotionLi
     private Paint _verticalPaint;
     private int _halfWidthVPaint;
 
-    private float _leftCursor;  // 0 - 0.7 % is available
-    private float _rightCursor; // 0.3 - 1 % is available
+    private volatile float _leftCursor;  // 0 - 0.7 % is available
+    private volatile float _rightCursor; // 0.3 - 1 % is available
     private int _canvasWidth;
 
     private RectListener _rectListener;

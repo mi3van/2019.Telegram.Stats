@@ -3,6 +3,7 @@ package com.kitzapp.telegram_stats.Application.AppManagers;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import com.kitzapp.telegram_stats.Application.AndroidApp;
@@ -94,6 +95,14 @@ public class MotionMagic extends Observable implements View.OnTouchListener {
         float leftCursor = _motionListener.getLeftCursor();
         float rightCursor = _motionListener.getRightCursor();
         float difference = persentX - _oldPersentX;
+        // CHECK RIGHT AND LEFT CANVAS LIMITS
+        if (leftCursor + difference < 0) {
+            leftCursor = 0;
+        }
+        float canvasWidthPersent = 1f;
+        if (rightCursor + difference > canvasWidthPersent) {
+            rightCursor = canvasWidthPersent;
+        }
 
         switch (_currentMotion) {
             case MOTION_LEFT:
@@ -115,11 +124,14 @@ public class MotionMagic extends Observable implements View.OnTouchListener {
             case MOTION_CENTER:
                 leftCursor += difference;
                 rightCursor += difference;
-
-                float sub = rightCursor - leftCursor;
-                if (sub > _widthViewForCenter) {
-                    _motionListener.onMoveCenter(leftCursor, rightCursor);
+                float leftCursorRightLimit = canvasWidthPersent - _widthViewForCenter;
+                if (leftCursor > leftCursorRightLimit) {
+                    leftCursor = leftCursorRightLimit;
                 }
+                if (rightCursor < _widthViewForCenter) {
+                    rightCursor = _widthViewForCenter;
+                }
+                _motionListener.onMoveCenter(leftCursor, rightCursor);
                 break;
         }
         _oldPersentX = persentX;
