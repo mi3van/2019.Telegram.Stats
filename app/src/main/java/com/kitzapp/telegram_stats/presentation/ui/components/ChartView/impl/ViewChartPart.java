@@ -2,11 +2,13 @@ package com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.domain.model.chart.Chart;
 
+import java.util.HashMap;
 import java.util.Observable;
 
 /**
@@ -17,6 +19,8 @@ import java.util.Observable;
 
 class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener {
     private final int MAX_DOTS_FOR_APPROX_CHART_PART = 512;
+    private float _partMaxAxisY;
+    private HashMap<String, int[]> _fullAxisesY = new HashMap<>();
 
     public ViewChartPart(Context context) {
         super(context);
@@ -50,10 +54,37 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
     }
 
     @Override
+    public void init() {
+        super.init();
+
+//        this.firstInit();
+    }
+
+//    private void firstInit() {
+//        _axisesYArrays = new HashMap<>();
+//        _paints = new HashMap<>();
+//        for (Map.Entry<String, Line> entry : _chart.getLines().entrySet()) {
+//            Line line = entry.getValue();
+//            int currentColumnsCount = line.getCountDots();
+//
+//            if (currentColumnsCount > 1) {
+//
+//                // INIT MAX IN X AXIS
+//                if (_maxAxisXx < currentColumnsCount) {
+//                    _maxAxisXx = currentColumnsCount;
+//                }
+//            }
+//        }
+//    }
+//
+//    @Override
+//    protected void firstInitAxisesAndVariables() {
+//
+//    }
+
+    @Override
     public void onRectCursorsWasChanged(float leftCursor, float rightCursor) {
-//        Toast.makeText(getContext(),
-//                String.format("Left cursor: \"%.3f\"; Right cursor: \"%.3f\"", leftCursor, rightCursor),
-//                Toast.LENGTH_LONG).show();
+        Log.d("PART_CHART", String.format("Left cursor: \"%.3f\"; Right cursor: \"%.3f\"", leftCursor, rightCursor));
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.kitzapp.telegram_stats.Application.AppManagers;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import com.kitzapp.telegram_stats.Application.AndroidApp;

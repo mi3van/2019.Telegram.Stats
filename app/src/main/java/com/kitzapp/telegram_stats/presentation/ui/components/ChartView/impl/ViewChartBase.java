@@ -30,14 +30,14 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
     private final int FLAG_Y_NOT_AVAILABLE = -5;
 
     @NonNull
-    private Chart _chart;
+    protected Chart _chart;
 
     private float[] _axisXForGraph = null;
-    private HashMap<String, int[]> _axisesYArrays;
-    private HashMap<String, Paint> _paints;
+    protected HashMap<String, int[]> _axisesYArrays = new HashMap<>();
+    protected HashMap<String, Paint> _paints;
 
     private float _viewHeight, _viewWidth;
-    private int _maxAxisXx, _maxAxisY;
+    protected int _maxAxisXx, _maxAxisY;
 
     public ViewChartBase(Context context) {
         super(context);
@@ -82,25 +82,34 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
         int canvasHeight = canvas.getHeight();
         int canvasWidth = canvas.getWidth();
 
-        boolean isNeedInitAxises = true;
         if (_axisXForGraph != null) {
-            if (_viewHeight == canvasHeight && _viewWidth == canvasWidth) {
-                isNeedInitAxises = false;
+            boolean isNeedInitAxises = _viewHeight != canvasHeight || _viewWidth != canvasWidth;
+            if (isNeedInitAxises) {
+                _viewHeight = canvasHeight;
+                _viewWidth = canvasWidth;
+                this.initAxisX();
             }
-        }
-
-        if (isNeedInitAxises){
+        } else {
             _viewHeight = canvasHeight;
             _viewWidth = canvasWidth;
-            this.initAxisesAndVariables();
+            this.firstInitAxisesAndVariables();
         }
 
         this.drawLines(canvas);
     }
 
 //    isNeedInitPaints
-    private void initAxisesAndVariables() {
-        _axisesYArrays = new HashMap<>();
+    protected void firstInitAxisesAndVariables() {
+
+        _axisesYArrays = this.getInitAxysesAndInitPaints();
+
+        this.initAxisX();
+
+        _axisesYArrays = this.getAxisesForCanvas(_axisesYArrays);
+    }
+
+    private HashMap<String, int[]> getInitAxysesAndInitPaints() {
+        HashMap<String, int[]> tempAxyses = new HashMap<>();
         _paints = new HashMap<>();
         for (Map.Entry<String, Line> entry : _chart.getLines().entrySet()) {
             Line line = entry.getValue();
@@ -125,16 +134,30 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
                     }
                     axisY[i] = currentY;
                 }
-                _axisesYArrays.put(entry.getKey(), axisY);
+                tempAxyses.put(entry.getKey(), axisY);
             }
         }
 
-        this.initAxisX();
+        return tempAxyses;
+    }
 
-//      CONFIGURE Y ARRAYS FOR CANVAS
-        if (!_axisesYArrays.isEmpty()) {
+    private void initAxisX() {
+        float stepX = _viewWidth / (_maxAxisXx - 1);
+        // CONVERT X AND Y's TO CANVAS SIZE
+        _axisXForGraph = new float[_maxAxisXx];
+        _axisXForGraph[0] = 0;
+        for (int i = 1; i < _maxAxisXx; i++) {
+            _axisXForGraph[i] = _axisXForGraph[i - 1] + stepX;
+        }
+    }
+
+    private HashMap<String, int[]> getAxisesForCanvas(HashMap<String, int[]> tempArray) {
+        if (tempArray == null) {
+            tempArray = new HashMap<>();
+        }
+        if (!tempArray.isEmpty()) {
             float _stepY = _viewHeight / (_maxAxisY - 1);
-            for (Map.Entry<String, int[]> entry : _axisesYArrays.entrySet()) {
+            for (Map.Entry<String, int[]> entry : tempArray.entrySet()) {
 //                FILLING CURRENT AXISY ARRAY
                 int[] tempAxisY = entry.getValue();
                 int countDots = tempAxisY.length;
@@ -153,48 +176,44 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
                 entry.setValue(axisY);
             }
         }
+
+        return tempArray;
     }
 
     private int[] getApproximateArray(int[] arrayY, int maxCountDots) {
-        int pointsCount = _axisXForGraph.length - 1; // -1 for save last point
-        int[] approxArrayY = Arrays.copyOf(arrayY, arrayY.length);
         int countDotsForApprox = _axisXForGraph.length;
-        int currentApproxRange = 0;
+        if (countDotsForApprox > maxCountDots) {
+            int pointsCount = _axisXForGraph.length - 1; // -1 for save last point
+            int[] approxArrayY = Arrays.copyOf(arrayY, arrayY.length);
+            int currentApproxRange = 0;
 
-        while (countDotsForApprox > maxCountDots) {
-            currentApproxRange += 1;
+            while (countDotsForApprox > maxCountDots) {
+                currentApproxRange += 1;
 
-            float oldX = _axisXForGraph[0], currentX;
-            int oldY = approxArrayY[0], currentY;
-            for (int i = 1; i < pointsCount; i++) {
-                currentY = approxArrayY[i];
-                if (currentY >= 0) {
-                    currentX = _axisXForGraph[i];
-                    boolean rangePointsIsAvailable = AndroidUtilites.isRangeLineAvailable(
-                            oldX, oldY, currentX, currentY, currentApproxRange);
+                float oldX = _axisXForGraph[0], currentX;
+                int oldY = approxArrayY[0], currentY;
+                for (int i = 1; i < pointsCount; i++) {
+                    currentY = approxArrayY[i];
+                    if (currentY >= 0) {
+                        currentX = _axisXForGraph[i];
+                        boolean rangePointsIsAvailable = AndroidUtilites.isRangeLineAvailable(
+                                oldX, oldY, currentX, currentY, currentApproxRange);
 
-                    if (!rangePointsIsAvailable) {
-                        countDotsForApprox--;
-                        approxArrayY[i] = FLAG_Y_NOT_AVAILABLE;
-                        if (countDotsForApprox <= maxCountDots) {
-                            break;
+                        if (!rangePointsIsAvailable) {
+                            countDotsForApprox--;
+                            approxArrayY[i] = FLAG_Y_NOT_AVAILABLE;
+                            if (countDotsForApprox <= maxCountDots) {
+                                break;
+                            }
                         }
+                        oldX = currentX;
+                        oldY = currentY;
                     }
-                    oldX = currentX;
-                    oldY = currentY;
                 }
             }
-        }
-        return approxArrayY;
-    }
-
-    private void initAxisX() {
-        float stepX = _viewWidth / (_maxAxisXx - 1);
-        // CONVERT X AND Y's TO CANVAS SIZE
-        _axisXForGraph = new float[_maxAxisXx];
-        _axisXForGraph[0] = 0;
-        for (int i = 1; i < _maxAxisXx; i++) {
-            _axisXForGraph[i] = _axisXForGraph[i - 1] + stepX;
+            return approxArrayY;
+        } else {
+            return arrayY;
         }
     }
 
