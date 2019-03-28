@@ -51,6 +51,7 @@ public class CellChartGpraphs extends LinearLayout implements TCheckBox.Listener
             _chartDates = new ViewChartDates(getContext());
             _fullChart = new ViewChartFull(getContext(), _chart, _partChart.getRectListener());
             _chBoxChartIsActive = new ViewChartCheckBox(getContext(), _chart, this);
+
             addView(_partChart);
             addView(_chartDates);
             addView(_fullChart);

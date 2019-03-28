@@ -24,7 +24,9 @@ import static com.kitzapp.telegram_stats.common.AppConts.INTEGER_MIN_VALUE;
  */
 
 class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener {
-//    private final int MAX_DOTS_FOR_APPROX_CHART_PART = 512;
+
+    private ViewFollowersDelimiterVert _followersDelimiterVert;
+
     private HashMap<String, int[]> _partAxisesY = new HashMap<>();
     private float[] _partAxisXForGraph = null;
     private float _leftCursor;
@@ -51,6 +53,9 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
     @Override
     protected void firstInitAxisesAndVariables(boolean isNeedInitForCanvas) {
         super.firstInitAxisesAndVariables(false);
+
+        _followersDelimiterVert = new ViewFollowersDelimiterVert(getContext());
+        addView(_followersDelimiterVert);
     }
 
     @Override
@@ -80,6 +85,7 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
         if (_datesListener != null) {
             long[] dates = this.getDatesForSend(leftInArray, rightInArray);
             _datesListener.onDatesWasChecked(dates);
+            _followersDelimiterVert.setDatesAndInit(dates);
         }
 
         // Get new part arrays for draw Y

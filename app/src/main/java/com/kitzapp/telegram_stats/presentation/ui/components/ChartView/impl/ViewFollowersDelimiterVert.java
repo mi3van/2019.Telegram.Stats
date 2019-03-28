@@ -3,7 +3,6 @@ package com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.ViewGroup;
@@ -27,7 +26,7 @@ import java.util.Observable;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-class ViewChartDates extends TTotalLinLayout {
+class ViewFollowersDelimiterVert extends TTotalLinLayout {
     private final String MMM_D_FORMAT = "MMM d";
     private final String MMM_Y_FORMAT = "MMM y";
 
@@ -45,22 +44,22 @@ class ViewChartDates extends TTotalLinLayout {
     private long[] _dates = null;
     private int hashCodeDates;
 
-    public ViewChartDates(Context context) {
+    public ViewFollowersDelimiterVert(Context context) {
         super(context);
     }
 
-    public ViewChartDates(Context context, @Nullable AttributeSet attrs) {
+    public ViewFollowersDelimiterVert(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ViewChartDates(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ViewFollowersDelimiterVert(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
     public void init() {
         setWillNotDraw(false);
-        this.setOrientation(HORIZONTAL);
+        this.setOrientation(VERTICAL);
         _oldTitleColor = getCurrentColor();
 
         _tTextView1 = this.getNewTextView();
@@ -118,11 +117,9 @@ class ViewChartDates extends TTotalLinLayout {
                     dateFormat = MMM_Y_FORMAT;
                 } else {
                     dateFormat = MMM_D_FORMAT;
-                    date = getFormattedDay(date, calendar);
                 }
             } else {
                 dateFormat = MMM_D_FORMAT;
-                date = getFormattedDay(date, calendar);
             }
 
             currentTextView = getCurrentTextView(i);
@@ -135,23 +132,6 @@ class ViewChartDates extends TTotalLinLayout {
 
             currentTextView.setText(dateString);
         }
-    }
-
-    private long getFormattedDay(long originalDate, Calendar calendar) {
-        long newDate = originalDate;
-        calendar.setTimeInMillis(newDate);
-
-        int currentDayInMonth = calendar.get(Calendar.DAY_OF_MONTH);
-
-        if (currentDayInMonth % 2 != 0) {
-            if (currentDayInMonth == 31) {
-                newDate += DateUtils.DAY_IN_MILLIS << 1;
-            } else {
-                newDate += DateUtils.DAY_IN_MILLIS;
-            }
-        }
-
-        return newDate;
     }
 
     private TTextView getCurrentTextView(int index) {
@@ -203,7 +183,8 @@ class ViewChartDates extends TTotalLinLayout {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        getLayoutParams().height = ThemeManager.CHART_CELL_HEIGHT_PX >> 1;
+        getLayoutParams().height = LayoutParams.MATCH_PARENT;
+        getLayoutParams().height = LayoutParams.MATCH_PARENT;
     }
 
     private TTextView getNewTextView() {
@@ -213,7 +194,7 @@ class ViewChartDates extends TTotalLinLayout {
         tTextView.setTypeface(chartDescrTextPaint.getTypeface());
         tTextView.setTextColor(_oldTitleColor);
         tTextView.setTextSizeDP(chartDescrTextPaint.getTextSize());
-        tTextView.setGravity(Gravity.CENTER);
+        tTextView.setGravity(Gravity.CENTER_VERTICAL|Gravity.START);
         LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
         tTextView.setLayoutParams(layoutParams);
 
