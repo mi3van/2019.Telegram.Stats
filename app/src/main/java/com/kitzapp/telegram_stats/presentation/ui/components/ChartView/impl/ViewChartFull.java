@@ -52,6 +52,7 @@ class ViewChartFull extends ViewChartBase {
             this.addView(_viewRectSelect);
 
             FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) getLayoutParams();
+            layoutParams.height -= (ThemeManager.CHART_FULL_TOP_BOTTOM_MARGIN_PX << 1);
             layoutParams.topMargin = ThemeManager.CHART_FULL_TOP_BOTTOM_MARGIN_PX;
             layoutParams.bottomMargin = ThemeManager.CHART_FULL_TOP_BOTTOM_MARGIN_PX;
 

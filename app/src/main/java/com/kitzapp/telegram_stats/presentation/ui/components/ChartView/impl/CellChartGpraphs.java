@@ -66,7 +66,7 @@ public class CellChartGpraphs extends LinearLayout implements TCheckBox.Listener
         try {
             _chart.getLines().get(key).setIsActive(isChecked);
             _fullChart.invalidate();
-            _partChart.invalidate();
+            _partChart.recalculateYAndUpdateView();
         } catch (Exception e) {
             e.printStackTrace();
         }

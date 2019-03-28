@@ -2,6 +2,8 @@ package com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.util.AttributeSet;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
 
+import static com.kitzapp.telegram_stats.common.AppConts.INTEGER_MAX_VALUE;
 import static com.kitzapp.telegram_stats.common.AppConts.INTEGER_MIN_VALUE;
 
 /**
@@ -24,6 +27,8 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
 //    private final int MAX_DOTS_FOR_APPROX_CHART_PART = 512;
     private HashMap<String, int[]> _partAxisesY = new HashMap<>();
     private float[] _partAxisXForGraph = null;
+    private float _leftCursor;
+    private float _rightCursor;
 
     public ViewChartPart(Context context) {
         super(context);
@@ -44,6 +49,7 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
     @Override
     protected void firstInitAxisesAndVariables(boolean isNeedInitForCanvas) {
         super.firstInitAxisesAndVariables(false);
+        this.setBackgroundColor(Color.CYAN);
     }
 
     @Override
@@ -53,13 +59,17 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
         }
     }
 
+    void recalculateYAndUpdateView() {
+        this.onRectCursorsWasChanged(_leftCursor, _rightCursor);
+    }
+
     @Override
     public void onRectCursorsWasChanged(float leftCursor, float rightCursor) {
-        int newLeftInArray = (int) (_maxAxisXx * leftCursor);
-        int newRightInArray = (int) (_maxAxisXx * rightCursor);
+        _leftCursor = leftCursor;
+        _rightCursor = rightCursor;
+        int leftInArray = (int) (_maxAxisXx * leftCursor);
+        int rightInArray = (int) (_maxAxisXx * rightCursor);
 
-        int leftInArray = newLeftInArray;
-        int rightInArray = newRightInArray;
         int countPoints = rightInArray - leftInArray;
 
         if (countPoints < 2) {
@@ -75,9 +85,7 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
         float rightInPx = rightCursor * _viewWidth;
         _partAxisXForGraph = getAxisXCalculated(leftInPx, rightInPx, _partAxisXForGraph);
 
-        int _tempMaxAxisY = this.getMaxInHashMap(_partAxisesY);
-
-        _partAxisesY = getAxisesForCanvas(_partAxisesY, _tempMaxAxisY);
+        this.updateMaxAndMin();
 
         invalidate();
     }
@@ -98,17 +106,38 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
         return newAxis;
     }
 
-    private int getMaxInHashMap(HashMap<String, int[]> hashMap) {
+    private void updateMaxAndMin() {
+
+        Point maxAndMinInPoint = this.getMaxAndMinInHashMap(_partAxisesY);
+
+        int _tempMaxAxisY = maxAndMinInPoint.x;
+        if (_tempMaxAxisY == INTEGER_MIN_VALUE) {
+            return;
+        }
+        int _tempMinAxisY = maxAndMinInPoint.y;
+
+        _partAxisesY = getAxisesForCanvas(_partAxisesY, _tempMaxAxisY, _tempMinAxisY);
+    }
+
+    private Point getMaxAndMinInHashMap(HashMap<String, int[]> hashMap) {
         int max = INTEGER_MIN_VALUE;
+        int min = INTEGER_MAX_VALUE;
         for (Map.Entry<String, int[]> entry: hashMap.entrySet()) {
-            int[] valuesArray = entry.getValue();
-            for (int value: valuesArray) {
+            boolean isActiveChart = getChartIsActive(entry.getKey());
+            if (!isActiveChart) {
+                continue;
+            }
+            int[] valuesArray = hashMap.get(entry.getKey());
+            for (int value : valuesArray) {
                 if (value > max) {
                     max = value;
                 }
+                if (value < min) {
+                    min = value;
+                }
             }
         }
-        return max;
+        return new Point(max, min);
     }
 
     @Override

@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.Application.AndroidApp;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
+import com.kitzapp.telegram_stats.common.AppConts;
 import com.kitzapp.telegram_stats.common.ArraysUtilites;
 import com.kitzapp.telegram_stats.domain.model.chart.Chart;
 import com.kitzapp.telegram_stats.domain.model.chart.impl.Line;
@@ -19,6 +20,9 @@ import com.kitzapp.telegram_stats.presentation.ui.components.TViewObserver;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager.CHART_PART_VERTICAL_PADDING_HALF_PX;
+import static com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager.CHART_PART_VERTICAL_PADDING_SUM_PX;
 
 /**
  * Created by Ivan Kuzmin on 25.03.2019;
@@ -30,7 +34,7 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
     private final int FLAG_Y_NOT_AVAILABLE = -5;
 
     @NonNull
-    private Chart _chart;
+    protected Chart _chart;
 
     private float[] _axisXForGraph = null;
     private HashMap<String, int[]> _axisesYArrays = new HashMap<>();
@@ -81,14 +85,14 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        int canvasHeight = canvas.getHeight();
+        int canvasHeight = canvas.getHeight() - CHART_PART_VERTICAL_PADDING_SUM_PX;
         int canvasWidth = canvas.getWidth();
 
         if (_axisXForGraph != null) {
 //            RECALCULATE
             boolean isNeedInitAxises = _viewHeight != canvasHeight || _viewWidth != canvasWidth;
             if (isNeedInitAxises) {
-                _viewHeight = canvasHeight;
+                _viewHeight = canvasHeight ;
                 _viewWidth = canvasWidth;
                 this.initAxisX();
             }
@@ -158,12 +162,19 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
         }
     }
 
-    protected HashMap<String, int[]> getAxisesForCanvas(HashMap<String, int[]> tempArray, int maxAxisY) {
+    private HashMap<String, int[]> getAxisesForCanvas(HashMap<String, int[]> tempArray, int maxAxisY) {
+        return this.getAxisesForCanvas(tempArray, maxAxisY, AppConts.INTEGER_MAX_VALUE);
+    }
+
+    protected HashMap<String, int[]> getAxisesForCanvas(HashMap<String, int[]> tempArray,
+                                                        int maxAxisY,
+                                                        int minAxisY) {
         if (tempArray == null) {
             tempArray = new HashMap<>();
         }
         if (!tempArray.isEmpty()) {
-            float _stepY = _viewHeight / (maxAxisY - 1);
+            float stepY = _viewHeight / (maxAxisY);
+
             for (Map.Entry<String, int[]> entry : tempArray.entrySet()) {
 //                FILLING CURRENT AXISY ARRAY
                 int[] tempAxisY = entry.getValue();
@@ -171,7 +182,7 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
                 int[] axisY = new int[countDots];
 
                 for (int i = 0; i < countDots; i++) {
-                    int convertedY = Math.round(_viewHeight - tempAxisY[i] * _stepY);
+                    int convertedY = Math.round(_viewHeight - tempAxisY[i] * stepY) + CHART_PART_VERTICAL_PADDING_HALF_PX;
                     if (convertedY < 0) {
                         convertedY = 0;
                     }
@@ -227,7 +238,8 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
         if (!partAxisesY.isEmpty()) {
             for (Map.Entry<String, int[]> entry : partAxisesY.entrySet()) {
                 Line line = _chart.getLines().get(entry.getKey());
-                if (line != null && line.getIsActive()) {
+                boolean isActiveChart = getChartIsActive(entry.getKey());
+                if (line != null && isActiveChart) {
                     int[] axisYForGraph = entry.getValue();
                     int columnsCount = axisYForGraph.length;
 
@@ -279,6 +291,16 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         this.addObserver();
+    }
+
+    protected boolean getChartIsActive(String key) {
+        boolean isActive = false;
+        try {
+            isActive = _chart.getLines().get(key).getIsActive();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        return isActive;
     }
 
     @Override

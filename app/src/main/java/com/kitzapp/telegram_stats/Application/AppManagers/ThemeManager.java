@@ -36,6 +36,7 @@ public class ThemeManager {
     private static final int CHART_DELIMITER_WIDTH_DP = 1;
 
     private static final int CHART_RECT_SELECT_WIDTH_DP = 4;
+    private static final int CHART_PART_VERTICAL_PADDING_SUM_DP = 7;
 
 //    CHART VIEWS PX
     public static final int CHART_LINE_IN_PART_WIDTH_PX;
@@ -45,6 +46,8 @@ public class ThemeManager {
     public static final int CHART_DELIMITER_WIDTH_PX;
 
     public static final int CHART_RECT_SELECT_WIDTH_PX;
+    public static final int CHART_PART_VERTICAL_PADDING_SUM_PX;
+    public static final int CHART_PART_VERTICAL_PADDING_HALF_PX;
 
     private static int totalInit = 1;
     public final static int LIGHT = totalInit++;
@@ -106,6 +109,8 @@ public class ThemeManager {
 
         CHART_DELIMITER_WIDTH_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_DELIMITER_WIDTH_DP);
         CHART_RECT_SELECT_WIDTH_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_RECT_SELECT_WIDTH_DP);
+        CHART_PART_VERTICAL_PADDING_SUM_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_PART_VERTICAL_PADDING_SUM_DP);
+        CHART_PART_VERTICAL_PADDING_HALF_PX = CHART_PART_VERTICAL_PADDING_SUM_PX >> 1;
     }
 
     public static void changeThemeAndSave() {

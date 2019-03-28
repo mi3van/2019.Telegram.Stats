@@ -11,4 +11,5 @@ public class AppConts {
     public static final String JSON_CHART_FILENAME = "chart_data.json";
 
     public static final int INTEGER_MIN_VALUE = 0x80000000;
+    public static final int INTEGER_MAX_VALUE = 0x7fffffff;
 }
