@@ -16,17 +16,19 @@ public class ThemeManager {
 //    TEXT SIZES DP
     public static final int TOOLBAR_TEXT_SIZE_DP = 22;
     public static final int SIMPLE_TEXT_SIZE_DP = 18;
-    public static final int CHART_TITLE_TEXT_SIZE_DP = 16;
-    public static final int CHART_SUB_TEXT_SIZE_DP = 8;
+    public static final int CHART_TITLE_TEXT_SIZE_DP = 18;
+    public static final int CHART_SUB_TEXT_SIZE_DP = 16;
 
 //    CHART CELLS DP
     private static final int CHART_CELL_HEIGHT_DP = 56;
     private static final int CHART_CELL_BOTTOM_MARGIN_DP = 28;
     private static final int CHART_CELL_RIGHT_LEFT_MARGIN_DP = 16;
+    private static final int CHART_CELL_DATES_WIDTH_DP = 24;
 //    CHART CELLS PX
     public static final int CHART_CELL_HEIGHT_PX;
     public static final int CHART_CELL_BOTTOM_MARGIN_PX;
     public static final int CHART_CELL_RIGHTLEFT_MARGIN_PX;
+    public static final int CHART_CELL_DATES_WIDTH_PX;
 
 //    CHART VIEWS DP
     private static final int CHART_LINE_IN_PART_WIDTH_DP = 2;
@@ -101,6 +103,7 @@ public class ThemeManager {
         CHART_CELL_HEIGHT_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_CELL_HEIGHT_DP);
         CHART_CELL_BOTTOM_MARGIN_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_CELL_BOTTOM_MARGIN_DP);
         CHART_CELL_RIGHTLEFT_MARGIN_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_CELL_RIGHT_LEFT_MARGIN_DP);
+        CHART_CELL_DATES_WIDTH_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_CELL_DATES_WIDTH_DP);
 
         CHART_LINE_FULL_WIDTH_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_LINE_FULL_WIDTH_DP);
         CHART_LINE_IN_PART_WIDTH_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_LINE_IN_PART_WIDTH_DP);
@@ -175,7 +178,7 @@ public class ThemeManager {
         lightThemeColors.put(key_cellTitleTextColor, 0xff3896d4);
         lightThemeColors.put(key_cellBackColor , 0xffffffff);
         lightThemeColors.put(key_cellChartFullBackColor, 0xffffffff);
-        lightThemeColors.put(key_chartDescrTextColor, 0xff88939a);
+        lightThemeColors.put(key_chartDescrTextColor, 0x8F7593a9);
         lightThemeColors.put(key_simpleTextColor , 0xff000000);
         lightThemeColors.put(key_delimiterColor, 0xffe7e7e7);
         lightThemeColors.put(key_rectSelectColor, 0x5Fa5c3d9);
@@ -198,6 +201,6 @@ public class ThemeManager {
         simpleTextPaint.setTypeface(AndroidUtilites.getTypeface(context, "fonts/rregular.ttf"));
         toolbarTextPaint.setTypeface(AndroidUtilites.getTypeface(context, "fonts/rmedium.ttf"));
         chartTitleTextPaint.setTypeface(AndroidUtilites.getTypeface(context, "fonts/rmedium.ttf"));
-        chartDescrTextPaint.setTypeface(AndroidUtilites.getTypeface(context, "fonts/rlight.ttf"));
+        chartDescrTextPaint.setTypeface(AndroidUtilites.getTypeface(context, "fonts/rregular.ttf"));
     }
 }

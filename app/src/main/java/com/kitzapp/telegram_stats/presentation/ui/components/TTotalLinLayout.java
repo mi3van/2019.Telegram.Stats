@@ -19,7 +19,7 @@ import java.util.Observable;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-class TTotalLinLayout extends LinearLayout implements TViewObserver {
+public class TTotalLinLayout extends LinearLayout implements TViewObserver {
 
     private int _oldBackColor;
 
@@ -55,7 +55,7 @@ class TTotalLinLayout extends LinearLayout implements TViewObserver {
         AndroidApp.observerManager.deleteObserver(this);
     }
 
-    private int getCurrentColor() {
+    protected int getCurrentColor() {
         return ThemeManager.getColor(ThemeManager.key_totalBackColor);
     }
 

@@ -21,7 +21,7 @@ public class TChartPresenter extends AbstractPresenter implements ChartPresenter
     private TChartRepository _chartRepository;
     private ChartPresenter.View _view;
 
-    private long _dateNanoForCheck;
+    private long _dateMillisForCheck;
 
     public TChartPresenter(Executor executor,
                            MainThread mainThread,
@@ -75,7 +75,7 @@ public class TChartPresenter extends AbstractPresenter implements ChartPresenter
     @Override
     public void runAnalyzeJson() {
         if (BuildConfig.DEBUG) {
-            _dateNanoForCheck = System.currentTimeMillis();
+            _dateMillisForCheck = System.currentTimeMillis();
         }
         _view.showProgress();
 
@@ -100,10 +100,10 @@ public class TChartPresenter extends AbstractPresenter implements ChartPresenter
             _view.showMessageSnackbar(e.getMessage());
         } finally {
             if (BuildConfig.DEBUG) {
-                _dateNanoForCheck = System.currentTimeMillis() - _dateNanoForCheck;
+                _dateMillisForCheck = System.currentTimeMillis() - _dateMillisForCheck;
                 String dateFormat = "mm:ss.SSS";
                 @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
-                String dateString = formatter.format(new Date(_dateNanoForCheck));
+                String dateString = formatter.format(new Date(_dateMillisForCheck));
                 _view.showMessageSnackbar(dateString);
             }
         }

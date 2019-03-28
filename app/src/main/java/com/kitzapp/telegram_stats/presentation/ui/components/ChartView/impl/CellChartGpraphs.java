@@ -17,12 +17,13 @@ import androidx.annotation.Nullable;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class CellChartGpraphs extends LinearLayout implements TCheckBox.Listener {
+public class CellChartGpraphs extends LinearLayout implements TCheckBox.Listener, ViewChartDates.Listener {
 
     private Chart _chart = null;
     private ViewChartPart _partChart;
+    private ViewChartDates _chartDates;
     private ViewChartFull _fullChart;
-    private ViewChBoxIsActive _chBoxChartIsActive;
+    private ViewChartCheckBox _chBoxChartIsActive;
 
     public CellChartGpraphs(Context context) {
         super(context);
@@ -46,10 +47,12 @@ public class CellChartGpraphs extends LinearLayout implements TCheckBox.Listener
         this.setOrientation(VERTICAL);
 
         if (_chart != null) {
-            _partChart = new ViewChartPart(getContext(), _chart);
+            _partChart = new ViewChartPart(getContext(), _chart, this);
+            _chartDates = new ViewChartDates(getContext());
             _fullChart = new ViewChartFull(getContext(), _chart, _partChart.getRectListener());
-            _chBoxChartIsActive = new ViewChBoxIsActive(getContext(), _chart, this);
+            _chBoxChartIsActive = new ViewChartCheckBox(getContext(), _chart, this);
             addView(_partChart);
+            addView(_chartDates);
             addView(_fullChart);
             addView(_chBoxChartIsActive);
 
@@ -70,5 +73,10 @@ public class CellChartGpraphs extends LinearLayout implements TCheckBox.Listener
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onDatesWasChecked(long[] dates) {
+        _chartDates.setDatesAndInit(dates);
     }
 }

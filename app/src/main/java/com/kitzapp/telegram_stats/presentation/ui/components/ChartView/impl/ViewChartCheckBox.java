@@ -20,21 +20,21 @@ import java.util.Map;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-class ViewChBoxIsActive extends LinearLayout {
+class ViewChartCheckBox extends LinearLayout {
 
-    public ViewChBoxIsActive(Context context) {
+    public ViewChartCheckBox(Context context) {
         super(context);
     }
 
-    public ViewChBoxIsActive(Context context, @Nullable AttributeSet attrs) {
+    public ViewChartCheckBox(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ViewChBoxIsActive(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ViewChartCheckBox(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    ViewChBoxIsActive(Context context, Chart chart, TCheckBox.Listener listener) {
+    ViewChartCheckBox(Context context, Chart chart, TCheckBox.Listener listener) {
         super(context);
         this.init();
 

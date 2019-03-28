@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
+import com.kitzapp.telegram_stats.common.ArraysUtilites;
 import com.kitzapp.telegram_stats.domain.model.chart.Chart;
 
 import java.util.HashMap;
@@ -28,6 +29,7 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
     private float[] _partAxisXForGraph = null;
     private float _leftCursor;
     private float _rightCursor;
+    private ViewChartDates.Listener _datesListener;
 
     public ViewChartPart(Context context) {
         super(context);
@@ -41,8 +43,9 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
         super(context, attrs, defStyleAttr);
     }
 
-    ViewChartPart(Context context, @NonNull Chart chart) {
+    ViewChartPart(Context context, @NonNull Chart chart, ViewChartDates.Listener datesListener) {
         super(context, chart);
+        _datesListener = datesListener;
     }
 
     @Override
@@ -74,6 +77,11 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
             return;
         }
 
+        if (_datesListener != null) {
+            long[] dates = this.getDatesForSend(leftInArray, rightInArray);
+            _datesListener.onDatesWasChecked(dates);
+        }
+
         // Get new part arrays for draw Y
         _partAxisesY = getPartOfFullHashAxisY(leftInArray, rightInArray);
         // Get new part arrays for draw X
@@ -94,9 +102,9 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
 
         float widthInPx = rightInPx - leftInPx;
         float persent = widthInPx / _viewWidth;
-
+        float tempValueX;
         for (int i = 0; i < lengthX; i++) {
-            float tempValueX = originalAxisX[i] - leftInPx;
+            tempValueX = originalAxisX[i] - leftInPx;
             tempValueX /= persent;
             newAxis[i] = tempValueX;
         }
@@ -120,12 +128,14 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
     private Point getMaxAndMinInHashMap(HashMap<String, int[]> hashMap) {
         int max = INTEGER_MIN_VALUE;
         int min = INTEGER_MAX_VALUE;
+        boolean isActiveChart;
+        int[] valuesArray;
         for (Map.Entry<String, int[]> entry: hashMap.entrySet()) {
-            boolean isActiveChart = getChartIsActive(entry.getKey());
+            isActiveChart = getChartIsActive(entry.getKey());
             if (!isActiveChart) {
                 continue;
             }
-            int[] valuesArray = hashMap.get(entry.getKey());
+            valuesArray = hashMap.get(entry.getKey());
             for (int value : valuesArray) {
                 if (value > max) {
                     max = value;
@@ -160,6 +170,32 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
     @Override
     int getMaxDotsForApproxChart() {
         return _maxAxisXx;
+    }
+
+    private long[] getDatesForSend(int leftCursorArray, int rightCursorArray) {
+        long[] partdatesArray = ArraysUtilites.getRange(leftCursorArray, rightCursorArray, _chart.getAxisX().getData());
+        int lengthPartArray = partdatesArray.length;
+
+        int maxSizeSendingArray = 6;
+        long[] sendingArray;
+
+        if (lengthPartArray > maxSizeSendingArray) {
+            sendingArray = new long[5];
+            int index1 = 0;
+            int index5 = lengthPartArray - 1;
+            int index3 = index5 >> 1;
+            int index2 = index3 >> 1;
+            int index4 = index2 + index3;
+            sendingArray[0] = partdatesArray[index1];
+            sendingArray[1] = partdatesArray[index2];
+            sendingArray[2] = partdatesArray[index3];
+            sendingArray[3] = partdatesArray[index4];
+            sendingArray[4] = partdatesArray[index5];
+        } else {
+            sendingArray = partdatesArray;
+        }
+
+        return sendingArray;
     }
 
 //    private void drawText(Canvas canvas){

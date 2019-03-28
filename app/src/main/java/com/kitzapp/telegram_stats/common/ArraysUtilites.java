@@ -41,4 +41,21 @@ public class ArraysUtilites {
         }
         return newArray;
     }
+
+    public static long[] getRange(int start, int end, long[] original) {
+        int lenghtOriginal = original.length;
+        start--; end++; // Need for include values without canvas
+        if (end > lenghtOriginal) {
+            end = lenghtOriginal;
+        }
+        if (start < 0) {
+            start = 0;
+        }
+        int lenght = end - start;
+        long[] newArray = new long[lenght];
+        for (int i = start; i < end; i++) {
+            newArray[i - start] = original[i];
+        }
+        return newArray;
+    }
 }
