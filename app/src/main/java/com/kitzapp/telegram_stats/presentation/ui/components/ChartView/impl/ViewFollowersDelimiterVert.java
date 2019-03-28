@@ -71,7 +71,7 @@ class ViewFollowersDelimiterVert extends LinearLayout {
         this.addView(_tTextView4);
         this.addView(this.getDelimiterLine());
         this.addView(_tTextView5);
-        this.addView(this.getDelimiterLine());
+        this.addView(this.getDelimiterLine(true));
     }
 
     public void setDatesAndInit(long[] arrayDates) {
@@ -177,8 +177,13 @@ class ViewFollowersDelimiterVert extends LinearLayout {
     }
 
     private TDelimiterLine getDelimiterLine() {
+        return this.getDelimiterLine(false);
+    }
+
+    private TDelimiterLine getDelimiterLine(boolean isLast) {
         TDelimiterLine delimiterLine = new TDelimiterLine(getContext());
-        delimiterLine.setAlpha(0.4f);
+        float alpha = isLast? 1f : 0.4f;
+        delimiterLine.setAlpha(alpha);
         LinearLayout.LayoutParams layoutParams = (LayoutParams) delimiterLine.getLayoutParams();
         layoutParams.setMargins(0, 0, 0, 0);
         return delimiterLine;

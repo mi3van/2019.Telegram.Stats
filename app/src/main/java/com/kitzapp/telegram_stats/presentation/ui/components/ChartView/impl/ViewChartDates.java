@@ -26,7 +26,7 @@ class ViewChartDates extends LinearLayout {
     private final int TEXT_VIEW_TYPE_LEFT = -2;
     private final int TEXT_VIEW_TYPE_RIGHT = 2;
     private final String MMM_D_FORMAT = "MMM d";
-    private final String MMM_Y_FORMAT = "MMM y";
+    private final String M_Y_FORMAT = "M/y";
 
     public interface Listener {
         void onDatesWasChecked(long[] dates);
@@ -112,7 +112,7 @@ class ViewChartDates extends LinearLayout {
                 currentDayInYear = calendar.get(Calendar.DAY_OF_YEAR);
 
                 if (currentDayInYear > nextDayInYear) {
-                    dateFormat = MMM_Y_FORMAT;
+                    dateFormat = M_Y_FORMAT;
                 } else {
                     dateFormat = MMM_D_FORMAT;
                     date = getFormattedDay(date, calendar);
@@ -180,7 +180,7 @@ class ViewChartDates extends LinearLayout {
         LinearLayout.LayoutParams layoutParams = (LayoutParams) getLayoutParams();
         layoutParams.height = ThemeManager.CHART_CELL_HEIGHT_PX >> 1;
         int marginPx = ThemeManager.CHART_CELL_RIGHTLEFT_MARGIN_PX;
-        layoutParams.setMargins(marginPx, 0, marginPx, 0);
+        layoutParams.setMargins(marginPx, 0, marginPx, marginPx >> 1);
     }
 
     private TChartTextView getNewTextView(int typeTexView) {
