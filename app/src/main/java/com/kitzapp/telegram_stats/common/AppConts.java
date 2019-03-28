@@ -9,4 +9,6 @@ package com.kitzapp.telegram_stats.common;
 public class AppConts {
     public static final int DELAY_COLOR_ANIM = 300;
     public static final String JSON_CHART_FILENAME = "chart_data.json";
+
+    public static final int INTEGER_MIN_VALUE = 0x80000000;
 }

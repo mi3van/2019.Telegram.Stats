@@ -22,9 +22,9 @@ public class MotionMagic extends Observable implements View.OnTouchListener {
     private final byte MOTION_LEFT = 2;
     private final byte MOTION_RIGHT = 4;
 
-    private final float MAX_CURSORS_WIDTH = 0.3f;
     private final float COEF_CURSOR_PX = 0.05f;
     private boolean isAllowTouchEventForScrollView;
+    private final float _maxCursorWidth;
 
     public interface MotionListener {
         void onMoveLeftSide(float newLeftCursor);
@@ -47,9 +47,10 @@ public class MotionMagic extends Observable implements View.OnTouchListener {
     private byte _currentMotion = MOTION_UNDEFINED;
     private Context _context;
 
-    public MotionMagic(Context context, View motionView, MotionListener motionListener) {
+    public MotionMagic(Context context, View motionView, MotionListener motionListener, float maxCursorWidth) {
         _motionListener = motionListener;
         _context = context;
+        _maxCursorWidth = maxCursorWidth;
 
         this.addObserver();
 
@@ -106,7 +107,7 @@ public class MotionMagic extends Observable implements View.OnTouchListener {
         switch (_currentMotion) {
             case MOTION_LEFT:
                 leftCursor += difference;
-                float limitToLeftCursor = rightCursor - MAX_CURSORS_WIDTH;
+                float limitToLeftCursor = rightCursor - _maxCursorWidth;
                 if (leftCursor > limitToLeftCursor) {
                     leftCursor = limitToLeftCursor;
                 }
@@ -114,7 +115,7 @@ public class MotionMagic extends Observable implements View.OnTouchListener {
                 break;
             case MOTION_RIGHT:
                 rightCursor += difference;
-                float limitToRightCursor = leftCursor + MAX_CURSORS_WIDTH;
+                float limitToRightCursor = leftCursor + _maxCursorWidth;
                 if (rightCursor < limitToRightCursor) {
                     rightCursor = limitToRightCursor;
                 }

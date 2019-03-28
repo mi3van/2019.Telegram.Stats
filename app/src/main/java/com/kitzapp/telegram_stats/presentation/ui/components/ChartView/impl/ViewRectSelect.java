@@ -26,9 +26,10 @@ import java.util.Observable;
  */
 
 class ViewRectSelect extends View implements TViewObserver, MotionMagic.MotionListener {
+    private final float MAX_CURSORS_WIDTH = 0.25f;
     private final float MIN_LEFT_CURSOR_VALUE = 0f;
-    private final float MAX_LEFT_CURSOR_VALUE = 0.7f;
-    private final float MIN_RIGHT_CURSOR = 0.3f;
+    private final float MAX_LEFT_CURSOR_VALUE = 1f - MAX_CURSORS_WIDTH;
+    private final float MIN_RIGHT_CURSOR = MAX_CURSORS_WIDTH;
     private final float MAX_RIGHT_CURSOR = 1f;
     private MotionMagic _motionMagic;
 
@@ -92,7 +93,7 @@ class ViewRectSelect extends View implements TViewObserver, MotionMagic.MotionLi
         int _widthVPaint = (int) _verticalPaint.getStrokeWidth();
         _halfWidthVPaint = _widthVPaint >> 1;
 
-        _motionMagic = new MotionMagic(getContext(), this, this);
+        _motionMagic = new MotionMagic(getContext(), this, this, MAX_CURSORS_WIDTH);
     }
 
     @Override
