@@ -53,6 +53,8 @@ public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectL
     private ViewChartDates.Listener _datesListener;
 
     private CellContainerForCircleViews _containerForCircleViews;
+    private int _verticalDelimiterHeight;
+    private int _xoffVerticalDelimiterH;
 
     public ViewChartPart(Context context) {
         super(context);
@@ -82,6 +84,7 @@ public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectL
         _verticalDelimiter = new TDelimiterLine(getContext());
         _verticalDelimiter.getLayoutParams().height = LayoutParams.MATCH_PARENT;
         _verticalDelimiter.getLayoutParams().width = ThemeManager.CHART_DELIMITER_FATNESS_PX;
+        _verticalDelimiter.setVisibility(INVISIBLE);
         addView(_verticalDelimiter);
 
         _motionManagerForPart = new MotionManagerForPart(getContext(), this, this);
@@ -89,6 +92,9 @@ public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectL
 
         _containerForCircleViews = new CellContainerForCircleViews(getContext());
         addView(_containerForCircleViews);
+
+        _verticalDelimiterHeight = _verticalDelimiter.getHeight();
+        _xoffVerticalDelimiterH = -_verticalDelimiterHeight >> 3;
     }
 
     @Override
@@ -263,7 +269,9 @@ public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectL
     @SuppressLint("SimpleDateFormat")
     private void drawPopupViews(int indexShowedPart) {
 
-        _verticalDelimiter.setX(_partAxisXForGraph[indexShowedPart]);
+        float currentX = _partAxisXForGraph[indexShowedPart];
+        _verticalDelimiter.setX(currentX);
+        _verticalDelimiter.setVisibility(VISIBLE);
 
         PopupWindow popupWindow = AndroidApp.popupWindow;
         View popupView = popupWindow.getContentView();
@@ -305,23 +313,18 @@ public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectL
                 value = String.valueOf(line.getData()[globalIndex]);
                 cellForPopup = new TInfoCellForPopup(getContext(), title, value, color);
                 container.addView(cellForPopup);
-                _containerForCircleViews.addCircle(_partAxisXForGraph[indexShowedPart],
+                _containerForCircleViews.addCircle(currentX,
                         _partAxisesY.get(entry.getKey())[indexShowedPart], color);
             }
         }
 
-        int _verticalDelimiterHeight = _verticalDelimiter.getHeight();
-        int _xoffVerticalDelimiterH = -_verticalDelimiterHeight >> 3;
         popupWindow.showAsDropDown(_verticalDelimiter, _xoffVerticalDelimiterH, -_verticalDelimiterHeight + _xoffVerticalDelimiterH);
-
     }
 
     private void hidePopupViews() {
         PopupWindow popupWindow = AndroidApp.popupWindow;
-        if ((popupWindow != null && popupWindow.isShowing()) ||
-                (_verticalDelimiter != null && _verticalDelimiter.getVisibility() == VISIBLE)) {
-            assert popupWindow != null;
-            _verticalDelimiter.setX(-10);
+        if ((popupWindow != null && popupWindow.isShowing())) {
+            _verticalDelimiter.setVisibility(INVISIBLE);
             popupWindow.dismiss();
             _containerForCircleViews.removeAllViews();
             _containerForCircleViews.setVisibility(GONE);
@@ -332,7 +335,6 @@ public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectL
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-
         this.getViewTreeObserver().addOnScrollChangedListener(this::hidePopupViews);
     }
 
