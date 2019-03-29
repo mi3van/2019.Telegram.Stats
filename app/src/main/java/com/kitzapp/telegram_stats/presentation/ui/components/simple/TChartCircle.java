@@ -5,10 +5,9 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
-import com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl.ViewChartPart;
+import com.kitzapp.telegram_stats.common.AndroidUtilites;
 
 /**
  * Created by Ivan Kuzmin on 29.03.2019;
@@ -16,7 +15,7 @@ import com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl.View
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class TChartCircle extends View implements ViewChartPart.OnChartPopupListener {
+public class TChartCircle extends View {
 
     Paint _paint;
 
@@ -32,15 +31,9 @@ public class TChartCircle extends View implements ViewChartPart.OnChartPopupList
         super(context, attrs, defStyleAttr);
     }
 
-    public TChartCircle(Context context, Paint _paint) {
+    public TChartCircle(Context context, int color) {
         super(context);
-        this._paint = _paint;
-        getLayoutParams().height = ThemeManager.CHART_CIRCLE_SIZE_PX;
-        getLayoutParams().width = ThemeManager.CHART_CIRCLE_SIZE_PX;
-    }
-
-    public ViewChartPart.OnChartPopupListener getDelegate() {
-        return this;
+        this._paint = AndroidUtilites.getPaint(color, ThemeManager.CHART_LINE_IN_PART_WIDTH_PX);
     }
 
     @Override
@@ -48,12 +41,15 @@ public class TChartCircle extends View implements ViewChartPart.OnChartPopupList
         super.onDraw(canvas);
         if (_paint != null) {
             int center = ThemeManager.CHART_CIRCLE_SIZE_PX >> 1;
-            canvas.drawCircle(center, center, center >> 2, _paint);
+            int width = center - ThemeManager.CHART_LINE_FULL_WIDTH_PX;
+            canvas.drawCircle(center, center, width, _paint);
         }
     }
 
     @Override
-    public void hideViews() {
-        ((ViewGroup)getParent()).removeView(this);
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        getLayoutParams().height = ThemeManager.CHART_CIRCLE_SIZE_PX;
+        getLayoutParams().width = ThemeManager.CHART_CIRCLE_SIZE_PX;
     }
 }

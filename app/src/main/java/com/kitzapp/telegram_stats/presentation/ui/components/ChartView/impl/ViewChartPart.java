@@ -40,10 +40,6 @@ import static com.kitzapp.telegram_stats.common.AppConts.INTEGER_MIN_VALUE;
 public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener, MotionManagerForPart.OnMyTouchListener {
     private final String PART_DATE_FORMAT = "E, MMM d";
 
-    public interface OnChartPopupListener {
-        void hideViews();
-    }
-
     private ViewFollowersDelimiterVert _viewFollowersVert;
     private TDelimiterLine _verticalDelimiter;
 
@@ -51,11 +47,12 @@ public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectL
     private float[] _partAxisXForGraph = null;
     private float _leftCursor;
     private float _rightCursor;
-    private ViewChartDates.Listener _datesListener;
     private MotionManagerForPart _motionManagerForPart;
     private int _oldIndexShowed;
     private int _leftInArray;
-    private OnChartPopupListener _onChartPopupListener;
+    private ViewChartDates.Listener _datesListener;
+
+    private CellContainerForCircleViews _containerForCircleViews;
 
     public ViewChartPart(Context context) {
         super(context);
@@ -86,10 +83,12 @@ public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectL
         _verticalDelimiter.getLayoutParams().height = LayoutParams.MATCH_PARENT;
         _verticalDelimiter.getLayoutParams().width = ThemeManager.CHART_DELIMITER_FATNESS_PX;
         addView(_verticalDelimiter);
-        _verticalDelimiter.setVisibility(GONE);
 
         _motionManagerForPart = new MotionManagerForPart(getContext(), this, this);
         _oldIndexShowed = -1;
+
+        _containerForCircleViews = new CellContainerForCircleViews(getContext());
+        addView(_containerForCircleViews);
     }
 
     @Override
@@ -264,16 +263,9 @@ public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectL
     @SuppressLint("SimpleDateFormat")
     private void drawPopupViews(int indexShowedPart) {
 
-        float currentX = _partAxisXForGraph[indexShowedPart];
-
-        _verticalDelimiter.setVisibility(VISIBLE);
-        _verticalDelimiter.setX(currentX);
+        _verticalDelimiter.setX(_partAxisXForGraph[indexShowedPart]);
 
         PopupWindow popupWindow = AndroidApp.popupWindow;
-        if (popupWindow.isShowing()) {
-            popupWindow.dismiss();
-        }
-
         View popupView = popupWindow.getContentView();
         TTotalLinLayout linLayout = popupView.findViewById(R.id.totalLayoutPopup);
         linLayout.init();
@@ -302,6 +294,8 @@ public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectL
         boolean isActiveChart;
         LinearLayout container = popupView.findViewById(R.id.containerPopup);
         container.removeAllViews();
+        _containerForCircleViews.setVisibility(VISIBLE);
+        _containerForCircleViews.removeAllViews();
         for (Map.Entry<String, Line> entry : _chart.getLines().entrySet()) {
             line = _chart.getLines().get(entry.getKey());
             isActiveChart = line.getIsActive();
@@ -311,19 +305,27 @@ public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectL
                 value = String.valueOf(line.getData()[globalIndex]);
                 cellForPopup = new TInfoCellForPopup(getContext(), title, value, color);
                 container.addView(cellForPopup);
+                _containerForCircleViews.addCircle(_partAxisXForGraph[indexShowedPart],
+                        _partAxisesY.get(entry.getKey())[indexShowedPart], color);
             }
         }
 
-        int xoff = -_verticalDelimiter.getHeight() >> 3;
-        popupWindow.showAsDropDown(_verticalDelimiter, xoff, -_verticalDelimiter.getHeight() + xoff);
+        int _verticalDelimiterHeight = _verticalDelimiter.getHeight();
+        int _xoffVerticalDelimiterH = -_verticalDelimiterHeight >> 3;
+        popupWindow.showAsDropDown(_verticalDelimiter, _xoffVerticalDelimiterH, -_verticalDelimiterHeight + _xoffVerticalDelimiterH);
 
     }
 
     private void hidePopupViews() {
         PopupWindow popupWindow = AndroidApp.popupWindow;
-        if (popupWindow != null && popupWindow.isShowing()) {
-            _verticalDelimiter.setVisibility(GONE);
+        if ((popupWindow != null && popupWindow.isShowing()) ||
+                (_verticalDelimiter != null && _verticalDelimiter.getVisibility() == VISIBLE)) {
+            assert popupWindow != null;
+            _verticalDelimiter.setX(-1);
             popupWindow.dismiss();
+            _containerForCircleViews.removeAllViews();
+            _containerForCircleViews.setVisibility(GONE);
+            invalidate();
         }
     }
 
