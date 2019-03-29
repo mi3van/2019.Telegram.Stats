@@ -323,13 +323,15 @@ public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectL
     }
 
     private void hidePopupViews() {
-        PopupWindow popupWindow = AndroidApp.popupWindow;
-        if ((popupWindow != null && popupWindow.isShowing())) {
-            _verticalDelimiter.setVisibility(INVISIBLE);
-            popupWindow.dismiss();
+        if (_containerForCircleViews != null && _containerForCircleViews.getVisibility() == VISIBLE) {
             _containerForCircleViews.removeAllViews();
             _containerForCircleViews.setVisibility(GONE);
-            invalidate();
+        }
+        if (_verticalDelimiter != null && _verticalDelimiter.getVisibility() == VISIBLE) {
+            _verticalDelimiter.setVisibility(INVISIBLE);
+        }
+        if (AndroidApp.popupWindow.isShowing()) {
+            AndroidApp.popupWindow.dismiss();
         }
     }
 
