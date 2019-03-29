@@ -123,7 +123,7 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View, 
 
     @Override
     public void update(Observable observable, Object arg) {
-        if ((int) arg == ObserverManager.KEY_OBSERVER_DISSALLOW_TOUCH_SCROLLVIEW) {
+        if ((int) arg == ObserverManager.KEY_OBSERVER_ALLOW_TOUCH_SCROLLVIEW_FOR_RECT_SELECT) {
             if (observable instanceof MotionMagic) {
                 MotionMagic motionMagic = (MotionMagic) observable;
                 boolean isAllowTouchEventForScrollView = motionMagic.getIsAllowTouchEventForScrollView();

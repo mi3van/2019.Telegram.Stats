@@ -85,4 +85,10 @@ public class TTotalLinLayout extends LinearLayout implements TViewObserver {
         super.onDetachedFromWindow();
         this.deleteObserver();
     }
+
+    @Override
+    public void setBackgroundColor(int color) {
+        super.setBackgroundColor(color);
+        _oldBackColor = color;
+    }
 }

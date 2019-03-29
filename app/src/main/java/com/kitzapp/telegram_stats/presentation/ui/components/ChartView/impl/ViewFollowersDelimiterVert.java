@@ -101,25 +101,26 @@ class ViewFollowersDelimiterVert extends LinearLayout {
     private String convertLongToStr(long follower) {
         String folowerStr; String postfix;
         float tempValue;
-//        int size = folowerStr.length();
         if (follower >= 10000000) {//10M
             tempValue = (float) follower / 1000000; postfix = "M";
             folowerStr = String.format("%.0f%s", tempValue, postfix);
-//            folowerStr = folowerStr.substring(0, size - 6) + "M";
-        } else if (follower >= 1000000) {//1.5M
-            tempValue = (float) follower / 1000000; postfix = "M";
-            folowerStr = String.format("%.1f%s", tempValue, postfix);
-//            folowerStr = folowerStr.charAt(size - 7) + "." + folowerStr.charAt(size - 6) + "M";
-        } else if (follower >= 10000) {//10k
-            tempValue = (float) follower / 1000; postfix = "K";
-            folowerStr = String.format("%.0f%s", tempValue, postfix);
-//            folowerStr = folowerStr.substring(0, size - 3) + "K";
-        } else if (follower >= 1000) {//1.5k
-            tempValue = (float) follower / 1000; postfix = "K";
-            folowerStr = String.format("%.1f%s", tempValue, postfix);
-//            folowerStr = folowerStr.charAt(size - 4) + "." + folowerStr.charAt(size - 3) + "K";
         } else {
-            folowerStr = String.valueOf(follower);
+            float tempFloatFolower = (float) follower;
+            if (follower >= 1000000) {//1.5M
+                tempValue = tempFloatFolower / 1000000;
+                postfix = "M";
+                folowerStr = String.format("%.1f%s", tempValue, postfix);
+            } else if (follower >= 10000) {//10k
+                tempValue = tempFloatFolower / 1000;
+                postfix = "K";
+                folowerStr = String.format("%.0f%s", tempValue, postfix);
+            } else if (follower >= 1000) {//1.5k
+                tempValue = tempFloatFolower / 1000;
+                postfix = "K";
+                folowerStr = String.format("%.1f%s", tempValue, postfix);
+            } else {
+                folowerStr = String.valueOf(follower);
+            }
         }
 
         return folowerStr;

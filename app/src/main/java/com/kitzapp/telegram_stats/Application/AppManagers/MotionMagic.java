@@ -80,7 +80,7 @@ public class MotionMagic extends Observable implements View.OnTouchListener {
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 if (_currentMotion != MOTION_UNDEFINED) {
-                    this.updateIsAllowTouchAndNotifyObservers(true);
+                    this.updateIsAllowTouchAndNotifyObservers(false);
                     _currentMotion = MOTION_UNDEFINED;
                 }
                 break;
@@ -160,7 +160,7 @@ public class MotionMagic extends Observable implements View.OnTouchListener {
     private void updateIsAllowTouchAndNotifyObservers(boolean isAllowTouchEventForScrollView) {
         this.isAllowTouchEventForScrollView = isAllowTouchEventForScrollView;
         this.setChanged();
-        this.notifyObservers(ObserverManager.KEY_OBSERVER_DISSALLOW_TOUCH_SCROLLVIEW);
+        this.notifyObservers(ObserverManager.KEY_OBSERVER_ALLOW_TOUCH_SCROLLVIEW_FOR_RECT_SELECT);
     }
 
     public boolean getIsAllowTouchEventForScrollView() {

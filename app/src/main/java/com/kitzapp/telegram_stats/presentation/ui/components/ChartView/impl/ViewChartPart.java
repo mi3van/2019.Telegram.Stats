@@ -1,15 +1,29 @@
 package com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.kitzapp.telegram_stats.Application.AppManagers.MotionManagerForPart;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
+import com.kitzapp.telegram_stats.R;
 import com.kitzapp.telegram_stats.common.ArraysUtilites;
-import com.kitzapp.telegram_stats.domain.model.chart.Chart;
 import com.kitzapp.telegram_stats.common.MyLongPair;
+import com.kitzapp.telegram_stats.domain.model.chart.Chart;
+import com.kitzapp.telegram_stats.domain.model.chart.impl.Line;
+import com.kitzapp.telegram_stats.presentation.ui.components.TSimpleTextView;
+import com.kitzapp.telegram_stats.presentation.ui.components.TTotalLinLayout;
+import com.kitzapp.telegram_stats.presentation.ui.components.simple.TDelimiterLine;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
@@ -23,15 +37,26 @@ import static com.kitzapp.telegram_stats.common.AppConts.INTEGER_MIN_VALUE;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener {
+public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener, MotionManagerForPart.OnMyTouchListener {
+    private final String PART_DATE_FORMAT = "E, MMM d";
+
+    public interface OnChartPopupListener {
+        void hideViews();
+    }
 
     private ViewFollowersDelimiterVert _viewFollowersVert;
+    private TDelimiterLine _verticalDelimiter;
+    private PopupWindow _popupWindow;
 
     private HashMap<String, long[]> _partAxisesY = new HashMap<>();
     private float[] _partAxisXForGraph = null;
     private float _leftCursor;
     private float _rightCursor;
     private ViewChartDates.Listener _datesListener;
+    private MotionManagerForPart _motionManagerForPart;
+    private int _oldIndexShowed;
+    private int _leftInArray;
+    private OnChartPopupListener _onChartPopupListener;
 
     public ViewChartPart(Context context) {
         super(context);
@@ -56,6 +81,45 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
 
         _viewFollowersVert = new ViewFollowersDelimiterVert(getContext());
         addView(_viewFollowersVert);
+
+//        SETUP VERTICAL DELIMITER
+        _verticalDelimiter = new TDelimiterLine(getContext());
+        _verticalDelimiter.getLayoutParams().height = LayoutParams.MATCH_PARENT;
+        _verticalDelimiter.getLayoutParams().width = ThemeManager.CHART_DELIMITER_FATNESS_PX;
+        addView(_verticalDelimiter);
+        _verticalDelimiter.setVisibility(GONE);
+//        SETUP POPUP VIEW
+        _popupWindow = new PopupWindow(getContext());
+        _popupWindow.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        _popupWindow.setOutsideTouchable(true);
+        LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        assert layoutInflater != null;
+        View popupView = layoutInflater.inflate(R.layout.popup_window_table, null);
+        _popupWindow.setContentView(popupView);
+        _popupWindow.setAnimationStyle(R.style.popup_window_animation);
+
+        _motionManagerForPart = new MotionManagerForPart(getContext(), this, this);
+        _oldIndexShowed = -1;
+    }
+
+    @Override
+    public void onXwasDetected(float newX) {
+        if (_partAxisXForGraph != null) {
+            int tempIndex = -1;
+            float coefficient = (_partAxisXForGraph[1] - _partAxisXForGraph[0]) / 2;
+            for (int i = 0; i < _partAxisXForGraph.length; i++) {
+                float currentPoint = _partAxisXForGraph[i] - coefficient;
+                float nextPoint = _partAxisXForGraph[i] + coefficient;
+                if (newX > currentPoint && newX <= nextPoint) {
+                    tempIndex = i;
+                    break;
+                }
+            }
+            if (tempIndex >=0 && tempIndex != _oldIndexShowed) {
+                _oldIndexShowed = tempIndex;
+                drawPopupViews(_oldIndexShowed);
+            }
+        }
     }
 
     @Override
@@ -73,24 +137,26 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
     public void onRectCursorsWasChanged(float leftCursor, float rightCursor) {
         _leftCursor = leftCursor;
         _rightCursor = rightCursor;
-        int leftInArray = (int) (_maxAxisXx * leftCursor);
+        _leftInArray = (int) (_maxAxisXx * leftCursor);
         int rightInArray = (int) (_maxAxisXx * rightCursor);
 
-        int countPoints = rightInArray - leftInArray;
+        int countPoints = rightInArray - _leftInArray;
 
         if (countPoints < 2) {
             return;
         }
 
+        this.hidePopupViews();
+
         if (_datesListener != null) {
-            long[] dates = this.getDatesForSend(leftInArray, rightInArray);
+            long[] dates = this.getDatesForSend(_leftInArray, rightInArray);
             _datesListener.onDatesWasChanged(dates);
         }
 
         // Get new part arrays for draw Y
-        _partAxisesY = getPartOfFullHashAxisY(leftInArray, rightInArray);
+        _partAxisesY = getPartOfFullHashAxisY(_leftInArray, rightInArray);
         // Get new part arrays for draw X
-        _partAxisXForGraph = getPartOfFullAxisX(leftInArray, rightInArray);
+        _partAxisXForGraph = getPartOfFullAxisX(_leftInArray, rightInArray);
 
         float leftInPx = leftCursor * _viewWidth;
         float rightInPx = rightCursor * _viewWidth;
@@ -205,12 +271,79 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
         return sendingArray;
     }
 
-//    private void drawText(Canvas canvas){
-//        canvas.save();
-//        Rect bounds = new Rect();
-//        float widthText = _textPaint.measureText(String.valueOf(_number));
-//        float heightHeight = measureHeight();
-//        canvas.drawText(String.valueOf(_number), _centerX - widthText * 0.5f, _centerY + heightHeight, _textPaint);
-//        canvas.restore();
-//    }
+    @SuppressLint("SimpleDateFormat")
+    private void drawPopupViews(int indexShowedPart) {
+
+        float currentX = _partAxisXForGraph[indexShowedPart];
+
+        _verticalDelimiter.setVisibility(VISIBLE);
+        _verticalDelimiter.setX(currentX);
+
+        if (_popupWindow.isShowing()) {
+            _popupWindow.dismiss();
+        }
+
+        View popupView = _popupWindow.getContentView();
+        TTotalLinLayout linLayout = popupView.findViewById(R.id.totalLayoutPopup);
+        linLayout.init();
+        TSimpleTextView simpleText = popupView.findViewById(R.id.simpleTextPopup);
+        simpleText.init();
+        simpleText.setTextSizeDP(ThemeManager.chartDescrTextPaint.getTextSize());
+        simpleText.setTypeface(ThemeManager.chartTitleTextPaint.getTypeface());
+        int globalIndex;
+        if (_leftInArray != 0) {
+            globalIndex = indexShowedPart + _leftInArray - 1;
+        } else {
+            globalIndex = indexShowedPart + _leftInArray;
+        }
+        if (globalIndex < 0) {
+            globalIndex = 0;
+        }
+
+        long date = _chart.getAxisX().getData()[globalIndex];
+        SimpleDateFormat formatter = new SimpleDateFormat(PART_DATE_FORMAT);
+        String dateString = formatter.format(new Date(date));
+        simpleText.setText(dateString);
+
+        TInfoCellForPopup cellForPopup;
+        String title; int color; String value;
+        Line line;
+        boolean isActiveChart;
+        LinearLayout container = popupView.findViewById(R.id.containerPopup);
+        container.removeAllViews();
+        for (Map.Entry<String, Line> entry : _chart.getLines().entrySet()) {
+            line = _chart.getLines().get(entry.getKey());
+            isActiveChart = line.getIsActive();
+            if (isActiveChart) {
+                title = line.getName();
+                color = line.getColor();
+                value = String.valueOf(line.getData()[globalIndex]);
+                cellForPopup = new TInfoCellForPopup(getContext(), title, value, color);
+                container.addView(cellForPopup);
+            }
+        }
+
+        _popupWindow.showAsDropDown(_verticalDelimiter);
+
+    }
+
+    private void hidePopupViews() {
+        if (_popupWindow != null && _popupWindow.isShowing()) {
+            _verticalDelimiter.setVisibility(GONE);
+            _popupWindow.dismiss();
+        }
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
+        this.getViewTreeObserver().addOnScrollChangedListener(this::hidePopupViews);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        _motionManagerForPart.deattachView();
+    }
 }

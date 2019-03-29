@@ -87,4 +87,10 @@ public class TSimpleTextView extends TTextView implements TViewObserver {
         super.onDetachedFromWindow();
         this.deleteObserver();
     }
+
+    @Override
+    public void setTextColor(int color) {
+        super.setTextColor(color);
+        _oldTextColor = color;
+    }
 }

@@ -155,10 +155,10 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
     }
 
     protected void initAxisX() {
-        float stepX = _viewWidth / (_maxAxisXx - 1);
+        float stepX = (_viewWidth - CHART_PART_VERTICAL_PADDING_SUM_PX) / (_maxAxisXx - 1);
         // CONVERT X AND Y's TO CANVAS SIZE
         _axisXForGraph = new float[_maxAxisXx];
-        _axisXForGraph[0] = 0;
+        _axisXForGraph[0] = CHART_PART_VERTICAL_PADDING_HALF_PX;
         for (int i = 1; i < _maxAxisXx; i++) {
             _axisXForGraph[i] = _axisXForGraph[i - 1] + stepX;
         }
