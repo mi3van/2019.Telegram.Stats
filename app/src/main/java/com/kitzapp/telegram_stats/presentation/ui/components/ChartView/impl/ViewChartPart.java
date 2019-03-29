@@ -92,9 +92,6 @@ public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectL
 
         _containerForCircleViews = new CellContainerForCircleViews(getContext());
         addView(_containerForCircleViews);
-
-        _verticalDelimiterHeight = _verticalDelimiter.getHeight();
-        _xoffVerticalDelimiterH = -_verticalDelimiterHeight >> 3;
     }
 
     @Override
@@ -318,6 +315,10 @@ public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectL
             }
         }
 
+        if (_verticalDelimiterHeight == 0) {
+            _verticalDelimiterHeight = _verticalDelimiter.getHeight();
+            _xoffVerticalDelimiterH = -_verticalDelimiterHeight >> 3;
+        }
         popupWindow.showAsDropDown(_verticalDelimiter, _xoffVerticalDelimiterH, -_verticalDelimiterHeight + _xoffVerticalDelimiterH);
     }
 
