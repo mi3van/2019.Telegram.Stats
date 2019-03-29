@@ -27,8 +27,7 @@ import java.util.Observer;
 
 public class ChartActivity extends BaseActivity implements ChartPresenter.View, Observer {
 
-    private FloatingActionButton _loading;
-
+    private FloatingActionButton _fABLoading;
     private ViewGroup _baseLayout;
     private TChartPresenter _chartPresenter;
     private ProgressBar _progressBar;
@@ -53,7 +52,7 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View, 
     @Override
     protected void initViews() {
         _baseLayout = findViewById(R.id.baseLayout);
-        _loading = findViewById(R.id.loading);
+        _fABLoading = findViewById(R.id.fABLoading);
         _progressBar = findViewById(R.id.progressBar);
         _toolbar = findViewById(R.id.toolbar);
         _containerLayout = findViewById(R.id.chartsContainer);
@@ -63,14 +62,24 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View, 
         String toolbarTitle = getResources().getString(R.string.toolbar_title);
         Objects.requireNonNull(getSupportActionBar()).setTitle(toolbarTitle);
 
-        _loading.setOnClickListener(l -> _chartPresenter.runAnalyzeJson());
+        _fABLoading.setOnClickListener(l -> _chartPresenter.runAnalyzeJson());
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int blackColor = AndroidUtilites.getColorSDK(getBaseContext(), R.color.cBlack);
             Window window = getWindow();
             window.setNavigationBarColor(blackColor);
             window.setStatusBarColor(Color.TRANSPARENT);
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            _mainScrollView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+        if (scrollY > oldScrollY) {
+            _fABLoading.hide();
+        } else {
+            _fABLoading.show();
+        }
+    });
         }
     }
 

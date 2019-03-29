@@ -3,7 +3,7 @@
         android:id="@+id/baseLayout"
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.kitzapp.telegram_stats.presentation.ui.components.TTotalLinLayout
         android:layout_width="match_parent"
@@ -42,13 +42,16 @@
                     android:visibility="gone"/>
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/loading"
+                android:id="@+id/fABLoading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:theme="@style/Widget.Design.FloatingActionButton"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:src="@drawable/ic_show_chart_black_24dp"
+                app:layout_anchor="@id/mainScrollView"
+                app:layout_anchorGravity="bottom|right|end"
                 android:layout_marginBottom="@dimen/activity_vertical_margin"/>
 
         </RelativeLayout>
