@@ -3,14 +3,13 @@ package com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.kitzapp.telegram_stats.Application.AndroidApp;
 import com.kitzapp.telegram_stats.Application.AppManagers.MotionManagerForPart;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.R;
@@ -21,6 +20,7 @@ import com.kitzapp.telegram_stats.domain.model.chart.impl.Line;
 import com.kitzapp.telegram_stats.presentation.ui.components.TSimpleTextView;
 import com.kitzapp.telegram_stats.presentation.ui.components.TTotalLinLayout;
 import com.kitzapp.telegram_stats.presentation.ui.components.simple.TDelimiterLine;
+import com.kitzapp.telegram_stats.presentation.ui.components.simple.TInfoCellForPopup;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -46,7 +46,6 @@ public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectL
 
     private ViewFollowersDelimiterVert _viewFollowersVert;
     private TDelimiterLine _verticalDelimiter;
-    private PopupWindow _popupWindow;
 
     private HashMap<String, long[]> _partAxisesY = new HashMap<>();
     private float[] _partAxisXForGraph = null;
@@ -88,15 +87,6 @@ public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectL
         _verticalDelimiter.getLayoutParams().width = ThemeManager.CHART_DELIMITER_FATNESS_PX;
         addView(_verticalDelimiter);
         _verticalDelimiter.setVisibility(GONE);
-//        SETUP POPUP VIEW
-        _popupWindow = new PopupWindow(getContext());
-        _popupWindow.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        _popupWindow.setOutsideTouchable(true);
-        LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        assert layoutInflater != null;
-        View popupView = layoutInflater.inflate(R.layout.popup_window_table, null);
-        _popupWindow.setContentView(popupView);
-        _popupWindow.setAnimationStyle(R.style.popup_window_animation);
 
         _motionManagerForPart = new MotionManagerForPart(getContext(), this, this);
         _oldIndexShowed = -1;
@@ -138,7 +128,7 @@ public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectL
         _leftCursor = leftCursor;
         _rightCursor = rightCursor;
         _leftInArray = (int) (_maxAxisXx * leftCursor);
-        int rightInArray = (int) (_maxAxisXx * rightCursor);
+        int rightInArray = (int) (_maxAxisXx * rightCursor) + 1;
 
         int countPoints = rightInArray - _leftInArray;
 
@@ -279,11 +269,12 @@ public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectL
         _verticalDelimiter.setVisibility(VISIBLE);
         _verticalDelimiter.setX(currentX);
 
-        if (_popupWindow.isShowing()) {
-            _popupWindow.dismiss();
+        PopupWindow popupWindow = AndroidApp.popupWindow;
+        if (popupWindow.isShowing()) {
+            popupWindow.dismiss();
         }
 
-        View popupView = _popupWindow.getContentView();
+        View popupView = popupWindow.getContentView();
         TTotalLinLayout linLayout = popupView.findViewById(R.id.totalLayoutPopup);
         linLayout.init();
         TSimpleTextView simpleText = popupView.findViewById(R.id.simpleTextPopup);
@@ -323,14 +314,16 @@ public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectL
             }
         }
 
-        _popupWindow.showAsDropDown(_verticalDelimiter);
+        int xoff = -_verticalDelimiter.getHeight() >> 3;
+        popupWindow.showAsDropDown(_verticalDelimiter, xoff, -_verticalDelimiter.getHeight() + xoff);
 
     }
 
     private void hidePopupViews() {
-        if (_popupWindow != null && _popupWindow.isShowing()) {
+        PopupWindow popupWindow = AndroidApp.popupWindow;
+        if (popupWindow != null && popupWindow.isShowing()) {
             _verticalDelimiter.setVisibility(GONE);
-            _popupWindow.dismiss();
+            popupWindow.dismiss();
         }
     }
 

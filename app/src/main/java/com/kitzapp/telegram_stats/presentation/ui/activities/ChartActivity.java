@@ -74,7 +74,7 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View, 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             _mainScrollView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-        if (scrollY > oldScrollY) {
+        if (scrollY >= oldScrollY) {
             _fABLoading.hide();
         } else {
             _fABLoading.show();
