@@ -1,4 +1,4 @@
-package com.kitzapp.telegram_stats.domain.model.chart.impl;
+package com.kitzapp.telegram_stats.common;
 
 /**
  * Created by Ivan Kuzmin on 29.03.2019;
@@ -6,11 +6,11 @@ package com.kitzapp.telegram_stats.domain.model.chart.impl;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class MyLongPoint {
+public class MyLongPair {
     private long max;
     private long min;
 
-    public MyLongPoint(long max, long min) {
+    public MyLongPair(long max, long min) {
         this.max = max;
         this.min = min;
     }

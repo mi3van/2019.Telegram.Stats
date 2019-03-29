@@ -9,11 +9,6 @@ import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.presentation.ui.components.simple.TChartTextView;
 import com.kitzapp.telegram_stats.presentation.ui.components.simple.TDelimiterLine;
 
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-
 /**
  * Created by Ivan Kuzmin on 28.03.2019;
  * 3van@mail.ru;
@@ -23,6 +18,7 @@ import java.util.Date;
 class ViewFollowersDelimiterVert extends LinearLayout {
     private final String MMM_D_FORMAT = "MMM d";
     private final String MMM_Y_FORMAT = "MMM y";
+    private final int COUNT_LINES = 6;
 
     private TChartTextView _tTextView1;
     private TChartTextView _tTextView2;
@@ -31,8 +27,9 @@ class ViewFollowersDelimiterVert extends LinearLayout {
     private TChartTextView _tTextView5;
     private TChartTextView _tTextView6;
 
-    private long[] _dates = null;
-    private int hashCodeDates;
+    private long[] _followers = null;
+    private long _maxY = 0;
+    private long _minY = 0;
 
     public ViewFollowersDelimiterVert(Context context) {
         super(context);
@@ -52,6 +49,7 @@ class ViewFollowersDelimiterVert extends LinearLayout {
     private void init() {
         setWillNotDraw(false);
         this.setOrientation(VERTICAL);
+        _followers = new long[COUNT_LINES];
 
         _tTextView1 = this.getNewTextView(true);
         _tTextView2 = this.getNewTextView();
@@ -74,84 +72,78 @@ class ViewFollowersDelimiterVert extends LinearLayout {
         this.addView(this.getDelimiterLine(true));
     }
 
-    public void setDatesAndInit(long[] arrayDates) {
-        if (arrayDates != null) {
-            int hashCodeNew = Arrays.hashCode(arrayDates);
-            if (hashCodeNew == hashCodeDates) {
-                return;
-            }
-            this._dates = arrayDates;
-            hashCodeDates = Arrays.hashCode(arrayDates);
+    public void setDatesAndInit(long maxY, long minY) {
+        if (maxY == _maxY && minY == _minY) {
+            return;
+        }
+        _maxY = maxY;
+        _minY = minY;
 
-            this.initDatesView(_dates);
+        double calculating = _maxY >> 6;
+        double topMargin = (long) (calculating + calculating + calculating * 0.5);
+        _maxY -= topMargin;
+
+        TChartTextView currentTextView;
+
+        double tempValue = ((double)(_maxY - _minY) / (COUNT_LINES - 1));
+        double tempY = _minY;
+
+        for (int i = 0; i < COUNT_LINES; i++) {
+            _followers[i] = (long) tempY;
+            currentTextView = getCurrentTextView(i);
+            currentTextView.setText(this.convertLongToStr(_followers[i]));
+
+            tempY += tempValue;
         }
     }
 
-    @SuppressLint("SimpleDateFormat")
-    private void initDatesView(long[] dates) {
-        Calendar calendar = Calendar.getInstance();
-
-        int datesLength = dates.length;
-        TChartTextView currentTextView;
-        String dateFormat; String dateString;
-        SimpleDateFormat formatter;
-
-        int currentDayInYear;   int nextDayInYear;  int nextIndex;
-        long date;              long nextDate = 0;
-
-        for (int i = 0; i < datesLength; i++) {
-            date = i == 0 ? dates[0] : nextDate;
-
-            nextIndex = i + 1;
-            if (nextIndex < datesLength) {
-                nextDate = dates[nextIndex];
-
-                calendar.setTimeInMillis(nextDate);
-                nextDayInYear = calendar.get(Calendar.DAY_OF_YEAR);
-
-                calendar.setTimeInMillis(date);
-                currentDayInYear = calendar.get(Calendar.DAY_OF_YEAR);
-
-                if (currentDayInYear > nextDayInYear) {
-                    dateFormat = MMM_Y_FORMAT;
-                } else {
-                    dateFormat = MMM_D_FORMAT;
-                }
-            } else {
-                dateFormat = MMM_D_FORMAT;
-            }
-
-            currentTextView = getCurrentTextView(i);
-            if (currentTextView == null) {
-                continue;
-            }
-            formatter = new SimpleDateFormat(dateFormat);
-            dateString = formatter.format(new Date(date));
-
-
-            currentTextView.setText(dateString);
+    @SuppressLint("DefaultLocale")
+    private String convertLongToStr(long follower) {
+        String folowerStr; String postfix;
+        float tempValue;
+//        int size = folowerStr.length();
+        if (follower >= 10000000) {//10M
+            tempValue = (float) follower / 1000000; postfix = "M";
+            folowerStr = String.format("%.0f%s", tempValue, postfix);
+//            folowerStr = folowerStr.substring(0, size - 6) + "M";
+        } else if (follower >= 1000000) {//1.5M
+            tempValue = (float) follower / 1000000; postfix = "M";
+            folowerStr = String.format("%.1f%s", tempValue, postfix);
+//            folowerStr = folowerStr.charAt(size - 7) + "." + folowerStr.charAt(size - 6) + "M";
+        } else if (follower >= 10000) {//10k
+            tempValue = (float) follower / 1000; postfix = "K";
+            folowerStr = String.format("%.0f%s", tempValue, postfix);
+//            folowerStr = folowerStr.substring(0, size - 3) + "K";
+        } else if (follower >= 1000) {//1.5k
+            tempValue = (float) follower / 1000; postfix = "K";
+            folowerStr = String.format("%.1f%s", tempValue, postfix);
+//            folowerStr = folowerStr.charAt(size - 4) + "." + folowerStr.charAt(size - 3) + "K";
+        } else {
+            folowerStr = String.valueOf(follower);
         }
+
+        return folowerStr;
     }
 
     private TChartTextView getCurrentTextView(int index) {
         TChartTextView tChartTextView = null;
         switch (index) {
-            case 0:
+            case 5:
                 tChartTextView = _tTextView1;
                 break;
-            case 1:
+            case 4:
                 tChartTextView = _tTextView2;
                 break;
-            case 2:
+            case 3:
                 tChartTextView = _tTextView3;
                 break;
-            case 3:
+            case 2:
                 tChartTextView = _tTextView4;
                 break;
-            case 4:
+            case 1:
                 tChartTextView = _tTextView5;
                 break;
-            case 5:
+            case 0:
                 tChartTextView = _tTextView6;
                 break;
         }

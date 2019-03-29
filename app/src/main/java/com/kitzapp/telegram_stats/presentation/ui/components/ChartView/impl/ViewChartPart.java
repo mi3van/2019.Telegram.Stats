@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.common.ArraysUtilites;
 import com.kitzapp.telegram_stats.domain.model.chart.Chart;
-import com.kitzapp.telegram_stats.domain.model.chart.impl.MyLongPoint;
+import com.kitzapp.telegram_stats.common.MyLongPair;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +25,7 @@ import static com.kitzapp.telegram_stats.common.AppConts.INTEGER_MIN_VALUE;
 
 class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener {
 
-    private ViewFollowersDelimiterVert _followersDelimiterVert;
+    private ViewFollowersDelimiterVert _viewFollowersVert;
 
     private HashMap<String, long[]> _partAxisesY = new HashMap<>();
     private float[] _partAxisXForGraph = null;
@@ -54,8 +54,8 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
     protected void firstInitAxisesAndVariables(boolean isNeedInitForCanvas) {
         super.firstInitAxisesAndVariables(false);
 
-        _followersDelimiterVert = new ViewFollowersDelimiterVert(getContext());
-        addView(_followersDelimiterVert);
+        _viewFollowersVert = new ViewFollowersDelimiterVert(getContext());
+        addView(_viewFollowersVert);
     }
 
     @Override
@@ -85,7 +85,6 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
         if (_datesListener != null) {
             long[] dates = this.getDatesForSend(leftInArray, rightInArray);
             _datesListener.onDatesWasChanged(dates);
-            _followersDelimiterVert.setDatesAndInit(dates);
         }
 
         // Get new part arrays for draw Y
@@ -120,7 +119,7 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
 
     private void updateMaxAndMin() {
 
-        MyLongPoint maxAndMinInPoint = this.getMaxAndMinInHashMap(_partAxisesY);
+        MyLongPair maxAndMinInPoint = this.getMaxAndMinInHashMap(_partAxisesY);
 
         long _tempMaxAxisY = maxAndMinInPoint.getMax();
         if (_tempMaxAxisY == INTEGER_MIN_VALUE) {
@@ -128,10 +127,12 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
         }
         long _tempMinAxisY = maxAndMinInPoint.getMin();
 
+        _viewFollowersVert.setDatesAndInit(_tempMaxAxisY, _tempMinAxisY);
+
         _partAxisesY = getAxisesForCanvas(_partAxisesY, _tempMaxAxisY, _tempMinAxisY);
     }
 
-    private MyLongPoint getMaxAndMinInHashMap(HashMap<String, long[]> hashMap) {
+    private MyLongPair getMaxAndMinInHashMap(HashMap<String, long[]> hashMap) {
         long max = INTEGER_MIN_VALUE;
         long min = INTEGER_MAX_VALUE;
         boolean isActiveChart;
@@ -151,7 +152,7 @@ class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener
                 }
             }
         }
-        return new MyLongPoint(max, min);
+        return new MyLongPair(max, min);
     }
 
     @Override
