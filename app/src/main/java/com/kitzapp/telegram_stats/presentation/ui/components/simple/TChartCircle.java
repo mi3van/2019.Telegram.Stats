@@ -1,13 +1,20 @@
 package com.kitzapp.telegram_stats.presentation.ui.components.simple;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.drawable.ShapeDrawable;
 import android.util.AttributeSet;
 import android.view.View;
 import androidx.annotation.Nullable;
+import com.kitzapp.telegram_stats.Application.AndroidApp;
+import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
+import com.kitzapp.telegram_stats.presentation.ui.components.TViewObserver;
+
+import java.util.Observable;
 
 /**
  * Created by Ivan Kuzmin on 29.03.2019;
@@ -15,9 +22,14 @@ import com.kitzapp.telegram_stats.common.AndroidUtilites;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class TChartCircle extends View {
+public class TChartCircle extends View implements TViewObserver {
 
-    Paint _paint;
+    private Paint _paint;
+    private ShapeDrawable _shapeDrawable;
+    private int _oldColor;
+    private int _sizeInsideCircle;
+    private int _center;
+    private int _width;
 
     public TChartCircle(Context context) {
         super(context);
@@ -34,22 +46,82 @@ public class TChartCircle extends View {
     public TChartCircle(Context context, int color) {
         super(context);
         this._paint = AndroidUtilites.getPaint(color, ThemeManager.CHART_LINE_IN_PART_WIDTH_PX);
+        this.init();
+    }
+
+    @Override
+    public void init() {
+        if (_shapeDrawable == null) {
+            _center = ThemeManager.CHART_CIRCLE_SIZE_PX >> 1;
+            _width = _center - ThemeManager.CHART_LINE_FULL_WIDTH_PX;
+            _sizeInsideCircle = (_width << 1) - ThemeManager.CHART_LINE_FULL_WIDTH_PX;
+
+            _oldColor = getCurrentColor();
+            _shapeDrawable = getCurrentDrawable(_oldColor);
+            this.setBackground(_shapeDrawable);
+        }
+    }
+
+    @Override
+    public void addObserver() {
+        AndroidApp.observerManager.addObserver(this);
+    }
+
+    @Override
+    public void deleteObserver() {
+        AndroidApp.observerManager.deleteObserver(this);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (_paint != null) {
-            int center = ThemeManager.CHART_CIRCLE_SIZE_PX >> 1;
-            int width = center - ThemeManager.CHART_LINE_FULL_WIDTH_PX;
-            canvas.drawCircle(center, center, width, _paint);
+            canvas.drawCircle(_center, _center, _width, _paint);
         }
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        if ((int) arg == ObserverManager.KEY_OBSERVER_THEME_UPDATED) {
+            int newColor = getCurrentColor();
+
+            if (_oldColor != newColor) {
+                // BACKGROUND CHANGE COLOR
+                ValueAnimator backRGBAnim = AndroidUtilites.getArgbAnimator(
+                        _oldColor,
+                        newColor,
+                        animation -> {
+                            int color = ((int) animation.getAnimatedValue());
+                            _shapeDrawable = getCurrentDrawable(color);
+                            setBackground(_shapeDrawable);
+                            _oldColor = newColor;
+                        });
+                backRGBAnim.start();
+                _oldColor = newColor;
+            }
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        this.deleteObserver();
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        this.addObserver();
         getLayoutParams().height = ThemeManager.CHART_CIRCLE_SIZE_PX;
         getLayoutParams().width = ThemeManager.CHART_CIRCLE_SIZE_PX;
+    }
+
+    private int getCurrentColor() {
+        int color = ThemeManager.getColor(ThemeManager.key_cellBackColor);
+        return color;
+    }
+
+    private ShapeDrawable getCurrentDrawable(int color) {
+        return AndroidUtilites.getOvalDrawable(getContext(), _sizeInsideCircle, _sizeInsideCircle, color);
     }
 }

@@ -321,7 +321,7 @@ public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectL
         if ((popupWindow != null && popupWindow.isShowing()) ||
                 (_verticalDelimiter != null && _verticalDelimiter.getVisibility() == VISIBLE)) {
             assert popupWindow != null;
-            _verticalDelimiter.setX(-1);
+            _verticalDelimiter.setX(-10);
             popupWindow.dismiss();
             _containerForCircleViews.removeAllViews();
             _containerForCircleViews.setVisibility(GONE);

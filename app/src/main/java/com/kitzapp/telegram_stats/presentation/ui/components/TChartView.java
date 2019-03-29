@@ -13,7 +13,6 @@ import com.kitzapp.telegram_stats.common.AndroidUtilites;
 import com.kitzapp.telegram_stats.domain.model.chart.Chart;
 import com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl.CellChartTitle;
 import com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl.CellChartGpraphs;
-import com.kitzapp.telegram_stats.presentation.ui.components.TViewObserver;
 
 import java.util.Observable;
 

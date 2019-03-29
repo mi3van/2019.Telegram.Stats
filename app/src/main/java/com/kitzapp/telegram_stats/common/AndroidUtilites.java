@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.os.Build;
 import android.util.Log;
 import android.util.TypedValue;
@@ -107,5 +109,13 @@ public class AndroidUtilites {
             isAvailableForDraw = false;
         }
         return isAvailableForDraw;
+    }
+
+    public static ShapeDrawable getOvalDrawable (Context context, int width, int height, int color) {
+        ShapeDrawable oval = new ShapeDrawable (new OvalShape());
+        oval.setIntrinsicHeight (height);
+        oval.setIntrinsicWidth (width);
+        oval.getPaint ().setColor (color);
+        return oval;
     }
 }
