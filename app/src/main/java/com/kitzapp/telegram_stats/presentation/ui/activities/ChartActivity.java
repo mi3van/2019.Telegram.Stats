@@ -3,11 +3,13 @@ package com.kitzapp.telegram_stats.presentation.ui.activities;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
-import android.view.*;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
-import androidx.appcompat.widget.Toolbar;
 import com.kitzapp.telegram_stats.Application.AppManagers.MotionMagic;
 import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
 import com.kitzapp.telegram_stats.R;
@@ -17,6 +19,7 @@ import com.kitzapp.telegram_stats.presentation.presenters.impl.ChartPresenter;
 import com.kitzapp.telegram_stats.presentation.presenters.impl.TChartPresenter;
 import com.kitzapp.telegram_stats.presentation.ui.activities.base.BaseActivity;
 import com.kitzapp.telegram_stats.presentation.ui.components.TChartView;
+import com.kitzapp.telegram_stats.presentation.ui.components.TToolbar;
 
 import java.util.Objects;
 import java.util.Observable;
@@ -25,7 +28,7 @@ import java.util.Observer;
 public class ChartActivity extends BaseActivity implements ChartPresenter.View, Observer {
 
     private TChartPresenter _chartPresenter;
-    private Toolbar _toolbar;
+    private TToolbar _toolbar;
     private LinearLayout _containerLayout;
     private ScrollView _mainScrollView;
 
