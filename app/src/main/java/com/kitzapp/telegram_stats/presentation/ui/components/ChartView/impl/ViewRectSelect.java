@@ -19,6 +19,8 @@ import com.kitzapp.telegram_stats.presentation.ui.components.TViewObserver;
 
 import java.util.Observable;
 
+import static com.kitzapp.telegram_stats.common.AppConts.MAX_CURSORS_WIDTH;
+
 /**
  * Created by Ivan Kuzmin on 2019-03-26;
  * 3van@mail.ru;
@@ -26,7 +28,6 @@ import java.util.Observable;
  */
 
 class ViewRectSelect extends View implements TViewObserver, MotionMagic.MotionListener {
-    private final float MAX_CURSORS_WIDTH = 0.25f;
     private final float MIN_LEFT_CURSOR_VALUE = 0f;
     private final float MAX_LEFT_CURSOR_VALUE = 1f - MAX_CURSORS_WIDTH;
     private final float MIN_RIGHT_CURSOR = MAX_CURSORS_WIDTH;

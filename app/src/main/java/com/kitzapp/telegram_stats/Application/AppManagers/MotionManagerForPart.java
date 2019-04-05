@@ -1,6 +1,5 @@
 package com.kitzapp.telegram_stats.Application.AppManagers;
 
-import android.content.Context;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -22,7 +21,7 @@ public class MotionManagerForPart extends Observable implements View.OnTouchList
     private OnMyTouchListener _myTouchListener;
 //    private Context _context;
 
-    public MotionManagerForPart(Context context, View motionView, OnMyTouchListener myTouchListener) {
+    public MotionManagerForPart(View motionView, OnMyTouchListener myTouchListener) {
         this._myTouchListener = myTouchListener;
 //        _context = context;
         motionView.setOnTouchListener(this);

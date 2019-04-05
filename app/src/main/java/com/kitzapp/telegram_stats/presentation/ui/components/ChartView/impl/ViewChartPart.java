@@ -87,7 +87,7 @@ public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectL
         _verticalDelimiter.setVisibility(INVISIBLE);
         addView(_verticalDelimiter);
 
-        _motionManagerForPart = new MotionManagerForPart(getContext(), this, this);
+        _motionManagerForPart = new MotionManagerForPart(this, this);
         _oldIndexShowed = -1;
 
         _containerForCircleViews = new CellContainerForCircleViews(getContext());
@@ -130,7 +130,7 @@ public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectL
         _leftCursor = leftCursor;
         _rightCursor = rightCursor;
         _leftInArray = (int) (_maxAxisXx * leftCursor);
-        int rightInArray = (int) (_maxAxisXx * rightCursor) + 1;
+        int rightInArray = (int) (_maxAxisXx * rightCursor);
 
         int countPoints = rightInArray - _leftInArray;
 

@@ -40,7 +40,7 @@ public class ThemeManager {
     private static final int CHART_RECT_SELECT_WIDTH_DP = 4;
     private static final int CHART_PART_VERTICAL_PADDING_SUM_DP = 7;
 
-    private static final int CHART_CIRCLE_SIZE_DP = 14;
+    private static final int CHART_CIRCLE_SIZE_DP = 12;
 
     //    CHART VIEWS PX
     public static final int CHART_LINE_IN_PART_WIDTH_PX;

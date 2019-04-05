@@ -4,7 +4,10 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.util.AttributeSet;
 import android.view.View;
 import androidx.annotation.Nullable;
@@ -54,10 +57,10 @@ public class TChartCircle extends View implements TViewObserver {
         if (_shapeDrawable == null) {
             _center = ThemeManager.CHART_CIRCLE_SIZE_PX >> 1;
             _width = _center - ThemeManager.CHART_LINE_FULL_WIDTH_PX;
-            _sizeInsideCircle = (_width << 1) - ThemeManager.CHART_LINE_FULL_WIDTH_PX;
 
             _oldColor = getCurrentColor();
             _shapeDrawable = getCurrentDrawable(_oldColor);
+
             this.setBackground(_shapeDrawable);
         }
     }
@@ -92,9 +95,9 @@ public class TChartCircle extends View implements TViewObserver {
                         newColor,
                         animation -> {
                             int color = ((int) animation.getAnimatedValue());
-                            _shapeDrawable = getCurrentDrawable(color);
-                            setBackground(_shapeDrawable);
-                            _oldColor = newColor;
+                            Drawable backgr = this.getBackground();
+
+                            backgr.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
                         });
                 backRGBAnim.start();
                 _oldColor = newColor;
@@ -122,6 +125,8 @@ public class TChartCircle extends View implements TViewObserver {
     }
 
     private ShapeDrawable getCurrentDrawable(int color) {
-        return AndroidUtilites.getOvalDrawable(getContext(), _sizeInsideCircle, _sizeInsideCircle, color);
+        ShapeDrawable oval = new ShapeDrawable (new OvalShape());
+        oval.getPaint().setColor(color);
+        return oval;
     }
 }

@@ -7,6 +7,7 @@ import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.Application.AndroidApp;
@@ -68,11 +69,6 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
     @Override
     public void init() {
         setWillNotDraw(false);
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, this.getViewHeightForLayout());
-        int padding = ThemeManager.CHART_CELL_RIGHTLEFT_MARGIN_PX;
-        layoutParams.setMargins(padding, 0, padding, 0);
-        this.setLayoutParams(layoutParams);
     }
 
     abstract int getViewHeightForLayout();
@@ -305,6 +301,14 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) getLayoutParams();
+        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        layoutParams.height = this.getViewHeightForLayout();
+        int marginPx = ThemeManager.CHART_CELL_RIGHTLEFT_MARGIN_PX;
+        layoutParams.setMargins(marginPx, 0, marginPx, 0);
+        this.setLayoutParams(layoutParams);
+
         this.addObserver();
     }
 

@@ -1,16 +1,14 @@
 package com.kitzapp.telegram_stats.common;
 
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
 import android.os.Build;
 import android.util.Log;
 import android.util.TypedValue;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.vectordrawable.graphics.drawable.ArgbEvaluator;
 import com.kitzapp.telegram_stats.BuildConfig;
 
@@ -26,19 +24,8 @@ import static com.kitzapp.telegram_stats.common.AppConts.DELAY_COLOR_ANIM;
 public class AndroidUtilites {
     private static final Hashtable<String, Typeface> typefaceCache = new Hashtable<>();
 
-    public static int getColorSDK(Context context, int idColor){
-        int color = 0;
-        if (context != null) {
-            color = ResourcesCompat.getColor(
-                    context.getResources(),
-                    idColor,
-                    context.getTheme());
-        }
-        return color;
-    }
-
     public static ValueAnimator getArgbAnimator(int fromColor, int toColor, ValueAnimator.AnimatorUpdateListener listener){
-        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), fromColor, toColor);
+        @SuppressLint("RestrictedApi") ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), fromColor, toColor);
         colorAnimation.setDuration(DELAY_COLOR_ANIM);
         colorAnimation.addUpdateListener(listener);
         return colorAnimation;
@@ -109,13 +96,5 @@ public class AndroidUtilites {
             isAvailableForDraw = false;
         }
         return isAvailableForDraw;
-    }
-
-    public static ShapeDrawable getOvalDrawable (Context context, int width, int height, int color) {
-        ShapeDrawable oval = new ShapeDrawable (new OvalShape());
-        oval.setIntrinsicHeight (height);
-        oval.setIntrinsicWidth (width);
-        oval.getPaint ().setColor (color);
-        return oval;
     }
 }

@@ -3,7 +3,7 @@ package com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
@@ -51,11 +51,6 @@ class ViewChartFull extends ViewChartBase {
             _viewRectSelect = new ViewRectSelect(getContext(), _rectListener);
             this.addView(_viewRectSelect);
 
-            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) getLayoutParams();
-            layoutParams.height -= (ThemeManager.CHART_FULL_TOP_BOTTOM_MARGIN_PX << 1);
-            layoutParams.topMargin = ThemeManager.CHART_FULL_TOP_BOTTOM_MARGIN_PX;
-            layoutParams.bottomMargin = ThemeManager.CHART_FULL_TOP_BOTTOM_MARGIN_PX;
-
             _oldFullChartBackColor = this.getFullChartBackColor();
             this.setBackgroundColor(_oldFullChartBackColor);
         }
@@ -95,5 +90,15 @@ class ViewChartFull extends ViewChartBase {
 
     private int getFullChartBackColor() {
         return ThemeManager.getColor(ThemeManager.key_cellChartFullBackColor);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) getLayoutParams();
+        layoutParams.height -= (ThemeManager.CHART_FULL_TOP_BOTTOM_MARGIN_PX << 1);
+        layoutParams.topMargin = ThemeManager.CHART_FULL_TOP_BOTTOM_MARGIN_PX;
+        layoutParams.bottomMargin = ThemeManager.CHART_FULL_TOP_BOTTOM_MARGIN_PX;
     }
 }

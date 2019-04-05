@@ -2,6 +2,7 @@ package com.kitzapp.telegram_stats.presentation.ui.components;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.os.Build;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -98,6 +99,10 @@ public class TToolbar extends Toolbar implements TViewObserver {
         super.onAttachedToWindow();
         this.changeToolbarFont();
         this.addObserver();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            this.setElevation(8);
+        }
     }
 
     @Override

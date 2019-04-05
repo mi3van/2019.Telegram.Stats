@@ -57,13 +57,13 @@ public class TChartPresenter extends AbstractPresenter implements ChartPresenter
 
     @Override
     public void onJsonRetrieved(ChartsList chartsList) {
-        _view.hideProgress();
+//        _view.hideProgress();
         this.initChartsInView(chartsList);
     }
 
     @Override
     public void onRetrievalFailed(String error) {
-        _view.hideProgress();
+//        _view.hideProgress();
         onError(error);
     }
 
@@ -77,7 +77,7 @@ public class TChartPresenter extends AbstractPresenter implements ChartPresenter
         if (BuildConfig.DEBUG) {
             _dateMillisForCheck = System.currentTimeMillis();
         }
-        _view.showProgress();
+//        _view.showProgress();
 
         TChartInteractor interactor = new TChartInteractor(_view.getContext(),
                 mExecutor,

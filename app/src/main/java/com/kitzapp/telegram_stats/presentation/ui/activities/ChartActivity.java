@@ -5,15 +5,12 @@ import android.graphics.Color;
 import android.os.Build;
 import android.view.*;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.ScrollView;
+import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.kitzapp.telegram_stats.Application.AppManagers.MotionMagic;
 import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
 import com.kitzapp.telegram_stats.R;
-import com.kitzapp.telegram_stats.common.AndroidUtilites;
 import com.kitzapp.telegram_stats.domain.executor.ThreadExecutor;
 import com.kitzapp.telegram_stats.domain.threading.TMainThread;
 import com.kitzapp.telegram_stats.presentation.presenters.impl.ChartPresenter;
@@ -27,10 +24,7 @@ import java.util.Observer;
 
 public class ChartActivity extends BaseActivity implements ChartPresenter.View, Observer {
 
-    private FloatingActionButton _fABLoading;
-    private ViewGroup _baseLayout;
     private TChartPresenter _chartPresenter;
-    private ProgressBar _progressBar;
     private Toolbar _toolbar;
     private LinearLayout _containerLayout;
     private ScrollView _mainScrollView;
@@ -51,9 +45,6 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View, 
 
     @Override
     protected void initViews() {
-        _baseLayout = findViewById(R.id.baseLayout);
-        _fABLoading = findViewById(R.id.fABLoading);
-        _progressBar = findViewById(R.id.progressBar);
         _toolbar = findViewById(R.id.toolbar);
         _containerLayout = findViewById(R.id.chartsContainer);
         _mainScrollView = findViewById(R.id.mainScrollView);
@@ -62,40 +53,28 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View, 
         String toolbarTitle = getResources().getString(R.string.toolbar_title);
         Objects.requireNonNull(getSupportActionBar()).setTitle(toolbarTitle);
 
-        _fABLoading.setOnClickListener(l -> _chartPresenter.runAnalyzeJson());
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int blackColor = AndroidUtilites.getColorSDK(getBaseContext(), R.color.cBlack);
+            int blackColor = 0x00000000; //black color
             Window window = getWindow();
             window.setNavigationBarColor(blackColor);
             window.setStatusBarColor(Color.TRANSPARENT);
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            _mainScrollView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-        if (scrollY >= oldScrollY) {
-            _fABLoading.hide();
-        } else {
-            _fABLoading.show();
-        }
-    });
-        }
+        _chartPresenter.runAnalyzeJson();
     }
 
     @Override
     public void showProgress() {
-        _progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-        _progressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void showMessageSnackbar(String message) {
-        Snackbar.make(_baseLayout, message, Snackbar.LENGTH_LONG).show();
+        Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
     }
 
     @Override
