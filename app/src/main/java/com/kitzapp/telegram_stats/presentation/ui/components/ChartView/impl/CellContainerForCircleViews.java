@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.widget.FrameLayout;
 import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
-import com.kitzapp.telegram_stats.presentation.ui.components.simple.TChartCircle;
+import com.kitzapp.telegram_stats.presentation.ui.components.simple.TColorfulChartCircle;
 
 /**
  * Created by Ivan Kuzmin on 29.03.2019;
@@ -34,7 +34,7 @@ public class CellContainerForCircleViews extends FrameLayout {
     }
 
     void addCircle(float x, float y, int color) {
-        TChartCircle tChartCircle = new TChartCircle(getContext(), color);
+        TColorfulChartCircle tChartCircle = new TColorfulChartCircle(getContext(), color);
         this.addView(tChartCircle);
         float x1 = x - (ThemeManager.CHART_CIRCLE_SIZE_PX >> 1);
         tChartCircle.setX(x1);

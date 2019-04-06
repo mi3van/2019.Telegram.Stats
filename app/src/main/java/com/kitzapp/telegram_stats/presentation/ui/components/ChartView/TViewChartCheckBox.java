@@ -1,4 +1,4 @@
-package com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl;
+package com.kitzapp.telegram_stats.presentation.ui.components.ChartView;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.domain.model.chart.Chart;
 import com.kitzapp.telegram_stats.domain.model.chart.impl.Line;
-import com.kitzapp.telegram_stats.presentation.ui.components.simple.TCheckBox;
+import com.kitzapp.telegram_stats.presentation.ui.components.simple.TColorfulCheckBox;
 import com.kitzapp.telegram_stats.presentation.ui.components.simple.TDelimiterLine;
 
 import java.util.HashMap;
@@ -20,21 +20,21 @@ import java.util.Map;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-class ViewChartCheckBox extends LinearLayout {
+public class TViewChartCheckBox extends LinearLayout {
 
-    public ViewChartCheckBox(Context context) {
+    public TViewChartCheckBox(Context context) {
         super(context);
     }
 
-    public ViewChartCheckBox(Context context, @Nullable AttributeSet attrs) {
+    public TViewChartCheckBox(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ViewChartCheckBox(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TViewChartCheckBox(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    ViewChartCheckBox(Context context, Chart chart, TCheckBox.Listener listener) {
+    public TViewChartCheckBox(Context context, Chart chart, TColorfulCheckBox.Listener listener) {
         super(context);
         this.init();
 
@@ -43,7 +43,7 @@ class ViewChartCheckBox extends LinearLayout {
         for (Map.Entry<String, Line> entry: lines.entrySet()) {
             count++;
             Line line = entry.getValue();
-            TCheckBox checkBox = new TCheckBox(getContext(),
+            TColorfulCheckBox checkBox = new TColorfulCheckBox(getContext(),
                     line.getKey(),
                     line.getName(),
                     line.getColor(),
@@ -64,7 +64,7 @@ class ViewChartCheckBox extends LinearLayout {
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         this.setLayoutParams(layoutParams);
 
-        int RightLeftPadding = ThemeManager.CHART_CELL_RIGHTLEFT_MARGIN_PX;
-        setPadding(RightLeftPadding, 0, 0, 0);
+        int RightLeftPadding = ThemeManager.CHART_CELL_LEFT_PADDING_CH_BOX_PX;
+        setPadding(RightLeftPadding - 20, 0, 0, 0);
     }
 }

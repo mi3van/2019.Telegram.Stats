@@ -17,10 +17,8 @@ import com.kitzapp.telegram_stats.common.ArraysUtilites;
 import com.kitzapp.telegram_stats.common.MyLongPair;
 import com.kitzapp.telegram_stats.domain.model.chart.Chart;
 import com.kitzapp.telegram_stats.domain.model.chart.impl.Line;
-import com.kitzapp.telegram_stats.presentation.ui.components.TSimpleTextView;
-import com.kitzapp.telegram_stats.presentation.ui.components.TTotalLinLayout;
-import com.kitzapp.telegram_stats.presentation.ui.components.simple.TDelimiterLine;
-import com.kitzapp.telegram_stats.presentation.ui.components.simple.TInfoCellForPopup;
+import com.kitzapp.telegram_stats.presentation.ui.components.popup.TInfoCellForPopup;
+import com.kitzapp.telegram_stats.presentation.ui.components.simple.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -37,10 +35,10 @@ import static com.kitzapp.telegram_stats.common.AppConts.INTEGER_MIN_VALUE;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectListener, MotionManagerForPart.OnMyTouchListener {
+public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectListener, MotionManagerForPart.OnMyTouchListener {
     private final String PART_DATE_FORMAT = "E, MMM d";
 
-    private ViewFollowersDelimiterVert _viewFollowersVert;
+    private TViewChartInfoVert _tViewChartInfoVert;
     private TDelimiterLine _verticalDelimiter;
 
     private HashMap<String, long[]> _partAxisesY = new HashMap<>();
@@ -50,25 +48,25 @@ public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectL
     private MotionManagerForPart _motionManagerForPart;
     private int _oldIndexShowed;
     private int _leftInArray;
-    private ViewChartDates.Listener _datesListener;
+    private ViewChartDatesHoriz.Listener _datesListener;
 
     private CellContainerForCircleViews _containerForCircleViews;
     private int _verticalDelimiterHeight;
     private int _xoffVerticalDelimiterH;
 
-    public ViewChartPart(Context context) {
+    public ViewChartBig(Context context) {
         super(context);
     }
 
-    public ViewChartPart(Context context, @Nullable AttributeSet attrs) {
+    public ViewChartBig(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ViewChartPart(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ViewChartBig(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    ViewChartPart(Context context, @NonNull Chart chart, ViewChartDates.Listener datesListener) {
+    public ViewChartBig(Context context, @NonNull Chart chart, ViewChartDatesHoriz.Listener datesListener) {
         super(context, chart);
         _datesListener = datesListener;
     }
@@ -77,8 +75,8 @@ public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectL
     protected void firstInitAxisesAndVariables(boolean isNeedInitForCanvas) {
         super.firstInitAxisesAndVariables(false);
 
-        _viewFollowersVert = new ViewFollowersDelimiterVert(getContext());
-        addView(_viewFollowersVert);
+        _tViewChartInfoVert = new TViewChartInfoVert(getContext());
+        addView(_tViewChartInfoVert);
 
 //        SETUP VERTICAL DELIMITER
         _verticalDelimiter = new TDelimiterLine(getContext());
@@ -121,7 +119,7 @@ public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectL
         }
     }
 
-    void recalculateYAndUpdateView() {
+    public void recalculateYAndUpdateView() {
         this.onRectCursorsWasChanged(_leftCursor, _rightCursor);
     }
 
@@ -185,7 +183,7 @@ public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectL
         }
         long _tempMinAxisY = maxAndMinInPoint.getMin();
 
-        _viewFollowersVert.setDatesAndInit(_tempMaxAxisY, _tempMinAxisY);
+        _tViewChartInfoVert.setDatesAndInit(_tempMaxAxisY, _tempMinAxisY);
 
         _partAxisesY = getAxisesForCanvas(_partAxisesY, _tempMaxAxisY, _tempMinAxisY);
     }
@@ -218,7 +216,7 @@ public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectL
 
     }
 
-    ViewRectSelect.RectListener getRectListener() {
+    public TViewRectSelect.RectListener getRectListener() {
         return this;
     }
 
@@ -270,11 +268,12 @@ public class ViewChartPart extends ViewChartBase implements ViewRectSelect.RectL
         _verticalDelimiter.setX(currentX);
         _verticalDelimiter.setVisibility(VISIBLE);
 
+        //todo logic in popup
         PopupWindow popupWindow = AndroidApp.popupWindow;
         View popupView = popupWindow.getContentView();
-        TTotalLinLayout linLayout = popupView.findViewById(R.id.totalLayoutPopup);
+        TColorfulLinLayout linLayout = popupView.findViewById(R.id.totalLayoutPopup);
         linLayout.init();
-        TSimpleTextView simpleText = popupView.findViewById(R.id.simpleTextPopup);
+        TColorfulTextView simpleText = popupView.findViewById(R.id.simpleTextPopup);
         simpleText.init();
         simpleText.setTextSizeDP(ThemeManager.chartDescrTextPaint.getTextSize());
         simpleText.setTypeface(ThemeManager.chartTitleTextPaint.getTypeface());

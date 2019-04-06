@@ -15,9 +15,7 @@ import com.kitzapp.telegram_stats.presentation.ui.components.simple.TDelimiterLi
  * Copyright © 2019 Example. All rights reserved.
  */
 
-class ViewFollowersDelimiterVert extends LinearLayout {
-    private final String MMM_D_FORMAT = "MMM d";
-    private final String MMM_Y_FORMAT = "MMM y";
+class TViewChartInfoVert extends LinearLayout {
     private final int COUNT_LINES = 6;
 
     private TChartTextView _tTextView1;
@@ -31,17 +29,17 @@ class ViewFollowersDelimiterVert extends LinearLayout {
     private long _maxY = 0;
     private long _minY = 0;
 
-    public ViewFollowersDelimiterVert(Context context) {
+    public TViewChartInfoVert(Context context) {
         super(context);
         this.init();
     }
 
-    public ViewFollowersDelimiterVert(Context context, @Nullable AttributeSet attrs) {
+    public TViewChartInfoVert(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.init();
     }
 
-    public ViewFollowersDelimiterVert(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TViewChartInfoVert(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.init();
     }

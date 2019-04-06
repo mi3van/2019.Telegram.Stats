@@ -15,11 +15,11 @@ interface PreferenceMInterface {
     void saveNewTheme(int theme);
 }
 
-public class PreferenceManagerT implements PreferenceMInterface {
+public class PreferenceManager implements PreferenceMInterface {
 
     private SharedPreferences _preference;
 
-    public PreferenceManagerT(Context context) {
+    public PreferenceManager(Context context) {
         _preference = android.preference.PreferenceManager.getDefaultSharedPreferences(context);
     }
 

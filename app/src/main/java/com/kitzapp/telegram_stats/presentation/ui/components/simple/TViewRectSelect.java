@@ -1,4 +1,4 @@
-package com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl;
+package com.kitzapp.telegram_stats.presentation.ui.components.simple;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -27,14 +27,14 @@ import static com.kitzapp.telegram_stats.common.AppConts.MAX_CURSORS_WIDTH;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-class ViewRectSelect extends View implements TViewObserver, MotionMagic.MotionListener {
+public class TViewRectSelect extends View implements TViewObserver, MotionMagic.MotionListener {
     private final float MIN_LEFT_CURSOR_VALUE = 0f;
     private final float MAX_LEFT_CURSOR_VALUE = 1f - MAX_CURSORS_WIDTH;
     private final float MIN_RIGHT_CURSOR = MAX_CURSORS_WIDTH;
     private final float MAX_RIGHT_CURSOR = 1f;
     private MotionMagic _motionMagic;
 
-    interface RectListener {
+    public interface RectListener {
         void onRectCursorsWasChanged(float leftCursor, float rightCursor);
     }
 
@@ -55,22 +55,22 @@ class ViewRectSelect extends View implements TViewObserver, MotionMagic.MotionLi
 
     private RectListener _rectListener;
 
-    public ViewRectSelect(Context context) {
+    public TViewRectSelect(Context context) {
         super(context);
         this.init();
     }
 
-    public ViewRectSelect(Context context, @Nullable AttributeSet attrs) {
+    public TViewRectSelect(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.init();
     }
 
-    public ViewRectSelect(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TViewRectSelect(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.init();
     }
 
-    ViewRectSelect(Context context, RectListener rectListener) {
+    public TViewRectSelect(Context context, RectListener rectListener) {
         super(context);
         this._rectListener = rectListener;
         this.init();

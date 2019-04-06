@@ -21,7 +21,7 @@ import java.util.Date;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-class ViewChartDates extends LinearLayout {
+public class ViewChartDatesHoriz extends LinearLayout {
     private final int TEXT_VIEW_TYPE_DEFAULT = 0;
     private final int TEXT_VIEW_TYPE_LEFT = -2;
     private final int TEXT_VIEW_TYPE_RIGHT = 2;
@@ -41,17 +41,17 @@ class ViewChartDates extends LinearLayout {
     private long[] _dates = null;
     private int hashCodeDates;
 
-    public ViewChartDates(Context context) {
+    public ViewChartDatesHoriz(Context context) {
         super(context);
         this.init();
     }
 
-    public ViewChartDates(Context context, @Nullable AttributeSet attrs) {
+    public ViewChartDatesHoriz(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.init();
     }
 
-    public ViewChartDates(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ViewChartDatesHoriz(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.init();
     }

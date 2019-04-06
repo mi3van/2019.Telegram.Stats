@@ -9,13 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.PopupWindow;
 import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
-import com.kitzapp.telegram_stats.Application.AppManagers.PreferenceManagerT;
+import com.kitzapp.telegram_stats.Application.AppManagers.PreferenceManager;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.R;
 
 public class AndroidApp extends Application {
     public static volatile Resources resources;
-    public static volatile PreferenceManagerT mainRepository;
+    public static volatile PreferenceManager mainRepository;
     public static volatile ObserverManager observerManager;
     public static volatile PopupWindow popupWindow;
 
@@ -28,7 +28,7 @@ public class AndroidApp extends Application {
         Context context = getBaseContext();
 
         observerManager = new ObserverManager();
-        mainRepository = new PreferenceManagerT(context);
+        mainRepository = new PreferenceManager(context);
         ThemeManager.initTextFonts(context);
 
         this.configurePopupWindow(context);

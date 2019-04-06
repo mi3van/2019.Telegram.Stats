@@ -11,8 +11,8 @@ import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
 import com.kitzapp.telegram_stats.domain.model.chart.Chart;
-import com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl.CellChartTitle;
-import com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl.CellChartGpraphs;
+import com.kitzapp.telegram_stats.presentation.ui.components.ChartView.TViewChartTitle;
+import com.kitzapp.telegram_stats.presentation.ui.components.ChartView.TViewChartGpraphs;
 
 import java.util.Observable;
 
@@ -22,31 +22,31 @@ import java.util.Observable;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class TChartView extends LinearLayout implements TViewObserver {
-    private CellChartTitle _titleCell;
-    private CellChartGpraphs _fullChartCell;
+public class TFullCellView extends LinearLayout implements TViewObserver {
+    private TViewChartTitle _titleCell;
+    private TViewChartGpraphs _fullChartCell;
 
     @NonNull
     private Chart chart;
 
     private int _oldBackColor;
 
-    public TChartView(Context context) {
+    public TFullCellView(Context context) {
         super(context);
         this.init();
     }
 
-    public TChartView(Context context, @Nullable AttributeSet attrs) {
+    public TFullCellView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.init();
     }
 
-    public TChartView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TFullCellView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.init();
     }
 
-    public TChartView(Context context, @NonNull Chart chart) {
+    public TFullCellView(Context context, @NonNull Chart chart) {
         super(context);
         this.chart = chart;
         this.init();
@@ -64,10 +64,10 @@ public class TChartView extends LinearLayout implements TViewObserver {
 
     private void initChildViews() {
         this.removeAllViews();
-        _titleCell = new CellChartTitle(getContext());
+        _titleCell = new TViewChartTitle(getContext());
         this.addView(_titleCell);
 
-        _fullChartCell = new CellChartGpraphs(getContext(), chart);
+        _fullChartCell = new TViewChartGpraphs(getContext(), chart);
         this.addView(_fullChartCell);
     }
 

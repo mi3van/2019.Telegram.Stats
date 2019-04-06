@@ -11,7 +11,7 @@ import com.kitzapp.telegram_stats.domain.model.chart.Chart;
 import com.kitzapp.telegram_stats.domain.repository.chart.TChartRepository;
 import com.kitzapp.telegram_stats.domain.threading.MainThread;
 import com.kitzapp.telegram_stats.presentation.presenters.base.AbstractPresenter;
-import com.kitzapp.telegram_stats.presentation.ui.components.TChartView;
+import com.kitzapp.telegram_stats.presentation.ui.components.TFullCellView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -93,7 +93,7 @@ public class TChartPresenter extends AbstractPresenter implements ChartPresenter
         _view.clearChartsContainer();
         try {
             for (Chart chart: chartsList.getCharts()) {
-                TChartView chartView = createChartView(chart);
+                TFullCellView chartView = createChartView(chart);
                 _view.addChartToContainer(chartView);
             }
         } catch (Exception e) {
@@ -109,8 +109,8 @@ public class TChartPresenter extends AbstractPresenter implements ChartPresenter
         }
     }
 
-    private TChartView createChartView(Chart chart) {
-        TChartView chartView = new TChartView(_view.getContext(), chart);
+    private TFullCellView createChartView(Chart chart) {
+        TFullCellView chartView = new TFullCellView(_view.getContext(), chart);
         return chartView;
     }
 }

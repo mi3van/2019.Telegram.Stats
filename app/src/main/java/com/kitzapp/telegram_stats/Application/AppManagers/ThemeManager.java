@@ -20,21 +20,24 @@ public class ThemeManager {
     public static final int CHART_SUB_TEXT_SIZE_DP = 14;
 
 //    CHART CELLS DP
-    private static final int CHART_CELL_HEIGHT_DP = 56;
+    private static final int CHART_CELL_HEIGHT_DP = 48;
+    private static final int CHART_CELL_TITLE_HEIGHT_DP = 56;
     private static final int CHART_CELL_BOTTOM_MARGIN_DP = 28;
     private static final int CHART_CELL_RIGHT_LEFT_MARGIN_DP = 16;
-    private static final int CHART_CELL_DATES_WIDTH_DP = 24;
+    private static final int CHART_CELL_LEFT_PADDING_CH_BOX_DP = 14;
+
 //    CHART CELLS PX
     public static final int CHART_CELL_HEIGHT_PX;
+    public static final int CHART_CELL_TITLE_HEIGHT_PX;
     public static final int CHART_CELL_BOTTOM_MARGIN_PX;
     public static final int CHART_CELL_RIGHTLEFT_MARGIN_PX;
-    public static final int CHART_CELL_DATES_WIDTH_PX;
+    public static final int CHART_CELL_LEFT_PADDING_CH_BOX_PX;
 
 //    CHART VIEWS DP
     private static final int CHART_LINE_IN_PART_WIDTH_DP = 2;
     private static final int CHART_LINE_FULL_WIDTH_DP = 1;
     private static final int CHART_FULL_TOP_BOTTOM_MARGIN_DP = 4;
-    private static final int CHART_PART_HEIGHT_DP = 320;
+    private static final int CHART_PART_HEIGHT_DP = 250;
     private static final int CHART_DELIMITER_FATNESS_DP = 1;
 
     private static final int CHART_RECT_SELECT_WIDTH_DP = 4;
@@ -105,9 +108,10 @@ public class ThemeManager {
         applyTheme(AndroidApp.mainRepository.getCurrentTheme());
 
         CHART_CELL_HEIGHT_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_CELL_HEIGHT_DP);
+        CHART_CELL_TITLE_HEIGHT_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_CELL_TITLE_HEIGHT_DP);
         CHART_CELL_BOTTOM_MARGIN_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_CELL_BOTTOM_MARGIN_DP);
         CHART_CELL_RIGHTLEFT_MARGIN_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_CELL_RIGHT_LEFT_MARGIN_DP);
-        CHART_CELL_DATES_WIDTH_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_CELL_DATES_WIDTH_DP);
+        CHART_CELL_LEFT_PADDING_CH_BOX_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_CELL_LEFT_PADDING_CH_BOX_DP);
 
         CHART_LINE_FULL_WIDTH_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_LINE_FULL_WIDTH_DP);
         CHART_LINE_IN_PART_WIDTH_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_LINE_IN_PART_WIDTH_DP);

@@ -1,10 +1,11 @@
-package com.kitzapp.telegram_stats.presentation.ui.components.simple;
+package com.kitzapp.telegram_stats.presentation.ui.components.popup;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
+import com.kitzapp.telegram_stats.presentation.ui.components.simple.TTextView;
 
 /**
  * Created by Ivan Kuzmin on 29.03.2019;

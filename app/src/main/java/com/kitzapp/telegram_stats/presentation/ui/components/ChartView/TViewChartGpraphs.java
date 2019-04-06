@@ -1,4 +1,4 @@
-package com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl;
+package com.kitzapp.telegram_stats.presentation.ui.components.ChartView;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -6,7 +6,10 @@ import android.view.Gravity;
 import android.widget.LinearLayout;
 
 import com.kitzapp.telegram_stats.domain.model.chart.Chart;
-import com.kitzapp.telegram_stats.presentation.ui.components.simple.TCheckBox;
+import com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl.ViewChartBig;
+import com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl.ViewChartDatesHoriz;
+import com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl.ViewChartMiniature;
+import com.kitzapp.telegram_stats.presentation.ui.components.simple.TColorfulCheckBox;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,27 +20,27 @@ import androidx.annotation.Nullable;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class CellChartGpraphs extends LinearLayout implements TCheckBox.Listener, ViewChartDates.Listener {
+public class TViewChartGpraphs extends LinearLayout implements TColorfulCheckBox.Listener, ViewChartDatesHoriz.Listener {
 
     private Chart _chart = null;
-    private ViewChartPart _partChart;
-    private ViewChartDates _chartDates;
-    private ViewChartFull _fullChart;
-    private ViewChartCheckBox _chBoxChartIsActive;
+    private ViewChartBig _partChart;
+    private ViewChartDatesHoriz _chartDates;
+    private ViewChartMiniature _fullChart;
+    private TViewChartCheckBox _chBoxChartIsActive;
 
-    public CellChartGpraphs(Context context) {
+    public TViewChartGpraphs(Context context) {
         super(context);
     }
 
-    public CellChartGpraphs(Context context, @Nullable AttributeSet attrs) {
+    public TViewChartGpraphs(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public CellChartGpraphs(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TViewChartGpraphs(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public CellChartGpraphs(Context context, @NonNull Chart chart) {
+    public TViewChartGpraphs(Context context, @NonNull Chart chart) {
         super(context);
         this._chart = chart;
         this.init();
@@ -47,10 +50,10 @@ public class CellChartGpraphs extends LinearLayout implements TCheckBox.Listener
         this.setOrientation(VERTICAL);
 
         if (_chart != null) {
-            _partChart = new ViewChartPart(getContext(), _chart, this);
-            _chartDates = new ViewChartDates(getContext());
-            _fullChart = new ViewChartFull(getContext(), _chart, _partChart.getRectListener());
-            _chBoxChartIsActive = new ViewChartCheckBox(getContext(), _chart, this);
+            _partChart = new ViewChartBig(getContext(), _chart, this);
+            _chartDates = new ViewChartDatesHoriz(getContext());
+            _fullChart = new ViewChartMiniature(getContext(), _chart, _partChart.getRectListener());
+            _chBoxChartIsActive = new TViewChartCheckBox(getContext(), _chart, this);
 
             addView(_partChart);
             addView(_chartDates);

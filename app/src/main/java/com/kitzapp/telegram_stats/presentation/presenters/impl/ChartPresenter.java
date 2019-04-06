@@ -3,7 +3,7 @@ package com.kitzapp.telegram_stats.presentation.presenters.impl;
 import android.content.Context;
 import com.kitzapp.telegram_stats.presentation.presenters.base.BasePresenter;
 import com.kitzapp.telegram_stats.presentation.ui.activities.base.BaseView;
-import com.kitzapp.telegram_stats.presentation.ui.components.TChartView;
+import com.kitzapp.telegram_stats.presentation.ui.components.TFullCellView;
 
 
 public interface ChartPresenter extends BasePresenter {
@@ -12,7 +12,7 @@ public interface ChartPresenter extends BasePresenter {
 
         void clearChartsContainer();
 
-        void addChartToContainer(TChartView chartView);
+        void addChartToContainer(TFullCellView chartView);
 
         Context getContext();
     }

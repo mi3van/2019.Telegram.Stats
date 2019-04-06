@@ -2,13 +2,8 @@ package com.kitzapp.telegram_stats.presentation.ui.components.simple;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.os.Build;
 import android.util.AttributeSet;
-import android.util.TypedValue;
-import android.view.Gravity;
-import android.widget.CheckBox;
-import androidx.core.widget.CompoundButtonCompat;
+import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.Application.AndroidApp;
 import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
@@ -18,43 +13,27 @@ import com.kitzapp.telegram_stats.presentation.ui.components.TViewObserver;
 import java.util.Observable;
 
 /**
- * Created by Ivan Kuzmin on 25.03.2019;
+ * Created by Ivan Kuzmin on 22.03.2019;
  * 3van@mail.ru;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class TCheckBox extends CheckBox implements TViewObserver {
+public class TColorfulTextView extends TTextView implements TViewObserver {
 
     private int _oldTextColor;
 
-    public interface Listener {
-        void onBoxWasChecked(String key, boolean isChecked);
-    }
-
-    private String key;
-    private String name;
-    private int color;
-    private Listener listener;
-
-    public TCheckBox(Context context) {
+    public TColorfulTextView(Context context) {
         super(context);
+        this.init();
     }
 
-    public TCheckBox(Context context, AttributeSet attrs) {
+    public TColorfulTextView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        this.init();
     }
 
-    public TCheckBox(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TColorfulTextView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-    }
-
-    public TCheckBox(Context context, String key, String name, int color, Listener listener) {
-        super(context);
-        this.key = key;
-        this.name = name;
-        this.color = color;
-        this.listener = listener;
-
         this.init();
     }
 
@@ -62,22 +41,9 @@ public class TCheckBox extends CheckBox implements TViewObserver {
     public void init() {
         TTextPaint simpleTextPaint = ThemeManager.simpleTextPaint;
         this.setTypeface(simpleTextPaint.getTypeface());
-        this.setTextSize(TypedValue.COMPLEX_UNIT_DIP, simpleTextPaint.getTextSize());
+        this.setTextSizeDP(simpleTextPaint.getTextSize());
         _oldTextColor = getCurrentColor();
         this.setTextColor(_oldTextColor);
-
-        this.setChecked(true);
-        this.setGravity(Gravity.CENTER_VERTICAL);
-
-        this.setText(name);
-
-        if (Build.VERSION.SDK_INT < 21) {
-            CompoundButtonCompat.setButtonTintList(this, ColorStateList.valueOf(color));
-        } else {
-            this.setButtonTintList(ColorStateList.valueOf(color));
-        }
-
-        setOnCheckedChangeListener((buttonView, isChecked) -> listener.onBoxWasChecked(key, isChecked));
     }
 
     @Override
@@ -88,6 +54,10 @@ public class TCheckBox extends CheckBox implements TViewObserver {
     @Override
     public void deleteObserver() {
         AndroidApp.observerManager.deleteObserver(this);
+    }
+
+    private int getCurrentColor() {
+        return ThemeManager.simpleTextPaint.getColor();
     }
 
     @Override
@@ -108,7 +78,6 @@ public class TCheckBox extends CheckBox implements TViewObserver {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        getLayoutParams().height = ThemeManager.CHART_CELL_HEIGHT_PX;
         this.addObserver();
     }
 
@@ -118,7 +87,9 @@ public class TCheckBox extends CheckBox implements TViewObserver {
         this.deleteObserver();
     }
 
-    private int getCurrentColor() {
-        return ThemeManager.simpleTextPaint.getColor();
+    @Override
+    public void setTextColor(int color) {
+        super.setTextColor(color);
+        _oldTextColor = color;
     }
 }

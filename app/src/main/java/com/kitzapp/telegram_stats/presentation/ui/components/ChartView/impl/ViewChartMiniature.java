@@ -10,6 +10,7 @@ import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
 import com.kitzapp.telegram_stats.domain.model.chart.Chart;
+import com.kitzapp.telegram_stats.presentation.ui.components.simple.TViewRectSelect;
 
 import java.util.Observable;
 
@@ -19,26 +20,26 @@ import java.util.Observable;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-class ViewChartFull extends ViewChartBase {
+public class ViewChartMiniature extends ViewChartBase {
     private final int MAX_DOTS_FOR_APPROX_CHART_FULL = 256;
 
     private int _oldFullChartBackColor;
-    private ViewRectSelect _viewRectSelect;
-    private ViewRectSelect.RectListener _rectListener;
+    private TViewRectSelect _viewRectSelect;
+    private TViewRectSelect.RectListener _rectListener;
 
-    public ViewChartFull(Context context) {
+    public ViewChartMiniature(Context context) {
         super(context);
     }
 
-    public ViewChartFull(Context context, @Nullable AttributeSet attrs) {
+    public ViewChartMiniature(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ViewChartFull(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ViewChartMiniature(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    ViewChartFull(Context context, @NonNull Chart chart, ViewRectSelect.RectListener rectListener) {
+    public ViewChartMiniature(Context context, @NonNull Chart chart, TViewRectSelect.RectListener rectListener) {
         super(context, chart);
         _rectListener = rectListener;
         this.init();
@@ -48,7 +49,7 @@ class ViewChartFull extends ViewChartBase {
     public void init() {
         if (_rectListener != null) {
             super.init();
-            _viewRectSelect = new ViewRectSelect(getContext(), _rectListener);
+            _viewRectSelect = new TViewRectSelect(getContext(), _rectListener);
             this.addView(_viewRectSelect);
 
             _oldFullChartBackColor = this.getFullChartBackColor();

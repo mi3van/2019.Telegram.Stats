@@ -1,4 +1,4 @@
-package com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl;
+package com.kitzapp.telegram_stats.presentation.ui.components.ChartView;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -23,23 +23,23 @@ import java.util.Observable;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class CellChartTitle extends LinearLayout implements TViewObserver {
+public class TViewChartTitle extends LinearLayout implements TViewObserver {
 
     private int _oldTitleColor;
 
     private TTextView tTextView;
 
-    public CellChartTitle(Context context) {
+    public TViewChartTitle(Context context) {
         super(context);
         this.init();
     }
 
-    public CellChartTitle(Context context, @Nullable AttributeSet attrs) {
+    public TViewChartTitle(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.init();
     }
 
-    public CellChartTitle(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TViewChartTitle(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.init();
     }
@@ -71,7 +71,7 @@ public class CellChartTitle extends LinearLayout implements TViewObserver {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         this.addObserver();
-        getLayoutParams().height = ThemeManager.CHART_CELL_HEIGHT_PX;
+        getLayoutParams().height = ThemeManager.CHART_CELL_TITLE_HEIGHT_PX;
     }
 
     @Override

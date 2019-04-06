@@ -25,7 +25,7 @@ import java.util.Observable;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class TChartCircle extends View implements TViewObserver {
+public class TColorfulChartCircle extends View implements TViewObserver {
 
     private Paint _paint;
     private ShapeDrawable _shapeDrawable;
@@ -34,19 +34,19 @@ public class TChartCircle extends View implements TViewObserver {
     private int _center;
     private int _width;
 
-    public TChartCircle(Context context) {
+    public TColorfulChartCircle(Context context) {
         super(context);
     }
 
-    public TChartCircle(Context context, @Nullable AttributeSet attrs) {
+    public TColorfulChartCircle(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public TChartCircle(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TColorfulChartCircle(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public TChartCircle(Context context, int color) {
+    public TColorfulChartCircle(Context context, int color) {
         super(context);
         this._paint = AndroidUtilites.getPaint(color, ThemeManager.CHART_LINE_IN_PART_WIDTH_PX);
         this.init();

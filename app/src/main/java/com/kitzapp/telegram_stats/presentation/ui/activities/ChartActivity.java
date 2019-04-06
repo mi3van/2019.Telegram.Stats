@@ -13,7 +13,7 @@ import com.kitzapp.telegram_stats.domain.threading.TMainThread;
 import com.kitzapp.telegram_stats.presentation.presenters.impl.ChartPresenter;
 import com.kitzapp.telegram_stats.presentation.presenters.impl.TChartPresenter;
 import com.kitzapp.telegram_stats.presentation.ui.activities.base.BaseActivity;
-import com.kitzapp.telegram_stats.presentation.ui.components.TChartView;
+import com.kitzapp.telegram_stats.presentation.ui.components.TFullCellView;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -76,7 +76,7 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View, 
     }
 
     @Override
-    public void addChartToContainer(TChartView chartView) {
+    public void addChartToContainer(TFullCellView chartView) {
         _containerLayout.addView(chartView);
     }
 
