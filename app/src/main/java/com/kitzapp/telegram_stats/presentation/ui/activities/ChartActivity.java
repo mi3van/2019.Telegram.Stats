@@ -1,12 +1,7 @@
 package com.kitzapp.telegram_stats.presentation.ui.activities;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.os.Build;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
@@ -19,16 +14,13 @@ import com.kitzapp.telegram_stats.presentation.presenters.impl.ChartPresenter;
 import com.kitzapp.telegram_stats.presentation.presenters.impl.TChartPresenter;
 import com.kitzapp.telegram_stats.presentation.ui.activities.base.BaseActivity;
 import com.kitzapp.telegram_stats.presentation.ui.components.TChartView;
-import com.kitzapp.telegram_stats.presentation.ui.components.TToolbar;
 
-import java.util.Objects;
 import java.util.Observable;
 import java.util.Observer;
 
 public class ChartActivity extends BaseActivity implements ChartPresenter.View, Observer {
 
     private TChartPresenter _chartPresenter;
-    private TToolbar _toolbar;
     private LinearLayout _containerLayout;
     private ScrollView _mainScrollView;
 
@@ -43,26 +35,12 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View, 
                 ThreadExecutor.getInstance(),
                 TMainThread.getInstance(),
                 this);
-
     }
 
     @Override
     protected void initViews() {
-        _toolbar = findViewById(R.id.toolbar);
         _containerLayout = findViewById(R.id.chartsContainer);
         _mainScrollView = findViewById(R.id.mainScrollView);
-
-        setSupportActionBar(_toolbar);
-        String toolbarTitle = getResources().getString(R.string.toolbar_title);
-        Objects.requireNonNull(getSupportActionBar()).setTitle(toolbarTitle);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int blackColor = 0x00000000; //black color
-            Window window = getWindow();
-            window.setNavigationBarColor(blackColor);
-            window.setStatusBarColor(Color.TRANSPARENT);
-            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
 
         _chartPresenter.runAnalyzeJson();
     }
@@ -76,14 +54,8 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View, 
     }
 
     @Override
-    public void showMessageSnackbar(String message) {
+    public void showMessageToast(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.action_bar_button, menu);
-        return true;
     }
 
     @Override
@@ -92,6 +64,7 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View, 
 
         if (id == R.id.themeBtn) {
             _chartPresenter.changeCurrentTheme();
+            this.updateActionBarBackgr();
             return true;
         }
         return super.onOptionsItemSelected(item);

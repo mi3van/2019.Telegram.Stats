@@ -1,6 +1,6 @@
 <resources>
 
-    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar"/>
+    <style name="AppTheme"/>
 
     <style name="popup_window_animation">
         <item name="android:windowEnterAnimation">@anim/popup_fade_in</item>

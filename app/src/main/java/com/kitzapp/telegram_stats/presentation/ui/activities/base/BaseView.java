@@ -23,5 +23,5 @@ public interface BaseView {
      *
      * @param message The error message to be displayed.
      */
-    void showMessageSnackbar(String message);
+    void showMessageToast(String message);
 }

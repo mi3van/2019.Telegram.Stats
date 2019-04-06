@@ -52,7 +52,7 @@ public class TChartPresenter extends AbstractPresenter implements ChartPresenter
 
     @Override
     public void onError(String message) {
-        _view.showMessageSnackbar(message);
+        _view.showMessageToast(message);
     }
 
     @Override
@@ -97,14 +97,14 @@ public class TChartPresenter extends AbstractPresenter implements ChartPresenter
                 _view.addChartToContainer(chartView);
             }
         } catch (Exception e) {
-            _view.showMessageSnackbar(e.getMessage());
+            _view.showMessageToast(e.getMessage());
         } finally {
             if (BuildConfig.DEBUG) {
                 _dateMillisForCheck = System.currentTimeMillis() - _dateMillisForCheck;
                 String dateFormat = "mm:ss.SSS";
                 @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
                 String dateString = formatter.format(new Date(_dateMillisForCheck));
-                _view.showMessageSnackbar(dateString);
+                _view.showMessageToast(dateString);
             }
         }
     }

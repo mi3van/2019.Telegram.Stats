@@ -5,12 +5,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-    <com.kitzapp.telegram_stats.presentation.ui.components.TToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"/>
-
     <ScrollView
             android:id="@+id/mainScrollView"
             android:layout_width="match_parent"

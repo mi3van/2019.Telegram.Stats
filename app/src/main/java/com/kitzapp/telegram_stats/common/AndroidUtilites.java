@@ -1,5 +1,6 @@
 package com.kitzapp.telegram_stats.common;
 
+import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -9,7 +10,6 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.util.Log;
 import android.util.TypedValue;
-import androidx.vectordrawable.graphics.drawable.ArgbEvaluator;
 import com.kitzapp.telegram_stats.BuildConfig;
 
 import java.util.Hashtable;
