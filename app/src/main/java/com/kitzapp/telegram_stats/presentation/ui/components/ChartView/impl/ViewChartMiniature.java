@@ -106,4 +106,14 @@ public class ViewChartMiniature extends ViewChartBase {
         layoutParams.topMargin = ThemeManager.CHART_FULL_TOP_BOTTOM_MARGIN_PX;
         layoutParams.bottomMargin = ThemeManager.CHART_FULL_TOP_BOTTOM_MARGIN_PX;
     }
+
+    @Override
+    int getChartVerticalPadding() {
+        return ThemeManager.CHART_MINIATURE_VERTICAL_PADDING_SUM_PX;
+    }
+
+    @Override
+    int getChartHalfVerticalPadding() {
+        return ThemeManager.CHART_MINIATURE_VERTICAL_PADDING_HALF_PX;
+    }
 }

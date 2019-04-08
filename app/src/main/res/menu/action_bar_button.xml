@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/themeBtn"
-        android:icon="@drawable/ic_moon_white"
+        android:icon="@drawable/ic_moon"
         android:title="@string/night_mode_title"
         android:showAsAction="always"
         android:orderInCategory="100"

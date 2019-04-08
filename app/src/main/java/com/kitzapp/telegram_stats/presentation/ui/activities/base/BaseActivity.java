@@ -4,6 +4,7 @@ import android.animation.ValueAnimator;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -11,10 +12,7 @@ import android.text.SpannableString;
 import android.text.TextPaint;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
-import android.view.Menu;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
+import android.view.*;
 import com.kitzapp.telegram_stats.Application.AndroidApp;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.R;
@@ -30,8 +28,12 @@ import java.lang.reflect.Field;
 
 public abstract class BaseActivity extends Activity implements BaseView {
 
-    private int _oldToolbarColor;
+    private int _oldToolbarBackgrColor;
+    private int _oldToolbarTitleColor;
+    private int _oldToolbarIconColor;
+
     private ActionBar _actionBar = null;
+    private Menu _menu;
     private Window _window;
 
     @Override
@@ -40,7 +42,10 @@ public abstract class BaseActivity extends Activity implements BaseView {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutID());
 
-        _oldToolbarColor = getCurrentColor();
+        _oldToolbarBackgrColor = this.getCurrentToolbarBackgrColor();
+        _oldToolbarTitleColor = this.getCurrentToolbarTitleColor();
+        _oldToolbarIconColor = this.getCurrentToolbarIconColor();
+
         _actionBar = getActionBar();
         _window = getWindow();
 
@@ -50,7 +55,7 @@ public abstract class BaseActivity extends Activity implements BaseView {
 
         this.initViews();
         this.initToolbar();
-        this.initBackgrStatusBar();
+        this.initStatusAndNavigationBarColor();
     }
 
     protected abstract void initVariables();
@@ -70,14 +75,15 @@ public abstract class BaseActivity extends Activity implements BaseView {
                 Field f = actionBarView.getClass().getSuperclass().getDeclaredField("mContentHeight");
                 f.setAccessible(true);
                 f.set(actionBarView, ThemeManager.CELL_HEIGHT_56DP_IN_PX);
-            } catch (NoSuchFieldException e) {
-
-            } catch (IllegalAccessException e) {
-
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
-            this.changeToolbarText(_actionBar);
-            this.setToolbarColor(_oldToolbarColor);
+            this.initToolbarText(_actionBar);
+
+            this.setToolbarBackgrColor(_oldToolbarBackgrColor);
+            this.setToolbarTitleColor(_oldToolbarTitleColor);
+            this.setToolbarIconColor(_oldToolbarIconColor);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 _actionBar.setElevation(8);
@@ -85,9 +91,9 @@ public abstract class BaseActivity extends Activity implements BaseView {
         }
     }
 
-    private void initBackgrStatusBar() {
+    private void initStatusAndNavigationBarColor() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            this.setStatusBarColor(_oldToolbarColor);
+            this.setStatusBarColor(_oldToolbarBackgrColor);
             int blackColor = 0xff111111;
             _window.setNavigationBarColor(blackColor);
         }
@@ -96,61 +102,111 @@ public abstract class BaseActivity extends Activity implements BaseView {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.action_bar_button, menu);
+        _menu = menu;
+        this.setToolbarIconColor(_oldToolbarIconColor);
         return true;
     }
 
-    protected void updateActionBarBackgr() {
-        int newColor = getCurrentColor();
-        if (_oldToolbarColor != newColor) {
-            ValueAnimator valueAnimator = AndroidUtilites.getArgbAnimator(
-                    _oldToolbarColor,
-                    newColor,
-                    animation -> {
-                        int animatedColor = (int) animation.getAnimatedValue();
-                        this.setToolbarColor(animatedColor);
-                        this.setStatusBarColor(animatedColor);
-                    });
-            valueAnimator.start();
-            _oldToolbarColor = newColor;
-        }
-    }
-
-    private void changeToolbarText(ActionBar actionBar) {
+    private void initToolbarText(ActionBar actionBar) {
         TextPaint toolbarTextPaint = ThemeManager.toolbarTextPaint;
 
         String toolbarTitle = getResources().getString(R.string.toolbar_title);
 
-        SpannableString actionBarText = new SpannableString(toolbarTitle);
-        actionBarText.setSpan(new CustomActionBarTypeface(toolbarTextPaint.getTypeface()), 0, actionBarText.length(),
+        SpannableString spanString = new SpannableString(toolbarTitle);
+        spanString.setSpan(new CustomActionBarTypeface(toolbarTextPaint.getTypeface()), 0, spanString.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        actionBarText.setSpan(new ForegroundColorSpan(toolbarTextPaint.getColor()), 0, actionBarText.length(),
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        actionBarText.setSpan(new RelativeSizeSpan(1f), 0,actionBarText.length(),
+        spanString.setSpan(new RelativeSizeSpan(1f), 0,spanString.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE); // set size
 
-        actionBar.setTitle(actionBarText);
+        actionBar.setTitle(spanString);
     }
 
-    private void setToolbarColor(int color) {
+    private void setToolbarBackgrColor(int color) {
         if (_actionBar != null) {
             _actionBar.setBackgroundDrawable(new ColorDrawable(color));
         }
     }
 
-    private void setStatusBarColor(int color) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int darkerColor;
-            if (color > 0xff181818) {
-                darkerColor = color - 0x00181818;
-            } else {
-                darkerColor = 0xff000000;
-            }
-            _window.setStatusBarColor(darkerColor);
+    private void setToolbarTitleColor(int titleColor) {
+        CharSequence title = _actionBar.getTitle();
+        SpannableString spanString = new SpannableString(title);
+        spanString.setSpan(new ForegroundColorSpan(titleColor), 0, spanString.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        _actionBar.setTitle(spanString);
+    }
+
+    private void setToolbarIconColor(int iconColor) {
+        if (_menu != null && _menu.size() > 0) {
+            MenuItem menuItem = _menu.getItem(0);
+            Drawable icon = menuItem.getIcon();
+            AndroidUtilites.setDrawFilterATOP(icon, iconColor);
         }
     }
 
-    private int getCurrentColor() {
+    private void setStatusBarColor(int color) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int newColor = color;
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+            if (color > 0xff505050) {
+                newColor = color - 0x00505050;
+            } else {
+                newColor = 0xff000000;
+            }
+            _window.setStatusBarColor(newColor);
+        }
+    }
+
+    protected void updateActionBarBackgr() {
+        int newBackgrColor = getCurrentToolbarBackgrColor();
+        if (_oldToolbarBackgrColor != newBackgrColor) {
+//            BACKGROUND ANIM COLOR
+            ValueAnimator backgrAnimator = AndroidUtilites.getArgbAnimator(
+                    _oldToolbarBackgrColor,
+                    newBackgrColor,
+                    animation -> {
+                        int animatedColor = (int) animation.getAnimatedValue();
+                        this.setToolbarBackgrColor(animatedColor);
+                        this.setStatusBarColor(animatedColor);
+                    });
+            backgrAnimator.start();
+            _oldToolbarBackgrColor = newBackgrColor;
+
+//            TITLE ANIM COLOR
+            int newTitleColor = this.getCurrentToolbarTitleColor();
+            ValueAnimator titleAnimator = AndroidUtilites.getArgbAnimator(
+                    _oldToolbarTitleColor,
+                    newTitleColor,
+                    animation -> {
+                        int animatedColor = (int) animation.getAnimatedValue();
+                        this.setToolbarTitleColor(animatedColor);
+                    });
+            titleAnimator.start();
+            _oldToolbarTitleColor = newTitleColor;
+
+//            ICON ANIM COLOR
+            int newIconColor = getCurrentToolbarIconColor();
+            ValueAnimator iconAnimator = AndroidUtilites.getArgbAnimator(
+                    _oldToolbarIconColor,
+                    newIconColor,
+                    animation -> {
+                        int animatedColor = (int) animation.getAnimatedValue();
+                        this.setToolbarIconColor(animatedColor);
+                    });
+            iconAnimator.start();
+            _oldToolbarIconColor = newIconColor;
+        }
+    }
+
+    private int getCurrentToolbarBackgrColor() {
         return ThemeManager.getColor(ThemeManager.key_toolbarBackColor);
+    }
+
+    private int getCurrentToolbarTitleColor() {
+        return ThemeManager.simpleTextPaint.getColor();
+    }
+
+    private int getCurrentToolbarIconColor() {
+        return ThemeManager.simpleTextPaint.getColor();
     }
 
     protected void onDestroy() {

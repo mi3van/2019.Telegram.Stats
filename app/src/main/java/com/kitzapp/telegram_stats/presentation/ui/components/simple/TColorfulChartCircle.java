@@ -4,7 +4,6 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
@@ -96,8 +95,7 @@ public class TColorfulChartCircle extends View implements TViewObserver {
                         animation -> {
                             int color = ((int) animation.getAnimatedValue());
                             Drawable backgr = this.getBackground();
-
-                            backgr.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+                            AndroidUtilites.setDrawFilterATOP(backgr, color);
                         });
                 backRGBAnim.start();
                 _oldColor = newColor;

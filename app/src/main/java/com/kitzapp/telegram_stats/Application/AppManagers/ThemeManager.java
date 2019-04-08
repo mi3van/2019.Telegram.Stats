@@ -41,7 +41,7 @@ public class ThemeManager {
     private static final int CHART_DELIMITER_FATNESS_DP = 1;
 
     private static final int CHART_RECT_SELECT_WIDTH_DP = 4;
-    private static final int CHART_PART_VERTICAL_PADDING_SUM_DP = 7;
+    private static final int CHART_MINIATURE_VERTICAL_PADDING_SUM_DP = 4;
 
     private static final int CHART_CIRCLE_SIZE_DP = 12;
 
@@ -53,8 +53,11 @@ public class ThemeManager {
     public static final int CHART_DELIMITER_FATNESS_PX;
 
     public static final int CHART_RECT_SELECT_WIDTH_PX;
-    public static final int CHART_PART_VERTICAL_PADDING_SUM_PX;
-    public static final int CHART_PART_VERTICAL_PADDING_HALF_PX;
+    public static final int CHART_BIG_VERTICAL_PADDING_SUM_PX;
+    public static final int CHART_BIG_VERTICAL_PADDING_HALF_PX;
+    public static final int CHART_MINIATURE_VERTICAL_PADDING_SUM_PX;
+    public static final int CHART_MINIATURE_VERTICAL_PADDING_HALF_PX;
+
 
     public static final int CHART_CIRCLE_SIZE_PX;
 
@@ -120,8 +123,10 @@ public class ThemeManager {
 
         CHART_DELIMITER_FATNESS_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_DELIMITER_FATNESS_DP);
         CHART_RECT_SELECT_WIDTH_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_RECT_SELECT_WIDTH_DP);
-        CHART_PART_VERTICAL_PADDING_SUM_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_PART_VERTICAL_PADDING_SUM_DP);
-        CHART_PART_VERTICAL_PADDING_HALF_PX = CHART_PART_VERTICAL_PADDING_SUM_PX >> 1;
+        CHART_BIG_VERTICAL_PADDING_SUM_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_CIRCLE_SIZE_DP);
+        CHART_BIG_VERTICAL_PADDING_HALF_PX = CHART_BIG_VERTICAL_PADDING_SUM_PX >> 1;
+        CHART_MINIATURE_VERTICAL_PADDING_SUM_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_MINIATURE_VERTICAL_PADDING_SUM_DP);
+        CHART_MINIATURE_VERTICAL_PADDING_HALF_PX = CHART_MINIATURE_VERTICAL_PADDING_SUM_PX >> 1;
         CHART_CIRCLE_SIZE_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_CIRCLE_SIZE_DP);
     }
 
@@ -182,7 +187,7 @@ public class ThemeManager {
         darkThemeColors.put(key_rectBackColor, 0xaf19232e);
 
         lightThemeColors.put(key_totalBackColor, 0xfff0f0f0);
-        lightThemeColors.put(key_toolbarBackColor, 0xff517da2);
+        lightThemeColors.put(key_toolbarBackColor, 0xffffffff);
         lightThemeColors.put(key_toolbarTextColor, 0xffffffff);
         lightThemeColors.put(key_cellTitleTextColor, 0xff3896d4);
         lightThemeColors.put(key_cellBackColor , 0xffffffff);

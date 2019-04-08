@@ -10,15 +10,18 @@ import android.widget.PopupWindow;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.Application.AndroidApp;
-import com.kitzapp.telegram_stats.Application.AppManagers.motions.MotionManagerForBigChart;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
+import com.kitzapp.telegram_stats.Application.AppManagers.motions.MotionManagerForBigChart;
 import com.kitzapp.telegram_stats.R;
 import com.kitzapp.telegram_stats.common.ArraysUtilites;
 import com.kitzapp.telegram_stats.common.MyLongPair;
 import com.kitzapp.telegram_stats.domain.model.chart.Chart;
 import com.kitzapp.telegram_stats.domain.model.chart.impl.Line;
 import com.kitzapp.telegram_stats.presentation.ui.components.popup.TInfoCellForPopup;
-import com.kitzapp.telegram_stats.presentation.ui.components.simple.*;
+import com.kitzapp.telegram_stats.presentation.ui.components.simple.TColorfulLinLayout;
+import com.kitzapp.telegram_stats.presentation.ui.components.simple.TColorfulTextView;
+import com.kitzapp.telegram_stats.presentation.ui.components.simple.TDelimiterLine;
+import com.kitzapp.telegram_stats.presentation.ui.components.simple.TViewRectSelect;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -365,5 +368,15 @@ public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectL
     protected void onDetachedFromWindow() {
         _motionManagerBig.deattachView();
         super.onDetachedFromWindow();
+    }
+
+    @Override
+    int getChartVerticalPadding() {
+        return ThemeManager.CHART_BIG_VERTICAL_PADDING_SUM_PX;
+    }
+
+    @Override
+    int getChartHalfVerticalPadding() {
+        return ThemeManager.CHART_BIG_VERTICAL_PADDING_HALF_PX;
     }
 }
