@@ -85,7 +85,7 @@ public class TColorfulChartCircle extends View implements TViewObserver {
 
     @Override
     public void update(Observable o, Object arg) {
-        if ((int) arg == ObserverManager.KEY_OBSERVER_THEME_UPDATED) {
+        if ((byte) arg == ObserverManager.KEY_OBSERVER_THEME_UPDATED) {
             int newColor = getCurrentColor();
 
             if (_oldColor != newColor) {

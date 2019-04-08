@@ -5,7 +5,8 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
-import com.kitzapp.telegram_stats.Application.AppManagers.MotionMagic;
+import com.kitzapp.telegram_stats.Application.AppManagers.motions.MotionMagicForMiniature;
+import com.kitzapp.telegram_stats.Application.AppManagers.motions.MotionManagerForBigChart;
 import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
 import com.kitzapp.telegram_stats.R;
 import com.kitzapp.telegram_stats.domain.executor.ThreadExecutor;
@@ -85,13 +86,20 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View, 
         return getBaseContext();
     }
 
+    private boolean isMiniatureAvailableToChange = true;
     @Override
     public void update(Observable observable, Object arg) {
-        if ((int) arg == ObserverManager.KEY_OBSERVER_ALLOW_TOUCH_SCROLLVIEW_FOR_RECT_SELECT) {
-            if (observable instanceof MotionMagic) {
-                MotionMagic motionMagic = (MotionMagic) observable;
-                boolean isAllowTouchEventForScrollView = motionMagic.getIsAllowTouchEventForScrollView();
-                _mainScrollView.requestDisallowInterceptTouchEvent(isAllowTouchEventForScrollView);
+        if ((byte) arg == ObserverManager.KEY_OBSERVER_MINIATURE_PROHIBITED_SCROLL) {
+            if (observable instanceof MotionMagicForMiniature) {
+                MotionMagicForMiniature motionMagic = (MotionMagicForMiniature) observable;
+                boolean isProhibitedScroll = motionMagic.getIsProhibitedScroll();
+                _mainScrollView.requestDisallowInterceptTouchEvent(isProhibitedScroll);
+            }
+        } else if ((byte) arg == ObserverManager.KEY_OBSERVER_BIG_CHART_PROHIBITED_TO_SCROLL) {
+            if (observable instanceof MotionManagerForBigChart) {
+                MotionManagerForBigChart motionMagic = (MotionManagerForBigChart) observable;
+                boolean isProhibitedScroll = motionMagic.getIsProhibitedScroll();
+                _mainScrollView.requestDisallowInterceptTouchEvent(isProhibitedScroll);
             }
         }
     }

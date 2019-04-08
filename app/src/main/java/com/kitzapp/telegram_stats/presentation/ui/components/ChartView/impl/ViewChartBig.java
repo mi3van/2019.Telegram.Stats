@@ -10,7 +10,7 @@ import android.widget.PopupWindow;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.Application.AndroidApp;
-import com.kitzapp.telegram_stats.Application.AppManagers.MotionManagerForPart;
+import com.kitzapp.telegram_stats.Application.AppManagers.motions.MotionManagerForBigChart;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.R;
 import com.kitzapp.telegram_stats.common.ArraysUtilites;
@@ -35,7 +35,7 @@ import static com.kitzapp.telegram_stats.common.AppConts.INTEGER_MIN_VALUE;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectListener, MotionManagerForPart.OnMyTouchListener {
+public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectListener, MotionManagerForBigChart.OnMyTouchListener {
     private final String PART_DATE_FORMAT = "E, MMM d";
 
     private TViewChartInfoVert _tViewChartInfoVert;
@@ -45,7 +45,7 @@ public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectL
     private float[] _partAxisXForGraph = null;
     private float _leftCursor;
     private float _rightCursor;
-    private MotionManagerForPart _motionManagerForPart;
+    private MotionManagerForBigChart _motionManagerForPart;
     private int _oldIndexShowed;
     private int _leftInArray;
     private ViewChartDatesHoriz.Listener _datesListener;
@@ -85,7 +85,7 @@ public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectL
         _verticalDelimiter.setVisibility(INVISIBLE);
         addView(_verticalDelimiter);
 
-        _motionManagerForPart = new MotionManagerForPart(this, this);
+        _motionManagerForPart = new MotionManagerForBigChart(getContext(), this, this);
         _oldIndexShowed = -1;
 
         _containerForCircleViews = new CellContainerForCircleViews(getContext());
@@ -342,7 +342,7 @@ public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectL
 
     @Override
     protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
         _motionManagerForPart.deattachView();
+        super.onDetachedFromWindow();
     }
 }

@@ -1,14 +1,10 @@
-package com.kitzapp.telegram_stats.Application.AppManagers;
+package com.kitzapp.telegram_stats.Application.AppManagers.motions;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.view.MotionEvent;
 import android.view.View;
-import com.kitzapp.telegram_stats.Application.AndroidApp;
-import com.kitzapp.telegram_stats.presentation.ui.activities.ChartActivity;
-
-import java.util.Observable;
+import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
 
 /**
  * Created by Ivan Kuzmin on 27.03.2019;
@@ -16,15 +12,16 @@ import java.util.Observable;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class MotionMagic extends Observable implements View.OnTouchListener {
+public class MotionMagicForMiniature extends BaseMotionManager {
     private final byte MOTION_UNDEFINED = -2;
     private final byte MOTION_CENTER = 0;
-    private final byte MOTION_LEFT = 2;
-    private final byte MOTION_RIGHT = 4;
+    private final byte MOTION_LEFT_CURSOR = 1;
+    private final byte MOTION_RIGHT_CURSOR = 2;
 
+    private boolean isMiniatureAvailableToChange = true;
     private final float COEF_CURSOR_PX = 0.05f;
-    private boolean isAllowTouchEventForScrollView;
     private final float _maxCursorWidth;
+    private byte _currentMotion = MOTION_UNDEFINED;
 
     public interface MotionListener {
         void onMoveLeftSide(float newLeftCursor);
@@ -44,48 +41,53 @@ public class MotionMagic extends Observable implements View.OnTouchListener {
     private float _widthViewForCenter;
 
     private MotionListener _motionListener;
-    private byte _currentMotion = MOTION_UNDEFINED;
-    private Context _context;
 
-    public MotionMagic(Context context, View motionView, MotionListener motionListener, float maxCursorWidth) {
+    public MotionMagicForMiniature(Context context, View motionView, MotionListener motionListener, float maxCursorWidth) {
+        super(context, motionView);
         _motionListener = motionListener;
-        _context = context;
         _maxCursorWidth = maxCursorWidth;
-
-        this.addObserver();
-
-        motionView.setOnTouchListener(this);
     }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if (_motionListener == null) {
+        if (isMiniatureAvailableToChange) {
+            super.onTouch(v, event);
+            if (_motionListener == null) {
+                return false;
+            }
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    if (_currentMotion == MOTION_UNDEFINED) {
+                        _oldPersentX = event.getX() / _motionListener.getCanvasWidth();
+                        _currentMotion = this.getNewMotion(_oldPersentX);
+                        _widthViewForCenter = _motionListener.getRightCursor() - _motionListener.getLeftCursor();
+                    }
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    if (_currentMotion != MOTION_UNDEFINED) {
+                        this.wasMove(event.getX() / _motionListener.getCanvasWidth());
+                    }
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    if (_currentMotion != MOTION_UNDEFINED) {
+                        _currentMotion = MOTION_UNDEFINED;
+                    }
+                    break;
+            }
+            return true;
+        } else {
             return false;
         }
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                if (_currentMotion == MOTION_UNDEFINED) {
-                    _oldPersentX = event.getX() / _motionListener.getCanvasWidth();
-                    _currentMotion = this.getNewMotion(_oldPersentX);
-                    _widthViewForCenter = _motionListener.getRightCursor() - _motionListener.getLeftCursor();
-                }
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if (_currentMotion != MOTION_UNDEFINED) {
-                    this.updateIsAllowTouchAndNotifyObservers(true);
-                    this.wasMove(event.getX() / _motionListener.getCanvasWidth());
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                if (_currentMotion != MOTION_UNDEFINED) {
-                    this.updateIsAllowTouchAndNotifyObservers(false);
-                    _currentMotion = MOTION_UNDEFINED;
-                }
-                break;
+    }
+
+    @Override
+    void updateIsProhibitedScrollToObservers(boolean isProhibitedScroll) {
+        if (isProhibitedScroll && _currentMotion == MOTION_UNDEFINED) {
+            return;
         }
-        return true;
+        super.updateIsProhibitedScrollToObservers(isProhibitedScroll);
     }
 
     private void wasMove(float persentX) {
@@ -105,7 +107,7 @@ public class MotionMagic extends Observable implements View.OnTouchListener {
         }
 
         switch (_currentMotion) {
-            case MOTION_LEFT:
+            case MOTION_LEFT_CURSOR:
                 leftCursor += difference;
                 float limitToLeftCursor = rightCursor - _maxCursorWidth;
                 if (leftCursor > limitToLeftCursor) {
@@ -113,7 +115,7 @@ public class MotionMagic extends Observable implements View.OnTouchListener {
                 }
                 _motionListener.onMoveLeftSide(leftCursor);
                 break;
-            case MOTION_RIGHT:
+            case MOTION_RIGHT_CURSOR:
                 rightCursor += difference;
                 float limitToRightCursor = leftCursor + _maxCursorWidth;
                 if (rightCursor < limitToRightCursor) {
@@ -147,9 +149,9 @@ public class MotionMagic extends Observable implements View.OnTouchListener {
         float rightCursor = _motionListener.getRightCursor();
         if (persentX > leftCursor - COEF_CURSOR_PX && persentX < rightCursor + COEF_CURSOR_PX) {
             if (persentX < leftCursor + COEF_CURSOR_PX) {
-                motion = MOTION_LEFT;
+                motion = MOTION_LEFT_CURSOR;
             } else if (persentX > rightCursor - COEF_CURSOR_PX) {
-                motion = MOTION_RIGHT;
+                motion = MOTION_RIGHT_CURSOR;
             } else {
                 motion = MOTION_CENTER;
             }
@@ -157,35 +159,17 @@ public class MotionMagic extends Observable implements View.OnTouchListener {
         return motion;
     }
 
-    private void updateIsAllowTouchAndNotifyObservers(boolean isAllowTouchEventForScrollView) {
-        this.isAllowTouchEventForScrollView = isAllowTouchEventForScrollView;
-        this.setChanged();
-        this.notifyObservers(ObserverManager.KEY_OBSERVER_ALLOW_TOUCH_SCROLLVIEW_FOR_RECT_SELECT);
+    public boolean isMiniatureAvailableToChange() {
+        return isMiniatureAvailableToChange;
     }
 
-    public boolean getIsAllowTouchEventForScrollView() {
-        return isAllowTouchEventForScrollView;
+    public void setMiniatureAvailableToChange(boolean miniatureAvailableToChange) {
+        isMiniatureAvailableToChange = miniatureAvailableToChange;
+        _isProhibitedScroll = true;
     }
 
-    public void deattachView() {
-        this.deleteObserver();
-    }
-
-    private void addObserver() {
-        if (_context.getApplicationContext() instanceof AndroidApp) {
-            Activity currentActivity = ((AndroidApp) _context.getApplicationContext()).getCurrentActivity();
-            if (currentActivity instanceof ChartActivity) {
-                addObserver((ChartActivity) currentActivity);
-            }
-        }
-    }
-
-    private void deleteObserver() {
-        if (_context.getApplicationContext() instanceof AndroidApp) {
-            Activity currentActivity = ((AndroidApp) _context.getApplicationContext()).getCurrentActivity();
-            if (currentActivity instanceof ChartActivity) {
-                deleteObserver((ChartActivity) currentActivity);
-            }
-        }
+    @Override
+    protected byte getKeyNotifyObservers() {
+        return ObserverManager.KEY_OBSERVER_MINIATURE_PROHIBITED_SCROLL;
     }
 }
