@@ -12,8 +12,7 @@ public class ObserverManager extends Observable {
 
     private static byte totalInit = 1;
     public final static byte KEY_OBSERVER_THEME_UPDATED = totalInit++;
-    public final static byte KEY_OBSERVER_MINIATURE_PROHIBITED_SCROLL = totalInit++;
-    public final static byte KEY_OBSERVER_BIG_CHART_PROHIBITED_TO_SCROLL = totalInit++;
+    public final static byte KEY_OBSERVER_PROHIBITED_SCROLL = totalInit++;
 
     public void notifyMyObservers(byte keyObserver) {
         this.setChanged();

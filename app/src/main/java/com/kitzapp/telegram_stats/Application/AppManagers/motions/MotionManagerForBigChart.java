@@ -14,8 +14,12 @@ import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
 
 public class MotionManagerForBigChart extends BaseMotionManager  {
 
+    boolean isMiniatureViewLocked = false;
+
     public interface OnMyTouchListener {
-        void onXwasDetected(float newX);
+        void onXTouchWasDetected(float newX);
+
+        void onMiniatureViewIsLocked(boolean isLocked);
     }
 
     private OnMyTouchListener _myTouchListener;
@@ -35,14 +39,27 @@ public class MotionManagerForBigChart extends BaseMotionManager  {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_MOVE:
-                _myTouchListener.onXwasDetected(event.getX());
+                _myTouchListener.onXTouchWasDetected(event.getX());
+                this.onMiniatureViewIsLocked(true);
                 break;
         }
         return true;
     }
 
     @Override
+    protected void motionCancel() {
+        this.onMiniatureViewIsLocked(false);
+    }
+
+    private void onMiniatureViewIsLocked(boolean isLocked) {
+        if (_myTouchListener != null && isMiniatureViewLocked != isLocked) {
+            isMiniatureViewLocked = isLocked;
+            _myTouchListener.onMiniatureViewIsLocked(isLocked);
+        }
+    }
+
+    @Override
     protected byte getKeyNotifyObservers() {
-        return ObserverManager.KEY_OBSERVER_BIG_CHART_PROHIBITED_TO_SCROLL;
+        return ObserverManager.KEY_OBSERVER_PROHIBITED_SCROLL;
     }
 }

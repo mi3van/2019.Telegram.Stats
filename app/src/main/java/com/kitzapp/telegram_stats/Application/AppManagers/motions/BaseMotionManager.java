@@ -15,7 +15,7 @@ import java.util.Observable;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-abstract class BaseMotionManager extends Observable implements View.OnTouchListener {
+public abstract class BaseMotionManager extends Observable implements View.OnTouchListener {
     private final byte MOTION_BASE_UNDEFINED = -2;
     private final byte MOTION_IS_HORIZONTAL = -1;
     private final float COEF_CURSOR_PX = 20f;
@@ -49,28 +49,31 @@ abstract class BaseMotionManager extends Observable implements View.OnTouchListe
                     float difference = Math.abs(_firstPressX - currentX);
                     if (difference > COEF_CURSOR_PX) {
                         _baseMotion = MOTION_IS_HORIZONTAL;
-                        this.updateIsProhibitedScrollToObservers(true);
+                        this.setIsProhibitedScrollToObservers(true);
                     }
                 }
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
+                this.motionCancel();
                 if (_baseMotion != MOTION_BASE_UNDEFINED) {
                     _baseMotion = MOTION_BASE_UNDEFINED;
-                    this.updateIsProhibitedScrollToObservers(false);
+                    this.setIsProhibitedScrollToObservers(false);
                 }
                 break;
         }
         return true;
     }
 
-    void updateIsProhibitedScrollToObservers(boolean isProhibitedScroll) {
+    void setIsProhibitedScrollToObservers(boolean isProhibitedScroll) {
         this._isProhibitedScroll = isProhibitedScroll;
         this.setChanged();
         this.notifyObservers(this.getKeyNotifyObservers());
     }
 
     protected abstract byte getKeyNotifyObservers();
+
+    protected abstract void motionCancel();
 
     public boolean getIsProhibitedScroll() {
         return _isProhibitedScroll;

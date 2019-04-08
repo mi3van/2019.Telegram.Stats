@@ -12,12 +12,16 @@ import android.text.TextPaint;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.view.Menu;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import com.kitzapp.telegram_stats.Application.AndroidApp;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.R;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
 import com.kitzapp.telegram_stats.presentation.ui.components.simple.CustomActionBarTypeface;
+
+import java.lang.reflect.Field;
 
 /**
  * Created by Ivan Kuzmin on 2019-03-21.
@@ -37,6 +41,8 @@ public abstract class BaseActivity extends Activity implements BaseView {
         setContentView(getLayoutID());
 
         _oldToolbarColor = getCurrentColor();
+        _actionBar = getActionBar();
+        _window = getWindow();
 
         if (getApplicationContext() instanceof AndroidApp) {
             ((AndroidApp) getApplicationContext()).setCurrentActivity(this);
@@ -54,9 +60,21 @@ public abstract class BaseActivity extends Activity implements BaseView {
     protected abstract void initViews();
 
     private void initToolbar() {
-        _actionBar = getActionBar();
         if (_actionBar != null) {
             _actionBar.setDisplayShowTitleEnabled(true);
+
+            View v = _window.getDecorView();
+            int actionBarId = getResources().getIdentifier("action_bar", "id", "android");
+            ViewGroup actionBarView = v.findViewById(actionBarId);
+            try {
+                Field f = actionBarView.getClass().getSuperclass().getDeclaredField("mContentHeight");
+                f.setAccessible(true);
+                f.set(actionBarView, ThemeManager.CELL_HEIGHT_56DP_IN_PX);
+            } catch (NoSuchFieldException e) {
+
+            } catch (IllegalAccessException e) {
+
+            }
 
             this.changeToolbarText(_actionBar);
             this.setToolbarColor(_oldToolbarColor);
@@ -69,7 +87,6 @@ public abstract class BaseActivity extends Activity implements BaseView {
 
     private void initBackgrStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            _window = getWindow();
             this.setStatusBarColor(_oldToolbarColor);
             int blackColor = 0xff111111;
             _window.setNavigationBarColor(blackColor);

@@ -20,15 +20,15 @@ public class ThemeManager {
     public static final int CHART_SUB_TEXT_SIZE_DP = 14;
 
 //    CHART CELLS DP
-    private static final int CHART_CELL_HEIGHT_DP = 48;
-    private static final int CHART_CELL_TITLE_HEIGHT_DP = 56;
+    private static final int CELL_HEIGHT_48DP = 48;
+    private static final int CELL_HEIGHT_56DP = 56;
     private static final int CHART_CELL_BOTTOM_MARGIN_DP = 28;
     private static final int CHART_CELL_RIGHT_LEFT_MARGIN_DP = 16;
     private static final int CHART_CELL_LEFT_PADDING_CH_BOX_DP = 14;
 
 //    CHART CELLS PX
-    public static final int CHART_CELL_HEIGHT_PX;
-    public static final int CHART_CELL_TITLE_HEIGHT_PX;
+    public static final int CELL_HEIGHT_48DP_IN_PX;
+    public static final int CELL_HEIGHT_56DP_IN_PX;
     public static final int CHART_CELL_BOTTOM_MARGIN_PX;
     public static final int CHART_CELL_RIGHTLEFT_MARGIN_PX;
     public static final int CHART_CELL_LEFT_PADDING_CH_BOX_PX;
@@ -107,8 +107,8 @@ public class ThemeManager {
 
         applyTheme(AndroidApp.mainRepository.getCurrentTheme());
 
-        CHART_CELL_HEIGHT_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_CELL_HEIGHT_DP);
-        CHART_CELL_TITLE_HEIGHT_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_CELL_TITLE_HEIGHT_DP);
+        CELL_HEIGHT_48DP_IN_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CELL_HEIGHT_48DP);
+        CELL_HEIGHT_56DP_IN_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CELL_HEIGHT_56DP);
         CHART_CELL_BOTTOM_MARGIN_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_CELL_BOTTOM_MARGIN_DP);
         CHART_CELL_RIGHTLEFT_MARGIN_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_CELL_RIGHT_LEFT_MARGIN_DP);
         CHART_CELL_LEFT_PADDING_CH_BOX_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_CELL_LEFT_PADDING_CH_BOX_DP);

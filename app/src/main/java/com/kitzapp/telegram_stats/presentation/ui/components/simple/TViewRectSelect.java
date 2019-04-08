@@ -313,4 +313,8 @@ public class TViewRectSelect extends View implements TViewObserver, MotionMagicF
     public float getCanvasWidth() {
         return _canvasWidth;
     }
+
+    public void setMiniatureIsLocked(boolean isLocked) {
+        _motionMagic.setMiniatureIsLocked(isLocked);
+    }
 }

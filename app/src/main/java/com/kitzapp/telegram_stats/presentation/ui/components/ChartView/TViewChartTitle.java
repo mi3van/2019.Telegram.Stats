@@ -71,7 +71,7 @@ public class TViewChartTitle extends LinearLayout implements TViewObserver {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         this.addObserver();
-        getLayoutParams().height = ThemeManager.CHART_CELL_TITLE_HEIGHT_PX;
+        getLayoutParams().height = ThemeManager.CELL_HEIGHT_56DP_IN_PX;
     }
 
     @Override

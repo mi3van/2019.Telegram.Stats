@@ -108,7 +108,7 @@ public class TColorfulCheckBox extends CheckBox implements TViewObserver {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        getLayoutParams().height = ThemeManager.CHART_CELL_HEIGHT_PX;
+        getLayoutParams().height = ThemeManager.CELL_HEIGHT_48DP_IN_PX;
         this.addObserver();
     }
 

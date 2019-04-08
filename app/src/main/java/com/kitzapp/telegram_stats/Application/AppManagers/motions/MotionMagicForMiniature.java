@@ -18,7 +18,7 @@ public class MotionMagicForMiniature extends BaseMotionManager {
     private final byte MOTION_LEFT_CURSOR = 1;
     private final byte MOTION_RIGHT_CURSOR = 2;
 
-    private boolean isMiniatureAvailableToChange = true;
+    private boolean isMiniatureLocked = false;
     private final float COEF_CURSOR_PX = 0.05f;
     private final float _maxCursorWidth;
     private byte _currentMotion = MOTION_UNDEFINED;
@@ -51,7 +51,7 @@ public class MotionMagicForMiniature extends BaseMotionManager {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if (isMiniatureAvailableToChange) {
+        if (!isMiniatureLocked) {
             super.onTouch(v, event);
             if (_motionListener == null) {
                 return false;
@@ -69,12 +69,6 @@ public class MotionMagicForMiniature extends BaseMotionManager {
                         this.wasMove(event.getX() / _motionListener.getCanvasWidth());
                     }
                     break;
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL:
-                    if (_currentMotion != MOTION_UNDEFINED) {
-                        _currentMotion = MOTION_UNDEFINED;
-                    }
-                    break;
             }
             return true;
         } else {
@@ -83,11 +77,18 @@ public class MotionMagicForMiniature extends BaseMotionManager {
     }
 
     @Override
-    void updateIsProhibitedScrollToObservers(boolean isProhibitedScroll) {
+    protected void motionCancel() {
+        if (_currentMotion != MOTION_UNDEFINED) {
+            _currentMotion = MOTION_UNDEFINED;
+        }
+    }
+
+    @Override
+    void setIsProhibitedScrollToObservers(boolean isProhibitedScroll) {
         if (isProhibitedScroll && _currentMotion == MOTION_UNDEFINED) {
             return;
         }
-        super.updateIsProhibitedScrollToObservers(isProhibitedScroll);
+        super.setIsProhibitedScrollToObservers(isProhibitedScroll);
     }
 
     private void wasMove(float persentX) {
@@ -159,17 +160,15 @@ public class MotionMagicForMiniature extends BaseMotionManager {
         return motion;
     }
 
-    public boolean isMiniatureAvailableToChange() {
-        return isMiniatureAvailableToChange;
-    }
-
-    public void setMiniatureAvailableToChange(boolean miniatureAvailableToChange) {
-        isMiniatureAvailableToChange = miniatureAvailableToChange;
-        _isProhibitedScroll = true;
+    public void setMiniatureIsLocked(boolean miniatureIsLocked) {
+        if (miniatureIsLocked != isMiniatureLocked) {
+            isMiniatureLocked = miniatureIsLocked;
+            _isProhibitedScroll = true;
+        }
     }
 
     @Override
     protected byte getKeyNotifyObservers() {
-        return ObserverManager.KEY_OBSERVER_MINIATURE_PROHIBITED_SCROLL;
+        return ObserverManager.KEY_OBSERVER_PROHIBITED_SCROLL;
     }
 }

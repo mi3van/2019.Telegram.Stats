@@ -57,9 +57,13 @@ public class ViewChartMiniature extends ViewChartBase {
         }
     }
 
+    public void setMiniatureIsLocked(boolean isLocked) {
+        _viewRectSelect.setMiniatureIsLocked(isLocked);
+    }
+
     @Override
     int getViewHeightForLayout() {
-        return ThemeManager.CHART_CELL_HEIGHT_PX;
+        return ThemeManager.CELL_HEIGHT_48DP_IN_PX;
     }
 
     @Override
