@@ -1,6 +1,5 @@
 package com.kitzapp.telegram_stats.presentation.ui.components.simple;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
@@ -8,9 +7,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.Application.AndroidApp;
-import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
-import com.kitzapp.telegram_stats.common.AndroidUtilites;
 import com.kitzapp.telegram_stats.presentation.ui.components.TViewObserver;
 
 import java.util.Observable;
@@ -47,8 +44,6 @@ public class TDelimiterLine extends View implements TViewObserver {
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ThemeManager.CHART_DELIMITER_FATNESS_PX);
-        layoutParams.setMargins(ThemeManager.CHART_CELL_RIGHTLEFT_MARGIN_PX +
-                ThemeManager.CHART_CELL_RIGHTLEFT_MARGIN_PX, 0, 0, 0);
         setLayoutParams(layoutParams);
     }
 
@@ -64,19 +59,19 @@ public class TDelimiterLine extends View implements TViewObserver {
 
     @Override
     public void update(Observable o, Object arg) {
-        if ((int) arg == ObserverManager.KEY_OBSERVER_THEME_UPDATED) {
-            int newBackColor = getCurrentBackColor();
-
-            if (_oldBackColor != newBackColor) {
-                // BACKGROUND CHANGE COLOR
-                ValueAnimator backRGBAnim = AndroidUtilites.getArgbAnimator(
-                        _oldBackColor,
-                        newBackColor,
-                        animation -> setBackgroundColor((int) animation.getAnimatedValue()));
-                backRGBAnim.start();
-                _oldBackColor = newBackColor;
-            }
-        }
+//        if ((int) arg == ObserverManager.KEY_OBSERVER_THEME_UPDATED) {
+//            int newBackColor = getCurrentBackColor();
+//
+//            if (_oldBackColor != newBackColor) {
+//                // BACKGROUND CHANGE COLOR
+//                ValueAnimator backRGBAnim = AndroidUtilites.getArgbAnimator(
+//                        _oldBackColor,
+//                        newBackColor,
+//                        animation -> setBackgroundColor((int) animation.getAnimatedValue()));
+//                backRGBAnim.start();
+//                _oldBackColor = newBackColor;
+//            }
+//        }
     }
 
     @Override

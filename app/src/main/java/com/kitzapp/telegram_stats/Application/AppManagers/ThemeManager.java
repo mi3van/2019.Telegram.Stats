@@ -76,7 +76,7 @@ public class ThemeManager {
     private static final String key_cellTitleTextColor = "cellTitleTextColor";
     public static final String key_cellBackColor = "cellBackColor";
     public static final String key_cellChartFullBackColor = "cellChartFullBackColor";
-    private static final String key_chartDescrTextColor = "chartDescrTextColor";
+    private static final String key_chartDescrTextCol = "chartDescrTextColor";
 
     public static final String key_rectSelectColor = "rectSelectColor";
     public static final String key_rectBackColor = "rectBackColor";
@@ -157,7 +157,7 @@ public class ThemeManager {
         simpleTextPaint.setColor(getColor(key_simpleTextColor));
         toolbarTextPaint.setColor(getColor(key_toolbarTextColor));
         chartTitleTextPaint.setColor(getColor(key_cellTitleTextColor));
-        chartDescrTextPaint.setColor(getColor(key_chartDescrTextColor));
+        chartDescrTextPaint.setColor(getColor(key_chartDescrTextCol));
     }
 
     public static int getColor(String key) {
@@ -171,27 +171,26 @@ public class ThemeManager {
     public static void initThemesHashes() {
         darkThemeColors.put(key_totalBackColor, 0xff151e27);
         darkThemeColors.put(key_toolbarBackColor, 0xff212d3b);
-        darkThemeColors.put(key_toolbarTextColor, 0xffffffff);
         darkThemeColors.put(key_cellTitleTextColor, 0xff7bc4fb);
         darkThemeColors.put(key_cellBackColor , 0xff1d2733);
         darkThemeColors.put(key_cellChartFullBackColor , 0xff19232e);
-        darkThemeColors.put(key_chartDescrTextColor, 0xff4d606f);
         darkThemeColors.put(key_simpleTextColor , 0xffffffff);
-        darkThemeColors.put(key_delimiterColor, 0xff0f1823);
-        darkThemeColors.put(key_rectSelectColor, 0x5Fa5c3d9);
         darkThemeColors.put(key_rectBackColor, 0xaf19232e);
 
         lightThemeColors.put(key_totalBackColor, 0xfff0f0f0);
         lightThemeColors.put(key_toolbarBackColor, 0xff517da2);
-        lightThemeColors.put(key_toolbarTextColor, 0xffffffff);
         lightThemeColors.put(key_cellTitleTextColor, 0xff3896d4);
         lightThemeColors.put(key_cellBackColor , 0xffffffff);
         lightThemeColors.put(key_cellChartFullBackColor, 0xffffffff);
-        lightThemeColors.put(key_chartDescrTextColor, 0x8F7593a9);
         lightThemeColors.put(key_simpleTextColor , 0xff000000);
-        lightThemeColors.put(key_delimiterColor, 0xffe7e7e7);
-        lightThemeColors.put(key_rectSelectColor, 0x5Fa5c3d9);
         lightThemeColors.put(key_rectBackColor, 0xafeeeeee);
+
+        //  No change colors
+
+        lightThemeColors.put(key_toolbarTextColor, 0xffffffff); darkThemeColors.put(key_toolbarTextColor, 0xffffffff);
+        lightThemeColors.put(key_chartDescrTextCol, 0x6f666666);darkThemeColors.put(key_chartDescrTextCol, 0x6f666666);
+        lightThemeColors.put(key_rectSelectColor, 0x5Fa5c3d9);  darkThemeColors.put(key_rectSelectColor, 0x5Fa5c3d9);
+        lightThemeColors.put(key_delimiterColor, 0x1F555555);   darkThemeColors.put(key_delimiterColor, 0x1F555555);
     }
 
     static void initTextPaints() {
@@ -207,9 +206,9 @@ public class ThemeManager {
     }
 
     public static void initTextFonts(Context context) {
-        simpleTextPaint.setTypeface(AndroidUtilites.getTypeface(context, "fonts/rregular.ttf"));
         toolbarTextPaint.setTypeface(AndroidUtilites.getTypeface(context, "fonts/rmedium.ttf"));
         chartTitleTextPaint.setTypeface(AndroidUtilites.getTypeface(context, "fonts/rmedium.ttf"));
+        simpleTextPaint.setTypeface(AndroidUtilites.getTypeface(context, "fonts/rregular.ttf"));
         chartDescrTextPaint.setTypeface(AndroidUtilites.getTypeface(context, "fonts/rregular.ttf"));
     }
 }

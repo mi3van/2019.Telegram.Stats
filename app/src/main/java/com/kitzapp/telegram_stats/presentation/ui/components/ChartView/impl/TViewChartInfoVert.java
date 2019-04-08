@@ -67,7 +67,7 @@ class TViewChartInfoVert extends LinearLayout {
         this.addView(_tTextView5);
         this.addView(this.getDelimiterLine());
         this.addView(_tTextView6);
-        this.addView(this.getDelimiterLine(true));
+        this.addView(this.getDelimiterLine());
     }
 
     public void setDatesAndInit(long maxY, long minY) {
@@ -171,21 +171,7 @@ class TViewChartInfoVert extends LinearLayout {
     }
 
     private TDelimiterLine getDelimiterLine() {
-        return this.getDelimiterLine(false);
-    }
-
-    private TDelimiterLine getDelimiterLine(boolean isLast) {
         TDelimiterLine delimiterLine = new TDelimiterLine(getContext());
-        LinearLayout.LayoutParams layoutParams = (LayoutParams) delimiterLine.getLayoutParams();
-        float alpha;
-        if (isLast) {
-            alpha = 1f;
-        } else {
-            layoutParams.height = 1;
-            alpha = 1f;
-        }
-        delimiterLine.setAlpha(alpha);
-        layoutParams.setMargins(0, 0, 0, 0);
         return delimiterLine;
     }
 }
