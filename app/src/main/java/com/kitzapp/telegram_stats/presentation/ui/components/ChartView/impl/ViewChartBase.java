@@ -21,9 +21,6 @@ import com.kitzapp.telegram_stats.presentation.ui.components.TViewObserver;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager.CHART_PART_VERTICAL_PADDING_HALF_PX;
-import static com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager.CHART_PART_VERTICAL_PADDING_SUM_PX;
-
 /**
  * Created by Ivan Kuzmin on 25.03.2019;
  * 3van@mail.ru;
@@ -72,16 +69,16 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
     }
 
     abstract int getViewHeightForLayout();
-
     abstract int getLinePaintWidth();
-
     abstract int getMaxDotsForApproxChart();
+    abstract int getChartVerticalPadding();
+    abstract int getChartHalfVerticalPadding();
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        int canvasHeight = canvas.getHeight() - CHART_PART_VERTICAL_PADDING_SUM_PX;
-        int canvasWidth = canvas.getWidth();
+        int canvasHeight = getHeight() - getChartVerticalPadding();
+        int canvasWidth = getWidth();
 
         if (_axisXForGraph != null) {
 //            RECALCULATE
@@ -151,10 +148,10 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
     }
 
     protected void initAxisX() {
-        float stepX = (_viewWidth - CHART_PART_VERTICAL_PADDING_SUM_PX) / (_maxAxisXx - 1);
+        float stepX = (_viewWidth) / (_maxAxisXx - 1);
         // CONVERT X AND Y's TO CANVAS SIZE
         _axisXForGraph = new float[_maxAxisXx];
-        _axisXForGraph[0] = CHART_PART_VERTICAL_PADDING_HALF_PX;
+        _axisXForGraph[0] = 0;
         for (int i = 1; i < _maxAxisXx; i++) {
             _axisXForGraph[i] = _axisXForGraph[i - 1] + stepX;
         }
@@ -187,7 +184,7 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
                 for (int i = 0; i < countDots; i++) {
                     tempValue = tempAxisY[i] - minAxisY;
                     tempValue /= persent;
-                    convertedY = (long) (_viewHeight - tempValue + CHART_PART_VERTICAL_PADDING_HALF_PX);
+                    convertedY = (long) (_viewHeight - tempValue + getChartHalfVerticalPadding());
                     if (convertedY < 0) {
                         convertedY = 0;
                     }

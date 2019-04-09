@@ -71,7 +71,7 @@ public class TViewChartTitle extends LinearLayout implements TViewObserver {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         this.addObserver();
-        getLayoutParams().height = ThemeManager.CHART_CELL_TITLE_HEIGHT_PX;
+        getLayoutParams().height = ThemeManager.CELL_HEIGHT_56DP_IN_PX;
     }
 
     @Override
@@ -82,7 +82,7 @@ public class TViewChartTitle extends LinearLayout implements TViewObserver {
 
     @Override
     public void update(Observable o, Object arg) {
-        if ((int) arg == ObserverManager.KEY_OBSERVER_THEME_UPDATED) {
+        if ((byte) arg == ObserverManager.KEY_OBSERVER_THEME_UPDATED) {
             int newTitleColor = ThemeManager.chartTitleTextPaint.getColor();
 
             // TITLE CHANGE COLOR

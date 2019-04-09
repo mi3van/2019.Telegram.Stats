@@ -57,9 +57,13 @@ public class ViewChartMiniature extends ViewChartBase {
         }
     }
 
+    public void setMiniatureIsLocked(boolean isLocked) {
+        _viewRectSelect.setMiniatureIsLocked(isLocked);
+    }
+
     @Override
     int getViewHeightForLayout() {
-        return ThemeManager.CHART_CELL_HEIGHT_PX;
+        return ThemeManager.CELL_HEIGHT_48DP_IN_PX;
     }
 
     @Override
@@ -74,7 +78,7 @@ public class ViewChartMiniature extends ViewChartBase {
 
     @Override
     public void update(Observable o, Object arg) {
-        if ((int) arg == ObserverManager.KEY_OBSERVER_THEME_UPDATED) {
+        if ((byte) arg == ObserverManager.KEY_OBSERVER_THEME_UPDATED) {
             int newFullChartBackColor = getFullChartBackColor();
 
             // FULL CHART CHANGE BACK COLOR
@@ -101,5 +105,15 @@ public class ViewChartMiniature extends ViewChartBase {
         layoutParams.height -= (ThemeManager.CHART_FULL_TOP_BOTTOM_MARGIN_PX << 1);
         layoutParams.topMargin = ThemeManager.CHART_FULL_TOP_BOTTOM_MARGIN_PX;
         layoutParams.bottomMargin = ThemeManager.CHART_FULL_TOP_BOTTOM_MARGIN_PX;
+    }
+
+    @Override
+    int getChartVerticalPadding() {
+        return ThemeManager.CHART_MINIATURE_VERTICAL_PADDING_SUM_PX;
+    }
+
+    @Override
+    int getChartHalfVerticalPadding() {
+        return ThemeManager.CHART_MINIATURE_VERTICAL_PADDING_HALF_PX;
     }
 }

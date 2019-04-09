@@ -59,19 +59,19 @@ public class TDelimiterLine extends View implements TViewObserver {
 
     @Override
     public void update(Observable o, Object arg) {
-//        if ((int) arg == ObserverManager.KEY_OBSERVER_THEME_UPDATED) {
-//            int newBackColor = getCurrentBackColor();
-//
-//            if (_oldBackColor != newBackColor) {
-//                // BACKGROUND CHANGE COLOR
-//                ValueAnimator backRGBAnim = AndroidUtilites.getArgbAnimator(
-//                        _oldBackColor,
-//                        newBackColor,
-//                        animation -> setBackgroundColor((int) animation.getAnimatedValue()));
-//                backRGBAnim.start();
-//                _oldBackColor = newBackColor;
-//            }
-//        }
+        if ((byte) arg == ObserverManager.KEY_OBSERVER_THEME_UPDATED) {
+            int newBackColor = getCurrentBackColor();
+
+            if (_oldBackColor != newBackColor) {
+                // BACKGROUND CHANGE COLOR
+                ValueAnimator backRGBAnim = AndroidUtilites.getArgbAnimator(
+                        _oldBackColor,
+                        newBackColor,
+                        animation -> setBackgroundColor((int) animation.getAnimatedValue()));
+                backRGBAnim.start();
+                _oldBackColor = newBackColor;
+            }
+        }
     }
 
     @Override

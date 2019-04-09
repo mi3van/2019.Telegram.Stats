@@ -10,15 +10,18 @@ import android.widget.PopupWindow;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.Application.AndroidApp;
-import com.kitzapp.telegram_stats.Application.AppManagers.MotionManagerForPart;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
+import com.kitzapp.telegram_stats.Application.AppManagers.motions.MotionManagerForBigChart;
 import com.kitzapp.telegram_stats.R;
 import com.kitzapp.telegram_stats.common.ArraysUtilites;
 import com.kitzapp.telegram_stats.common.MyLongPair;
 import com.kitzapp.telegram_stats.domain.model.chart.Chart;
 import com.kitzapp.telegram_stats.domain.model.chart.impl.Line;
 import com.kitzapp.telegram_stats.presentation.ui.components.popup.TInfoCellForPopup;
-import com.kitzapp.telegram_stats.presentation.ui.components.simple.*;
+import com.kitzapp.telegram_stats.presentation.ui.components.simple.TColorfulLinLayout;
+import com.kitzapp.telegram_stats.presentation.ui.components.simple.TColorfulTextView;
+import com.kitzapp.telegram_stats.presentation.ui.components.simple.TDelimiterLine;
+import com.kitzapp.telegram_stats.presentation.ui.components.simple.TViewRectSelect;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -35,8 +38,15 @@ import static com.kitzapp.telegram_stats.common.AppConts.INTEGER_MIN_VALUE;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectListener, MotionManagerForPart.OnMyTouchListener {
-    private final String PART_DATE_FORMAT = "E, MMM d";
+public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectListener, MotionManagerForBigChart.OnMyTouchListener {
+
+    public interface BigChartInterface {
+        void onMiniatureViewIsLocked(boolean isLocked);
+
+        void onDatesWasChanged(long[] dates);
+    }
+
+    private final String PART_DATE_FORMAT = "EEE, MMM d";
 
     private TViewChartInfoVert _tViewChartInfoVert;
     private TDelimiterLine _verticalDelimiter;
@@ -45,10 +55,10 @@ public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectL
     private float[] _partAxisXForGraph = null;
     private float _leftCursor;
     private float _rightCursor;
-    private MotionManagerForPart _motionManagerForPart;
+    private MotionManagerForBigChart _motionManagerBig;
     private int _oldIndexShowed;
     private int _leftInArray;
-    private ViewChartDatesHoriz.Listener _datesListener;
+    private BigChartInterface _chartInterface;
 
     private CellContainerForCircleViews _containerForCircleViews;
     private int _verticalDelimiterHeight;
@@ -66,9 +76,9 @@ public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectL
         super(context, attrs, defStyleAttr);
     }
 
-    public ViewChartBig(Context context, @NonNull Chart chart, ViewChartDatesHoriz.Listener datesListener) {
+    public ViewChartBig(Context context, @NonNull Chart chart, BigChartInterface bigChartInterface) {
         super(context, chart);
-        _datesListener = datesListener;
+        _chartInterface = bigChartInterface;
     }
 
     @Override
@@ -85,21 +95,27 @@ public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectL
         _verticalDelimiter.setVisibility(INVISIBLE);
         addView(_verticalDelimiter);
 
-        _motionManagerForPart = new MotionManagerForPart(this, this);
+        _motionManagerBig = new MotionManagerForBigChart(getContext(), this, this);
         _oldIndexShowed = -1;
 
         _containerForCircleViews = new CellContainerForCircleViews(getContext());
         addView(_containerForCircleViews);
     }
 
+    private boolean _isCoeffXForPopupNeedCalculate = true;
+    private float _coeffXForPopup = 0;
+
     @Override
-    public void onXwasDetected(float newX) {
+    public void onXTouchWasDetected(float newX) {
         if (_partAxisXForGraph != null) {
             int tempIndex = -1;
-            float coefficient = (_partAxisXForGraph[1] - _partAxisXForGraph[0]) / 2;
+            if (_isCoeffXForPopupNeedCalculate) {
+                _isCoeffXForPopupNeedCalculate = false;
+                _coeffXForPopup = (_partAxisXForGraph[1] - _partAxisXForGraph[0]) / 2;
+            }
             for (int i = 0; i < _partAxisXForGraph.length; i++) {
-                float currentPoint = _partAxisXForGraph[i] - coefficient;
-                float nextPoint = _partAxisXForGraph[i] + coefficient;
+                float currentPoint = _partAxisXForGraph[i] - _coeffXForPopup;
+                float nextPoint = _partAxisXForGraph[i] + _coeffXForPopup;
                 if (newX > currentPoint && newX <= nextPoint) {
                     tempIndex = i;
                     break;
@@ -109,6 +125,13 @@ public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectL
                 _oldIndexShowed = tempIndex;
                 drawPopupViews(_oldIndexShowed);
             }
+        }
+    }
+
+    @Override
+    public void onMiniatureViewIsLocked(boolean isLocked) {
+        if (_chartInterface != null) {
+            _chartInterface.onMiniatureViewIsLocked(isLocked);
         }
     }
 
@@ -125,12 +148,13 @@ public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectL
 
     @Override
     public void onRectCursorsWasChanged(float leftCursor, float rightCursor) {
-        _leftCursor = leftCursor;
-        _rightCursor = rightCursor;
-        _leftInArray = (int) (_maxAxisXx * leftCursor);
-        int rightInArray = (int) (_maxAxisXx * rightCursor);
+        _leftCursor = leftCursor;_rightCursor = rightCursor;
+        _isCoeffXForPopupNeedCalculate = true;
 
-        int countPoints = rightInArray - _leftInArray;
+        _leftInArray = (int) (_maxAxisXx * leftCursor);
+        int _rightInArray = (int) (_maxAxisXx * rightCursor);
+
+        int countPoints = _rightInArray - _leftInArray;
 
         if (countPoints < 2) {
             return;
@@ -138,15 +162,15 @@ public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectL
 
         this.hidePopupViews();
 
-        if (_datesListener != null) {
-            long[] dates = this.getDatesForSend(_leftInArray, rightInArray);
-            _datesListener.onDatesWasChanged(dates);
+        if (_chartInterface != null) {
+            long[] dates = this.getDatesForSend(_leftInArray, _rightInArray);
+            _chartInterface.onDatesWasChanged(dates);
         }
 
         // Get new part arrays for draw Y
-        _partAxisesY = getPartOfFullHashAxisY(_leftInArray, rightInArray);
+        _partAxisesY = getPartOfFullHashAxisY(_leftInArray, _rightInArray);
         // Get new part arrays for draw X
-        _partAxisXForGraph = getPartOfFullAxisX(_leftInArray, rightInArray);
+        _partAxisXForGraph = getPartOfFullAxisX(_leftInArray, _rightInArray);
 
         float leftInPx = leftCursor * _viewWidth;
         float rightInPx = rightCursor * _viewWidth;
@@ -342,7 +366,17 @@ public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectL
 
     @Override
     protected void onDetachedFromWindow() {
+        _motionManagerBig.deattachView();
         super.onDetachedFromWindow();
-        _motionManagerForPart.deattachView();
+    }
+
+    @Override
+    int getChartVerticalPadding() {
+        return ThemeManager.CHART_BIG_VERTICAL_PADDING_SUM_PX;
+    }
+
+    @Override
+    int getChartHalfVerticalPadding() {
+        return ThemeManager.CHART_BIG_VERTICAL_PADDING_HALF_PX;
     }
 }

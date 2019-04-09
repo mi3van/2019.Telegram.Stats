@@ -2,7 +2,6 @@ package com.kitzapp.telegram_stats.presentation.ui.components.ChartView.impl;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.LinearLayout;
@@ -27,10 +26,6 @@ public class ViewChartDatesHoriz extends LinearLayout {
     private final int TEXT_VIEW_TYPE_RIGHT = 2;
     private final String MMM_D_FORMAT = "MMM d";
     private final String M_Y_FORMAT = "M/y";
-
-    public interface Listener {
-        void onDatesWasChanged(long[] dates);
-    }
 
     private TChartTextView _tTextView1;
     private TChartTextView _tTextView2;
@@ -115,11 +110,11 @@ public class ViewChartDatesHoriz extends LinearLayout {
                     dateFormat = M_Y_FORMAT;
                 } else {
                     dateFormat = MMM_D_FORMAT;
-                    date = getFormattedDay(date, calendar);
+//                    date = getFormattedDay(date, calendar);
                 }
             } else {
                 dateFormat = MMM_D_FORMAT;
-                date = getFormattedDay(date, calendar);
+//                date = getFormattedDay(date, calendar);
             }
 
             currentTextView = getCurrentTextView(i);
@@ -134,22 +129,22 @@ public class ViewChartDatesHoriz extends LinearLayout {
         }
     }
 
-    private long getFormattedDay(long originalDate, Calendar calendar) {
-        long newDate = originalDate;
-        calendar.setTimeInMillis(newDate);
-
-        int currentDayInMonth = calendar.get(Calendar.DAY_OF_MONTH);
-
-        if (currentDayInMonth % 2 != 0) {
-            if (currentDayInMonth == 31) {
-                newDate += DateUtils.DAY_IN_MILLIS << 1;
-            } else {
-                newDate += DateUtils.DAY_IN_MILLIS;
-            }
-        }
-
-        return newDate;
-    }
+//    private long getFormattedDay(long originalDate, Calendar calendar) {
+//        long newDate = originalDate;
+//        calendar.setTimeInMillis(newDate);
+//
+//        int currentDayInMonth = calendar.get(Calendar.DAY_OF_MONTH);
+//
+//        if (currentDayInMonth % 2 != 0) {
+//            if (currentDayInMonth == 31) {
+//                newDate += DateUtils.DAY_IN_MILLIS << 1;
+//            } else {
+//                newDate += DateUtils.DAY_IN_MILLIS;
+//            }
+//        }
+//
+//        return newDate;
+//    }
 
     private TChartTextView getCurrentTextView(int index) {
         TChartTextView _tChartTextView = null;
@@ -178,7 +173,7 @@ public class ViewChartDatesHoriz extends LinearLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         LinearLayout.LayoutParams layoutParams = (LayoutParams) getLayoutParams();
-        layoutParams.height = ThemeManager.CHART_CELL_HEIGHT_PX >> 1;
+        layoutParams.height = ThemeManager.CELL_HEIGHT_48DP_IN_PX >> 1;
         int marginPx = ThemeManager.CHART_CELL_RIGHTLEFT_MARGIN_PX;
         layoutParams.setMargins(marginPx, 0, marginPx, marginPx >> 1);
     }

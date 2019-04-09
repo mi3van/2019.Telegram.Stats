@@ -1,6 +1,10 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="AppTheme"/>
+    <style name="AppTheme">
+        <item name="android:colorPrimaryDark" tools:ignore="NewApi">#000</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
+        <item name="android:logo">@android:color/transparent</item>
+    </style>
 
     <style name="popup_window_animation">
         <item name="android:windowEnterAnimation">@anim/popup_fade_in</item>

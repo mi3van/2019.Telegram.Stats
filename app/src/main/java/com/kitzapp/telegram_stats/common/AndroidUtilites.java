@@ -6,8 +6,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
-import android.os.Build;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.util.TypedValue;
 import com.kitzapp.telegram_stats.BuildConfig;
@@ -35,19 +36,7 @@ public class AndroidUtilites {
         synchronized (typefaceCache) {
             if (!typefaceCache.containsKey(assetPath)) {
                 try {
-                    Typeface t;
-                    if (Build.VERSION.SDK_INT >= 26) {
-                        Typeface.Builder builder = new Typeface.Builder(context.getAssets(), assetPath);
-                        if (assetPath.contains("medium")) {
-                            builder.setWeight(700);
-                        }
-                        if (assetPath.contains("italic")) {
-                            builder.setItalic(true);
-                        }
-                        t = builder.build();
-                    } else {
-                        t = Typeface.createFromAsset(context.getAssets(), assetPath);
-                    }
+                    Typeface t = Typeface.createFromAsset(context.getAssets(), assetPath);
                     typefaceCache.put(assetPath, t);
                 } catch (Exception e) {
                     if (BuildConfig.DEBUG) {
@@ -58,6 +47,10 @@ public class AndroidUtilites {
             }
             return typefaceCache.get(assetPath);
         }
+    }
+
+    public static void setDrawFilterATOP(Drawable drawable, int color) {
+        drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
     }
 
     public static int convertDpToPx(Resources r, float dpValue) {

@@ -5,7 +5,8 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
-import com.kitzapp.telegram_stats.Application.AppManagers.MotionMagic;
+import com.kitzapp.telegram_stats.Application.AppManagers.motions.BaseMotionManager;
+import com.kitzapp.telegram_stats.Application.AppManagers.motions.MotionManagerForBigChart;
 import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
 import com.kitzapp.telegram_stats.R;
 import com.kitzapp.telegram_stats.domain.executor.ThreadExecutor;
@@ -87,11 +88,12 @@ public class ChartActivity extends BaseActivity implements ChartPresenter.View, 
 
     @Override
     public void update(Observable observable, Object arg) {
-        if ((int) arg == ObserverManager.KEY_OBSERVER_ALLOW_TOUCH_SCROLLVIEW_FOR_RECT_SELECT) {
-            if (observable instanceof MotionMagic) {
-                MotionMagic motionMagic = (MotionMagic) observable;
-                boolean isAllowTouchEventForScrollView = motionMagic.getIsAllowTouchEventForScrollView();
-                _mainScrollView.requestDisallowInterceptTouchEvent(isAllowTouchEventForScrollView);
+        if ((byte) arg == ObserverManager.KEY_OBSERVER_PROHIBITED_SCROLL) {
+            if (observable instanceof BaseMotionManager) {
+                BaseMotionManager motionMagic = (BaseMotionManager) observable;
+
+                boolean isProhibitedScroll = motionMagic.getIsProhibitedScroll();
+                _mainScrollView.requestDisallowInterceptTouchEvent(isProhibitedScroll);
             }
         }
     }

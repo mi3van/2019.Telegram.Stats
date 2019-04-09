@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.Application.AndroidApp;
-import com.kitzapp.telegram_stats.Application.AppManagers.MotionMagic;
+import com.kitzapp.telegram_stats.Application.AppManagers.motions.MotionMagicForMiniature;
 import com.kitzapp.telegram_stats.Application.AppManagers.ObserverManager;
 import com.kitzapp.telegram_stats.Application.AppManagers.ThemeManager;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
@@ -27,12 +27,12 @@ import static com.kitzapp.telegram_stats.common.AppConts.MAX_CURSORS_WIDTH;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class TViewRectSelect extends View implements TViewObserver, MotionMagic.MotionListener {
+public class TViewRectSelect extends View implements TViewObserver, MotionMagicForMiniature.MotionListener {
     private final float MIN_LEFT_CURSOR_VALUE = 0f;
     private final float MAX_LEFT_CURSOR_VALUE = 1f - MAX_CURSORS_WIDTH;
     private final float MIN_RIGHT_CURSOR = MAX_CURSORS_WIDTH;
     private final float MAX_RIGHT_CURSOR = 1f;
-    private MotionMagic _motionMagic;
+    private MotionMagicForMiniature _motionMagic;
 
     public interface RectListener {
         void onRectCursorsWasChanged(float leftCursor, float rightCursor);
@@ -94,7 +94,7 @@ public class TViewRectSelect extends View implements TViewObserver, MotionMagic.
         int _widthVPaint = (int) _verticalPaint.getStrokeWidth();
         _halfWidthVPaint = _widthVPaint >> 1;
 
-        _motionMagic = new MotionMagic(getContext(), this, this, MAX_CURSORS_WIDTH);
+        _motionMagic = new MotionMagicForMiniature(getContext(), this, this, MAX_CURSORS_WIDTH);
     }
 
     @Override
@@ -271,7 +271,7 @@ public class TViewRectSelect extends View implements TViewObserver, MotionMagic.
 
     @Override
     public void update(Observable o, Object arg) {
-        if ((int) arg == ObserverManager.KEY_OBSERVER_THEME_UPDATED) {
+        if ((byte) arg == ObserverManager.KEY_OBSERVER_THEME_UPDATED) {
             int newBackColor = this.getCurrentBackgrColor();
 
             // TITLE CHANGE COLOR
@@ -312,5 +312,9 @@ public class TViewRectSelect extends View implements TViewObserver, MotionMagic.
     @Override
     public float getCanvasWidth() {
         return _canvasWidth;
+    }
+
+    public void setMiniatureIsLocked(boolean isLocked) {
+        _motionMagic.setMiniatureIsLocked(isLocked);
     }
 }
