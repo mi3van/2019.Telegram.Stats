@@ -1,0 +1,26 @@
+package com.kitzapp.telegram_stats.pojo.chart.impl;
+
+/**
+ * Created by Ivan Kuzmin on 23.03.2019;
+ * 3van@mail.ru;
+ * Copyright © 2019 Example. All rights reserved.
+ */
+
+public interface LineI {
+
+    long[] getData();
+
+    int getCountDots();
+
+    byte getType();
+
+    String getName();
+
+    int getColor();
+
+    boolean getIsActive();
+
+    String getKey();
+
+    void setIsActive(boolean isChecked);
+}
