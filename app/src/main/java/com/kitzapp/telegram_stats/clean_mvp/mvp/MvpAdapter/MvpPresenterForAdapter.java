@@ -10,11 +10,11 @@ import com.kitzapp.telegram_stats.clean_mvp.mvp.MvpView;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public interface MvpPresenterForAdapter<V extends MvpView, H extends MvpViewHolder> extends MvpPresenter<V> {
+public interface MvpPresenterForAdapter<V extends MvpView, VH extends MvpViewHolder> extends MvpPresenter<V> {
 
-    void attachViewHolder(H viewHolder);
+    void attachViewHolder(VH viewHolder);
 
     int getItemCount();
 
-    void bindViewHolderOnPosition(@NonNull V view, int position);
+    void bindViewHolderOnPosition(@NonNull VH viewHolder, int position) throws Exception;
 }

@@ -1,9 +1,9 @@
-package com.kitzapp.telegram_stats.core.mainChart.interactor;
+package com.kitzapp.telegram_stats.core.mainChart;
 
 import android.content.Context;
 import com.kitzapp.telegram_stats.clean_mvp.domain.interactors.AbstractInteractor;
+import com.kitzapp.telegram_stats.clean_mvp.domain.interactors.Interactor;
 import com.kitzapp.telegram_stats.common.AppConts;
-import com.kitzapp.telegram_stats.core.mainChart.TChartContract;
 import com.kitzapp.telegram_stats.pojo.chart.ChartsList;
 
 /**
@@ -11,9 +11,16 @@ import com.kitzapp.telegram_stats.pojo.chart.ChartsList;
  * <p/>
  */
 
+interface ChartInteractor extends Interactor {
 
+    interface Callback {
+        void onJsonRetrieved(ChartsList chartModel);
 
-public class TChartLoadInteractor extends AbstractInteractor implements ChartInteractor {
+        void onRetrievalFailed(String error);
+    }
+}
+
+class TChartLoadInteractor extends AbstractInteractor implements ChartInteractor {
 
     private ChartInteractor.Callback _chartCallback;
     private TChartContract.TModel _chartRepository;

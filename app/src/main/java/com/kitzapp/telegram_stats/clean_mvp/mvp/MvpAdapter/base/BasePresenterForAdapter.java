@@ -1,10 +1,13 @@
-package com.kitzapp.telegram_stats.clean_mvp.mvp.MvpAdapter;
+package com.kitzapp.telegram_stats.clean_mvp.mvp.MvpAdapter.base;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.kitzapp.telegram_stats.clean_mvp.mvp.MvpAdapter.MvpModelForAdapter;
+import com.kitzapp.telegram_stats.clean_mvp.mvp.MvpAdapter.MvpPresenterForAdapter;
+import com.kitzapp.telegram_stats.clean_mvp.mvp.MvpAdapter.MvpViewHolder;
 import com.kitzapp.telegram_stats.clean_mvp.mvp.MvpView;
 
-public abstract class BasePresenterAdapter<V extends MvpView, H extends MvpViewHolder, M extends MvpModelForAdapter>
+public abstract class BasePresenterForAdapter<V extends MvpView, H extends MvpViewHolder, M extends MvpModelForAdapter>
         implements MvpPresenterForAdapter<V, H> {
     @Nullable
     protected V view = null;
@@ -13,7 +16,7 @@ public abstract class BasePresenterAdapter<V extends MvpView, H extends MvpViewH
     @Nullable
     protected H viewHolder = null;
 
-    public BasePresenterAdapter(@NonNull M model) {
+    public BasePresenterForAdapter(@NonNull M model) {
         this.model = model;
     }
 

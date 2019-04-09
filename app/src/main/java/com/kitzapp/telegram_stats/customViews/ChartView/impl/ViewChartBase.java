@@ -8,15 +8,14 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.AndroidApp;
-import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
 import com.kitzapp.telegram_stats.common.ArraysUtilites;
+import com.kitzapp.telegram_stats.core.appManagers.TViewObserver;
+import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 import com.kitzapp.telegram_stats.pojo.chart.Chart;
 import com.kitzapp.telegram_stats.pojo.chart.impl.Line;
-import com.kitzapp.telegram_stats.core.appManagers.TViewObserver;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,8 +29,7 @@ import java.util.Map;
 abstract class ViewChartBase extends FrameLayout implements TViewObserver {
     private final int FLAG_Y_NOT_AVAILABLE = -5;
 
-    @NonNull
-    protected Chart _chart;
+    protected Chart _chart = null;
 
     private float[] _axisXForGraph = null;
     private HashMap<String, long[]> _axisesYArrays = new HashMap<>();
@@ -57,10 +55,9 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
         this.init();
     }
 
-    ViewChartBase(Context context, @NonNull Chart chart) {
-        super(context);
+    public void loadData(Chart chart) {
         _chart = chart;
-        this.init();
+        this.invalidate();
     }
 
     @Override
@@ -90,9 +87,11 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
             }
         } else {
 //            FIRST LAUNCH
-            _viewHeight = canvasHeight;
-            _viewWidth = canvasWidth;
-            this.firstInitAxisesAndVariables(true);
+            if (_chart != null) {
+                _viewHeight = canvasHeight;
+                _viewWidth = canvasWidth;
+                this.firstInitAxisesAndVariables(true);
+            }
         }
 
         this.drawLines(canvas, _axisXForGraph, _axisesYArrays);

@@ -7,21 +7,19 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.AndroidApp;
-import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
-import com.kitzapp.telegram_stats.core.appManagers.motions.MotionManagerForBigChart;
 import com.kitzapp.telegram_stats.R;
 import com.kitzapp.telegram_stats.common.ArraysUtilites;
 import com.kitzapp.telegram_stats.common.MyLongPair;
-import com.kitzapp.telegram_stats.pojo.chart.Chart;
-import com.kitzapp.telegram_stats.pojo.chart.impl.Line;
+import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
+import com.kitzapp.telegram_stats.core.appManagers.motions.MotionManagerForBigChart;
 import com.kitzapp.telegram_stats.customViews.popup.TInfoCellForPopup;
 import com.kitzapp.telegram_stats.customViews.simple.TColorfulLinLayout;
 import com.kitzapp.telegram_stats.customViews.simple.TColorfulTextView;
 import com.kitzapp.telegram_stats.customViews.simple.TDelimiterLine;
 import com.kitzapp.telegram_stats.customViews.simple.TViewRectSelect;
+import com.kitzapp.telegram_stats.pojo.chart.impl.Line;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -76,8 +74,8 @@ public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectL
         super(context, attrs, defStyleAttr);
     }
 
-    public ViewChartBig(Context context, @NonNull Chart chart, BigChartInterface bigChartInterface) {
-        super(context, chart);
+    public ViewChartBig(Context context, BigChartInterface bigChartInterface) {
+        super(context);
         _chartInterface = bigChartInterface;
     }
 

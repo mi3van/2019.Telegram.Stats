@@ -20,7 +20,7 @@ import static com.kitzapp.telegram_stats.pojo.chart.Chart.*;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class TChartModel implements TChartContract.TModel {
+class TChartModel implements TChartContract.TModel {
 
     @Override
     public ChartsList getCharts(String fileName, Context context) throws Exception {

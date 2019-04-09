@@ -47,10 +47,12 @@ public class TFullCellView extends LinearLayout implements TViewObserver {
         this.init();
     }
 
-    public TFullCellView(Context context, @NonNull Chart chart) {
-        super(context);
-        this.chart = chart;
-        this.init();
+    public void loadData(@NonNull Chart chart) {
+        if (_fullChartCell != null) {
+            _fullChartCell.loadData(chart);
+        } else {
+            this.initChildViews();
+        }
     }
 
     @Override
@@ -68,7 +70,7 @@ public class TFullCellView extends LinearLayout implements TViewObserver {
         _titleCell = new TViewChartTitle(getContext());
         this.addView(_titleCell);
 
-        _fullChartCell = new TViewChartGpraphs(getContext(), chart);
+        _fullChartCell = new TViewChartGpraphs(getContext());
         this.addView(_fullChartCell);
     }
 

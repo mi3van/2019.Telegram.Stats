@@ -6,10 +6,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
-import com.kitzapp.telegram_stats.pojo.chart.Chart;
-import com.kitzapp.telegram_stats.pojo.chart.impl.Line;
 import com.kitzapp.telegram_stats.customViews.simple.TColorfulCheckBox;
 import com.kitzapp.telegram_stats.customViews.simple.TDelimiterLine;
+import com.kitzapp.telegram_stats.pojo.chart.Chart;
+import com.kitzapp.telegram_stats.pojo.chart.impl.Line;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +21,8 @@ import java.util.Map;
  */
 
 public class TViewChartCheckBox extends LinearLayout {
+
+    private TColorfulCheckBox.Listener _listener;
 
     public TViewChartCheckBox(Context context) {
         super(context);
@@ -34,10 +36,14 @@ public class TViewChartCheckBox extends LinearLayout {
         super(context, attrs, defStyleAttr);
     }
 
-    public TViewChartCheckBox(Context context, Chart chart, TColorfulCheckBox.Listener listener) {
+    public TViewChartCheckBox(Context context, TColorfulCheckBox.Listener listener) {
         super(context);
         this.init();
 
+         _listener = listener;
+    }
+
+    public void loadData(Chart chart) {
         int count = 0;
         HashMap<String, Line> lines = chart.getLines();
         for (Map.Entry<String, Line> entry: lines.entrySet()) {
@@ -47,7 +53,7 @@ public class TViewChartCheckBox extends LinearLayout {
                     line.getKey(),
                     line.getName(),
                     line.getColor(),
-                    listener);
+                    _listener);
             this.addView(checkBox);
 
             if (count < lines.size()) {

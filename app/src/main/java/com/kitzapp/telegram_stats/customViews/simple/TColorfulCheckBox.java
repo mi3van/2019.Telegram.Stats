@@ -77,7 +77,11 @@ public class TColorfulCheckBox extends CheckBox implements TViewObserver {
             this.setButtonTintList(ColorStateList.valueOf(color));
         }
 
-        setOnCheckedChangeListener((buttonView, isChecked) -> listener.onBoxWasChecked(key, isChecked));
+        setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (listener != null) {
+                listener.onBoxWasChecked(key, isChecked);
+            }
+        });
     }
 
     @Override

@@ -4,12 +4,10 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.kitzapp.telegram_stats.common.AndroidUtilites;
 import com.kitzapp.telegram_stats.core.appManagers.ObserverManager;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
-import com.kitzapp.telegram_stats.common.AndroidUtilites;
-import com.kitzapp.telegram_stats.pojo.chart.Chart;
 import com.kitzapp.telegram_stats.customViews.simple.TViewRectSelect;
 
 import java.util.Observable;
@@ -39,8 +37,8 @@ public class ViewChartMiniature extends ViewChartBase {
         super(context, attrs, defStyleAttr);
     }
 
-    public ViewChartMiniature(Context context, @NonNull Chart chart, TViewRectSelect.RectListener rectListener) {
-        super(context, chart);
+    public ViewChartMiniature(Context context, TViewRectSelect.RectListener rectListener) {
+        super(context);
         _rectListener = rectListener;
         this.init();
     }

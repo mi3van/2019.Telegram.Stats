@@ -4,15 +4,13 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.LinearLayout;
-
-import com.kitzapp.telegram_stats.pojo.chart.Chart;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.customViews.ChartView.impl.ViewChartBig;
 import com.kitzapp.telegram_stats.customViews.ChartView.impl.ViewChartDatesHoriz;
 import com.kitzapp.telegram_stats.customViews.ChartView.impl.ViewChartMiniature;
 import com.kitzapp.telegram_stats.customViews.simple.TColorfulCheckBox;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import com.kitzapp.telegram_stats.pojo.chart.Chart;
 
 /**
  * Created by Ivan Kuzmin on 24.03.2019;
@@ -25,54 +23,58 @@ public class TViewChartGpraphs extends LinearLayout implements TColorfulCheckBox
     private Chart _chart = null;
     private ViewChartBig _bigChart;
     private ViewChartDatesHoriz _chartDates;
-    private ViewChartMiniature _fullChart;
+    private ViewChartMiniature _miniatureChart;
     private TViewChartCheckBox _chBoxChartIsActive;
 
     public TViewChartGpraphs(Context context) {
         super(context);
+        this.init();
     }
 
     public TViewChartGpraphs(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        this.init();
     }
 
     public TViewChartGpraphs(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        this.init();
     }
 
-    public TViewChartGpraphs(Context context, @NonNull Chart chart) {
-        super(context);
-        this._chart = chart;
-        this.init();
+    public void loadData(@NonNull Chart chart) {
+        if (_chart == null) {
+            this._chart = chart;
+            _bigChart.loadData(_chart);
+            _miniatureChart.loadData(_chart);
+            _chBoxChartIsActive.loadData(_chart);
+        }
     }
 
     protected void init() {
         this.setOrientation(VERTICAL);
 
-        if (_chart != null) {
-            _bigChart = new ViewChartBig(getContext(), _chart, this);
-            _chartDates = new ViewChartDatesHoriz(getContext());
-            _fullChart = new ViewChartMiniature(getContext(), _chart, _bigChart.getRectListener());
-            _chBoxChartIsActive = new TViewChartCheckBox(getContext(), _chart, this);
+        _bigChart = new ViewChartBig(getContext(), this);
+        _chartDates = new ViewChartDatesHoriz(getContext());
+        _miniatureChart = new ViewChartMiniature(getContext(), _bigChart.getRectListener());
+        _chBoxChartIsActive = new TViewChartCheckBox(getContext(), this);
 
-            addView(_bigChart);
-            addView(_chartDates);
-            addView(_fullChart);
-            addView(_chBoxChartIsActive);
+        addView(_bigChart);
+        addView(_chartDates);
+        addView(_miniatureChart);
+        addView(_chBoxChartIsActive);
 
-            setGravity(Gravity.CENTER_VERTICAL);
-        }
+        setGravity(Gravity.CENTER_VERTICAL);
     }
 
     public void setBackgroundColor(int color) {
-        _fullChart.setBackgroundColor(color);
+        _miniatureChart.setBackgroundColor(color);
     }
 
     @Override
     public void onBoxWasChecked(String key, boolean isChecked) {
         try {
             _chart.getLines().get(key).setIsActive(isChecked);
-            _fullChart.invalidate();
+            _miniatureChart.invalidate();
             _bigChart.recalculateYAndUpdateView();
         } catch (Exception e) {
             e.printStackTrace();
@@ -81,8 +83,8 @@ public class TViewChartGpraphs extends LinearLayout implements TColorfulCheckBox
 
     @Override
     public void onMiniatureViewIsLocked(boolean isLocked) {
-        if (_fullChart != null) {
-            _fullChart.setMiniatureIsLocked(isLocked);
+        if (_miniatureChart != null) {
+            _miniatureChart.setMiniatureIsLocked(isLocked);
         }
     }
 
