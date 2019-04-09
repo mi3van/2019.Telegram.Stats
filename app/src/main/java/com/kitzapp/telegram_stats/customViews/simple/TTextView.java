@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.widget.TextView;
-import androidx.annotation.Nullable;
+
 
 /**
  * Created by Ivan Kuzmin on 24.03.2019;
@@ -18,11 +18,11 @@ public class TTextView extends TextView {
         super(context);
     }
 
-    public TTextView(Context context, @Nullable AttributeSet attrs) {
+    public TTextView(Context context,  AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public TTextView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TTextView(Context context,  AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

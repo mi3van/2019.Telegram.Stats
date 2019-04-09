@@ -1,6 +1,5 @@
 package com.kitzapp.telegram_stats.core.mainChart;
 
-import androidx.annotation.NonNull;
 import com.kitzapp.telegram_stats.BuildConfig;
 import com.kitzapp.telegram_stats.clean_mvp.mvp.BasePresenter;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
@@ -14,7 +13,7 @@ class TChartPresenter extends BasePresenter<TView, TModel> implements TPresenter
 
     private long _dateMillisForCheck;
 
-    public TChartPresenter(@NonNull TChartModel model) {
+    public TChartPresenter( TChartModel model) {
         super(model);
     }
 

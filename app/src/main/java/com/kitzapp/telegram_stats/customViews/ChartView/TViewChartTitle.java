@@ -5,7 +5,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.LinearLayout;
-import androidx.annotation.Nullable;
+
 import com.kitzapp.telegram_stats.AndroidApp;
 import com.kitzapp.telegram_stats.core.appManagers.ObserverManager;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
@@ -34,12 +34,12 @@ public class TViewChartTitle extends LinearLayout implements TViewObserver {
         this.init();
     }
 
-    public TViewChartTitle(Context context, @Nullable AttributeSet attrs) {
+    public TViewChartTitle(Context context,  AttributeSet attrs) {
         super(context, attrs);
         this.init();
     }
 
-    public TViewChartTitle(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TViewChartTitle(Context context,  AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.init();
     }

@@ -5,7 +5,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.LinearLayout;
-import androidx.annotation.Nullable;
+
 import com.kitzapp.telegram_stats.customViews.simple.TChartTextView;
 import com.kitzapp.telegram_stats.customViews.simple.TDelimiterLine;
 
@@ -34,12 +34,12 @@ class TViewChartInfoVert extends LinearLayout {
         this.init();
     }
 
-    public TViewChartInfoVert(Context context, @Nullable AttributeSet attrs) {
+    public TViewChartInfoVert(Context context,  AttributeSet attrs) {
         super(context, attrs);
         this.init();
     }
 
-    public TViewChartInfoVert(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TViewChartInfoVert(Context context,  AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.init();
     }

@@ -4,10 +4,9 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+import android.widget.BaseAdapter;
 import com.kitzapp.telegram_stats.R;
-import com.kitzapp.telegram_stats.clean_mvp.mvp.MvpAdapter.base.BaseAdapterForRecyclerView;
+import com.kitzapp.telegram_stats.customViews.TFullCellView;
 import com.kitzapp.telegram_stats.pojo.chart.ChartsList;
 
 /**
@@ -16,7 +15,7 @@ import com.kitzapp.telegram_stats.pojo.chart.ChartsList;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class TChartAdapter extends BaseAdapterForRecyclerView<TChartViewHolder> implements TChartListContract.TView {
+public class TChartAdapter extends BaseAdapter implements TChartListContract.TView {
 
     private Context _context;
     private TChartListPresenter _presenter;
@@ -31,39 +30,42 @@ public class TChartAdapter extends BaseAdapterForRecyclerView<TChartViewHolder> 
         _callback = callback;
     }
 
-    @NonNull
     @Override
-    public TChartViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(_context).inflate(R.layout.cell_chart_for_recyclerview, parent, false);
-        TChartViewHolder chartViewHolder = new TChartViewHolder(view);
-        return chartViewHolder;
+    public int getCount() {
+        return _presenter.getItemCount();
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TChartViewHolder holder, int position) {
+    public Object getItem(int position) {
         try {
-            _presenter.bindViewHolderOnPosition(holder, position);
+            return _presenter.getChartOnPosition(position);
         } catch (Exception e) {
-            if (_callback != null) {
-                _callback.onError(e.getMessage());
-            }
+            e.printStackTrace();
+            return null;
         }
     }
 
     @Override
-    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-        _presenter.viewIsReady();
+    public long getItemId(int position) {
+        return position;
     }
 
     @Override
-    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView);
-        _presenter.deattachView();
-    }
+    public View getView(int position, View convertView, ViewGroup parent) {
 
-    @Override
-    public int getItemCount() {
-        return _presenter.getItemCount();
+        View view = convertView;
+        if (view == null) {
+            view = LayoutInflater.from(_context).inflate(R.layout.cell_chart_for_recyclerview, parent, false);
+
+            TFullCellView tFullCellView = view.findViewById(R.id.fullChartCell);
+
+            try {
+                tFullCellView.loadData(_presenter.getChartOnPosition(position));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return view;
     }
 }

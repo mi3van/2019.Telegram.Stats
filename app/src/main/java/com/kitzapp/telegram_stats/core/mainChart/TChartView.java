@@ -2,8 +2,7 @@ package com.kitzapp.telegram_stats.core.mainChart;
 
 import android.content.Context;
 import android.view.MenuItem;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import android.widget.ListView;
 import com.kitzapp.telegram_stats.R;
 import com.kitzapp.telegram_stats.core.appManagers.ObserverManager;
 import com.kitzapp.telegram_stats.core.appManagers.motions.BaseMotionManager;
@@ -20,7 +19,7 @@ public class TChartView extends BaseActivity implements TView, Observer {
 
     private TChartPresenter _chartPresenter;
 
-    private RecyclerView _chartsRecyclerView;
+    private ListView _ListView;
 
     @Override
     protected int getLayoutID() {
@@ -37,17 +36,9 @@ public class TChartView extends BaseActivity implements TView, Observer {
     protected void initViews() {
         _chartPresenter.attachView(this);
 
-        _chartsRecyclerView = findViewById(R.id.chartRecyclerView);
-        this.initRecycleView(_chartsRecyclerView);
+        _ListView = findViewById(R.id.chartListView);
 
         _chartPresenter.runAnalyzeJson();
-    }
-
-    private void initRecycleView(RecyclerView recyclerView) {
-        RecyclerView.LayoutManager viewManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
-        recyclerView.setLayoutManager(viewManager);
-
-        recyclerView.setHasFixedSize(true);
     }
 
     @Override
@@ -65,7 +56,7 @@ public class TChartView extends BaseActivity implements TView, Observer {
     @Override
     public void updateChartsData(ChartsList chartsList) {
         TChartAdapter chartAdapter = new TChartAdapter(getBaseContext(), chartsList, this::showMessageToast);
-        _chartsRecyclerView.setAdapter(chartAdapter);
+        _ListView.setAdapter(chartAdapter);
     }
 
     @Override
@@ -75,7 +66,7 @@ public class TChartView extends BaseActivity implements TView, Observer {
                 BaseMotionManager motionMagic = (BaseMotionManager) observable;
 
                 boolean isProhibitedScroll = motionMagic.getIsProhibitedScroll();
-                _chartsRecyclerView.requestDisallowInterceptTouchEvent(isProhibitedScroll);
+                _ListView.requestDisallowInterceptTouchEvent(isProhibitedScroll);
             }
         }
     }

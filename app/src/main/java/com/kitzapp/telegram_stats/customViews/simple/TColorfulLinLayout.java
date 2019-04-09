@@ -9,7 +9,7 @@ import com.kitzapp.telegram_stats.AndroidApp;
 import com.kitzapp.telegram_stats.core.appManagers.ObserverManager;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 
-import androidx.annotation.Nullable;
+
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
 import com.kitzapp.telegram_stats.core.appManagers.TViewObserver;
 
@@ -29,12 +29,12 @@ public class TColorfulLinLayout extends LinearLayout implements TViewObserver {
         this.init();
     }
 
-    public TColorfulLinLayout(Context context, @Nullable AttributeSet attrs) {
+    public TColorfulLinLayout(Context context,  AttributeSet attrs) {
         super(context, attrs);
         this.init();
     }
 
-    public TColorfulLinLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TColorfulLinLayout(Context context,  AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.init();
     }

@@ -1,8 +1,7 @@
 package com.kitzapp.telegram_stats.core.mainChart.list;
 
-import com.kitzapp.telegram_stats.clean_mvp.mvp.MvpAdapter.MvpModelForAdapter;
-import com.kitzapp.telegram_stats.clean_mvp.mvp.MvpAdapter.MvpPresenterForAdapter;
-import com.kitzapp.telegram_stats.clean_mvp.mvp.MvpAdapter.MvpViewHolder;
+import com.kitzapp.telegram_stats.clean_mvp.mvp.MvpModel;
+import com.kitzapp.telegram_stats.clean_mvp.mvp.MvpPresenter;
 import com.kitzapp.telegram_stats.clean_mvp.mvp.MvpView;
 import com.kitzapp.telegram_stats.pojo.chart.Chart;
 
@@ -13,22 +12,22 @@ import com.kitzapp.telegram_stats.pojo.chart.Chart;
  */
 
 interface TChartListContract {
-    interface TPresenter<V extends MvpView, VH extends MvpViewHolder> extends MvpPresenterForAdapter<V, VH> {
+    interface TPresenter<V extends MvpView> extends MvpPresenter<V> {
+        int getItemCount();
 
+        Chart getChartOnPosition(int position) throws Exception;
     }
 
-    interface TModel extends MvpModelForAdapter {
+    interface TModel extends MvpModel {
 
         Chart getChartOnPosition(int position) throws Exception;
 
+        int getItemCount();
     }
 
     interface TView extends MvpView {
         interface AdapterCallback {
             void onError(String errorMessage);
         }
-    }
-
-    interface TViewHolder extends MvpViewHolder {
     }
 }

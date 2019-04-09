@@ -1,10 +1,10 @@
 package com.kitzapp.telegram_stats.clean_mvp.mvp;
 
-import androidx.annotation.Nullable;
+
 
 public interface MvpPresenter<V extends MvpView> {
 
-    void attachView(@Nullable V view);
+    void attachView( V view);
     void deattachView();
     void viewIsReady();
     void destroy();

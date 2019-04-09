@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import androidx.annotation.Nullable;
+
 import com.kitzapp.telegram_stats.AndroidApp;
 import com.kitzapp.telegram_stats.core.appManagers.ObserverManager;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
@@ -30,12 +30,12 @@ public class TDelimiterLine extends View implements TViewObserver {
         this.init();
     }
 
-    public TDelimiterLine(Context context, @Nullable AttributeSet attrs) {
+    public TDelimiterLine(Context context,  AttributeSet attrs) {
         super(context, attrs);
         this.init();
     }
 
-    public TDelimiterLine(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TDelimiterLine(Context context,  AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.init();
     }
