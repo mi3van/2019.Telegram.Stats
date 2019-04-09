@@ -3,7 +3,7 @@ package com.kitzapp.telegram_stats.customViews.popup;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
-import androidx.annotation.Nullable;
+
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 import com.kitzapp.telegram_stats.customViews.simple.TTextView;
 
@@ -24,11 +24,11 @@ public class TInfoCellForPopup extends LinearLayout {
         super(context);
     }
 
-    public TInfoCellForPopup(Context context, @Nullable AttributeSet attrs) {
+    public TInfoCellForPopup(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public TInfoCellForPopup(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TInfoCellForPopup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

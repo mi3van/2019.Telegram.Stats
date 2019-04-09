@@ -4,7 +4,6 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
-import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
 import com.kitzapp.telegram_stats.core.appManagers.ObserverManager;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
@@ -29,11 +28,11 @@ public class ViewChartMiniature extends ViewChartBase {
         super(context);
     }
 
-    public ViewChartMiniature(Context context, @Nullable AttributeSet attrs) {
+    public ViewChartMiniature(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ViewChartMiniature(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ViewChartMiniature(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

@@ -3,7 +3,7 @@ package com.kitzapp.telegram_stats.customViews.simple;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
-import androidx.annotation.Nullable;
+
 import com.kitzapp.telegram_stats.AndroidApp;
 import com.kitzapp.telegram_stats.core.appManagers.ObserverManager;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
@@ -27,12 +27,12 @@ public class TColorfulTextView extends TTextView implements TViewObserver {
         this.init();
     }
 
-    public TColorfulTextView(Context context, @Nullable AttributeSet attrs) {
+    public TColorfulTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.init();
     }
 
-    public TColorfulTextView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TColorfulTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.init();
     }

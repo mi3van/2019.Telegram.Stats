@@ -4,8 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.LinearLayout;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.customViews.ChartView.impl.ViewChartBig;
 import com.kitzapp.telegram_stats.customViews.ChartView.impl.ViewChartDatesHoriz;
 import com.kitzapp.telegram_stats.customViews.ChartView.impl.ViewChartMiniature;
@@ -31,17 +29,17 @@ public class TViewChartGpraphs extends LinearLayout implements TColorfulCheckBox
         this.init();
     }
 
-    public TViewChartGpraphs(Context context, @Nullable AttributeSet attrs) {
+    public TViewChartGpraphs(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.init();
     }
 
-    public TViewChartGpraphs(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TViewChartGpraphs(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.init();
     }
 
-    public void loadData(@NonNull Chart chart) {
+    public void loadData( Chart chart) {
         if (_chart == null) {
             this._chart = chart;
             _bigChart.loadData(_chart);

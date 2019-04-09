@@ -1,11 +1,16 @@
 package com.kitzapp.telegram_stats.core.mainChart;
 
-import androidx.annotation.NonNull;
+import android.annotation.SuppressLint;
 import com.kitzapp.telegram_stats.BuildConfig;
 import com.kitzapp.telegram_stats.clean_mvp.mvp.BasePresenter;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 import com.kitzapp.telegram_stats.core.mainChart.TChartContract.TPresenter;
+import com.kitzapp.telegram_stats.customViews.TFullCellView;
+import com.kitzapp.telegram_stats.pojo.chart.Chart;
 import com.kitzapp.telegram_stats.pojo.chart.ChartsList;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static com.kitzapp.telegram_stats.core.mainChart.TChartContract.TModel;
 import static com.kitzapp.telegram_stats.core.mainChart.TChartContract.TView;
@@ -14,7 +19,7 @@ class TChartPresenter extends BasePresenter<TView, TModel> implements TPresenter
 
     private long _dateMillisForCheck;
 
-    public TChartPresenter(@NonNull TChartModel model) {
+    public TChartPresenter( TChartModel model) {
         super(model);
     }
 
@@ -35,7 +40,7 @@ class TChartPresenter extends BasePresenter<TView, TModel> implements TPresenter
                         if (view == null) {
                             return;
                         }
-                        view.updateChartsData(chartsList);
+                        initChartsInView(chartsList);
                     }
 
                     @Override
@@ -61,30 +66,39 @@ class TChartPresenter extends BasePresenter<TView, TModel> implements TPresenter
         }
     }
 
-//    private void initChartsInView(ChartsList chartsList) {
-//        if (view == null) {
-//            return;
-//        }
-//        view.clearChartsContainer();
-//        try {
-//            for (Chart chart: chartsList.getCharts()) {
-//                TFullCellView chartView = createChartView(chart);
-//                if (chartView != null) {
-//                    view.addChartToContainer(chartView);
-//                }
-//            }
-//        } catch (Exception e) {
-//            view.showMessageToast(e.getMessage());
-//        } finally {
-//            if (BuildConfig.DEBUG) {
-//                _dateMillisForCheck = System.currentTimeMillis() - _dateMillisForCheck;
-//                String dateFormat = "mm:ss.SSS";
-//                @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
-//                String dateString = formatter.format(new Date(_dateMillisForCheck));
-//                view.showMessageToast(dateString);
-//            }
-//        }
-//    }
+    private void initChartsInView(ChartsList chartsList) {
+        if (view == null) {
+            return;
+        }
+        view.clearChartsContainer();
+        try {
+            for (Chart chart: chartsList.getCharts()) {
+                TFullCellView chartView = createChartView(chart);
+                if (chartView != null) {
+                    view.addChartToContainer(chartView);
+                }
+            }
+        } catch (Exception e) {
+            view.showMessageToast(e.getMessage());
+        } finally {
+            if (BuildConfig.DEBUG) {
+                _dateMillisForCheck = System.currentTimeMillis() - _dateMillisForCheck;
+                String dateFormat = "mm:ss.SSS";
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
+                String dateString = formatter.format(new Date(_dateMillisForCheck));
+                view.showMessageToast(dateString);
+            }
+        }
+    }
+
+    private TFullCellView createChartView(Chart chart) {
+        if (view == null) {
+            return null;
+        }
+        TFullCellView chartView = new TFullCellView(view.getContext());
+        chartView.loadData(chart);
+        return chartView;
+    }
 
     @Override
     public void viewIsReady() {

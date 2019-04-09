@@ -9,7 +9,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.util.AttributeSet;
 import android.view.View;
-import androidx.annotation.Nullable;
+
 import com.kitzapp.telegram_stats.AndroidApp;
 import com.kitzapp.telegram_stats.core.appManagers.ObserverManager;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
@@ -37,11 +37,11 @@ public class TColorfulChartCircle extends View implements TViewObserver {
         super(context);
     }
 
-    public TColorfulChartCircle(Context context, @Nullable AttributeSet attrs) {
+    public TColorfulChartCircle(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public TColorfulChartCircle(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TColorfulChartCircle(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

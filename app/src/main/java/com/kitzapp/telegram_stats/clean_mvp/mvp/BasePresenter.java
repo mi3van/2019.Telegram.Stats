@@ -1,14 +1,14 @@
 package com.kitzapp.telegram_stats.clean_mvp.mvp;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
+
 
 public abstract class BasePresenter<V extends MvpView, M extends MvpModel> implements MvpPresenter<V> {
 
-    @NonNull protected M model;
-    @Nullable protected V view = null;
+     protected M model;
+    protected V view = null;
 
-    public BasePresenter(@NonNull M model) {
+    public BasePresenter( M model) {
         this.model = model;
     }
 

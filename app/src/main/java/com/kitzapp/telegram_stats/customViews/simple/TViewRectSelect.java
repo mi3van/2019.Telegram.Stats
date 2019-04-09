@@ -9,7 +9,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import androidx.annotation.Nullable;
+
 import com.kitzapp.telegram_stats.AndroidApp;
 import com.kitzapp.telegram_stats.core.appManagers.motions.MotionMagicForMiniature;
 import com.kitzapp.telegram_stats.core.appManagers.ObserverManager;
@@ -60,12 +60,12 @@ public class TViewRectSelect extends View implements TViewObserver, MotionMagicF
         this.init();
     }
 
-    public TViewRectSelect(Context context, @Nullable AttributeSet attrs) {
+    public TViewRectSelect(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.init();
     }
 
-    public TViewRectSelect(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TViewRectSelect(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.init();
     }

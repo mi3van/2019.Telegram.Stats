@@ -7,7 +7,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.AndroidApp;
 import com.kitzapp.telegram_stats.R;
 import com.kitzapp.telegram_stats.common.ArraysUtilites;
@@ -66,11 +65,11 @@ public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectL
         super(context);
     }
 
-    public ViewChartBig(Context context, @Nullable AttributeSet attrs) {
+    public ViewChartBig(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ViewChartBig(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ViewChartBig(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

@@ -3,7 +3,7 @@ package com.kitzapp.telegram_stats.customViews.ChartView.impl;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
-import androidx.annotation.Nullable;
+
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 import com.kitzapp.telegram_stats.customViews.simple.TColorfulChartCircle;
 
@@ -19,12 +19,12 @@ public class CellContainerForCircleViews extends FrameLayout {
         this.init();
     }
 
-    public CellContainerForCircleViews(Context context, @Nullable AttributeSet attrs) {
+    public CellContainerForCircleViews(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.init();
     }
 
-    public CellContainerForCircleViews(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public CellContainerForCircleViews(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.init();
     }

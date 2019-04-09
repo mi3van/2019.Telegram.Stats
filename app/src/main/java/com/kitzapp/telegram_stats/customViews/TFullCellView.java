@@ -4,16 +4,14 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.AndroidApp;
-import com.kitzapp.telegram_stats.core.appManagers.ObserverManager;
-import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
-import com.kitzapp.telegram_stats.pojo.chart.Chart;
-import com.kitzapp.telegram_stats.customViews.ChartView.TViewChartTitle;
-import com.kitzapp.telegram_stats.customViews.ChartView.TViewChartGpraphs;
+import com.kitzapp.telegram_stats.core.appManagers.ObserverManager;
 import com.kitzapp.telegram_stats.core.appManagers.TViewObserver;
+import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
+import com.kitzapp.telegram_stats.customViews.ChartView.TViewChartGpraphs;
+import com.kitzapp.telegram_stats.customViews.ChartView.TViewChartTitle;
+import com.kitzapp.telegram_stats.pojo.chart.Chart;
 
 import java.util.Observable;
 
@@ -27,7 +25,6 @@ public class TFullCellView extends LinearLayout implements TViewObserver {
     private TViewChartTitle _titleCell;
     private TViewChartGpraphs _fullChartCell;
 
-    @NonNull
     private Chart chart;
 
     private int _oldBackColor;
@@ -37,17 +34,17 @@ public class TFullCellView extends LinearLayout implements TViewObserver {
         this.init();
     }
 
-    public TFullCellView(Context context, @Nullable AttributeSet attrs) {
+    public TFullCellView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.init();
     }
 
-    public TFullCellView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TFullCellView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.init();
     }
 
-    public void loadData(@NonNull Chart chart) {
+    public void loadData( Chart chart) {
         if (_fullChartCell != null) {
             _fullChartCell.loadData(chart);
         } else {

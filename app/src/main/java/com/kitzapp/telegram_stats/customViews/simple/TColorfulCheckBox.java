@@ -4,16 +4,18 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Build;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.CheckBox;
-import androidx.core.widget.CompoundButtonCompat;
 import com.kitzapp.telegram_stats.AndroidApp;
-import com.kitzapp.telegram_stats.core.appManagers.ObserverManager;
-import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
+import com.kitzapp.telegram_stats.core.appManagers.ObserverManager;
 import com.kitzapp.telegram_stats.core.appManagers.TViewObserver;
+import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 
 import java.util.Observable;
 
@@ -69,11 +71,13 @@ public class TColorfulCheckBox extends CheckBox implements TViewObserver {
         this.setChecked(true);
         this.setGravity(Gravity.CENTER_VERTICAL);
 
-        this.setText(name);
 
         if (Build.VERSION.SDK_INT < 21) {
-            CompoundButtonCompat.setButtonTintList(this, ColorStateList.valueOf(color));
+            SpannableString span = SpannableString.valueOf(name);
+            span.setSpan(new ForegroundColorSpan(color), 0, span.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            this.setText(span);
         } else {
+            this.setText(name);
             this.setButtonTintList(ColorStateList.valueOf(color));
         }
 

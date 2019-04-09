@@ -2,14 +2,13 @@ package com.kitzapp.telegram_stats.core.mainChart;
 
 import android.content.Context;
 import android.view.MenuItem;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import com.kitzapp.telegram_stats.R;
 import com.kitzapp.telegram_stats.core.appManagers.ObserverManager;
 import com.kitzapp.telegram_stats.core.appManagers.motions.BaseMotionManager;
-import com.kitzapp.telegram_stats.core.mainChart.list.TChartAdapter;
 import com.kitzapp.telegram_stats.customViews.BaseActivity;
-import com.kitzapp.telegram_stats.pojo.chart.ChartsList;
+import com.kitzapp.telegram_stats.customViews.TFullCellView;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -20,7 +19,8 @@ public class TChartView extends BaseActivity implements TView, Observer {
 
     private TChartPresenter _chartPresenter;
 
-    private RecyclerView _chartsRecyclerView;
+    private LinearLayout _containerLayout;
+    private ScrollView _mainScrollView;
 
     @Override
     protected int getLayoutID() {
@@ -37,17 +37,10 @@ public class TChartView extends BaseActivity implements TView, Observer {
     protected void initViews() {
         _chartPresenter.attachView(this);
 
-        _chartsRecyclerView = findViewById(R.id.chartRecyclerView);
-        this.initRecycleView(_chartsRecyclerView);
+        _containerLayout = findViewById(R.id.chartsContainer);
+        _mainScrollView = findViewById(R.id.mainScrollView);
 
         _chartPresenter.runAnalyzeJson();
-    }
-
-    private void initRecycleView(RecyclerView recyclerView) {
-        RecyclerView.LayoutManager viewManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
-        recyclerView.setLayoutManager(viewManager);
-
-        recyclerView.setHasFixedSize(true);
     }
 
     @Override
@@ -63,9 +56,13 @@ public class TChartView extends BaseActivity implements TView, Observer {
     }
 
     @Override
-    public void updateChartsData(ChartsList chartsList) {
-        TChartAdapter chartAdapter = new TChartAdapter(getBaseContext(), chartsList, this::showMessageToast);
-        _chartsRecyclerView.setAdapter(chartAdapter);
+    public void clearChartsContainer() {
+        _containerLayout.removeAllViews();
+    }
+
+    @Override
+    public void addChartToContainer(TFullCellView chartView) {
+        _containerLayout.addView(chartView);
     }
 
     @Override
@@ -75,7 +72,7 @@ public class TChartView extends BaseActivity implements TView, Observer {
                 BaseMotionManager motionMagic = (BaseMotionManager) observable;
 
                 boolean isProhibitedScroll = motionMagic.getIsProhibitedScroll();
-                _chartsRecyclerView.requestDisallowInterceptTouchEvent(isProhibitedScroll);
+                _mainScrollView.requestDisallowInterceptTouchEvent(isProhibitedScroll);
             }
         }
     }

@@ -8,7 +8,6 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.AndroidApp;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
 import com.kitzapp.telegram_stats.common.ArraysUtilites;
@@ -45,12 +44,12 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
         this.init();
     }
 
-    public ViewChartBase(Context context, @Nullable AttributeSet attrs) {
+    public ViewChartBase(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.init();
     }
 
-    public ViewChartBase(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ViewChartBase(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.init();
     }

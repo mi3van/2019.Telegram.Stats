@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import androidx.annotation.Nullable;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 import com.kitzapp.telegram_stats.customViews.simple.TColorfulCheckBox;
 import com.kitzapp.telegram_stats.customViews.simple.TDelimiterLine;
@@ -28,11 +27,11 @@ public class TViewChartCheckBox extends LinearLayout {
         super(context);
     }
 
-    public TViewChartCheckBox(Context context, @Nullable AttributeSet attrs) {
+    public TViewChartCheckBox(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public TViewChartCheckBox(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TViewChartCheckBox(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

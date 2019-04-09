@@ -4,7 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
-import androidx.annotation.Nullable;
+
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 
 /**
@@ -20,12 +20,12 @@ public class TChartTextView extends TTextView {
         this.init();
     }
 
-    public TChartTextView(Context context, @Nullable AttributeSet attrs) {
+    public TChartTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.init();
     }
 
-    public TChartTextView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TChartTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.init();
     }
