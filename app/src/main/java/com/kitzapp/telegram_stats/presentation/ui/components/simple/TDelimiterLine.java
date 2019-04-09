@@ -20,6 +20,7 @@ import java.util.Observable;
  * 3van@mail.ru;
  * Copyright © 2019 Example. All rights reserved.
  */
+//test
 
 public class TDelimiterLine extends View implements TViewObserver {
 
