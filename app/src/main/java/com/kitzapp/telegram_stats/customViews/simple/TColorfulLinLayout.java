@@ -42,8 +42,6 @@ public class TColorfulLinLayout extends LinearLayout implements TViewObserver {
     @Override
     public void init() {
         setWillNotDraw(false);
-        _oldBackColor = getCurrentColor();
-        this.setBackgroundColor(_oldBackColor);
     }
 
     @Override
@@ -79,6 +77,9 @@ public class TColorfulLinLayout extends LinearLayout implements TViewObserver {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         this.addObserver();
+
+        _oldBackColor = getCurrentColor();
+        this.setBackgroundColor(_oldBackColor);
     }
 
     @Override

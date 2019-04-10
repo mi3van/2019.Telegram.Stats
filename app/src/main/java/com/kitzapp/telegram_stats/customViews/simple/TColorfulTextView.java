@@ -40,8 +40,6 @@ public class TColorfulTextView extends TTextView implements TViewObserver {
     @Override
     public void init() {
         this.setTypeface(ThemeManager.rRegularTypeface);
-        _oldTextColor = getCurrentColor();
-        this.setTextColor(_oldTextColor);
     }
 
     @Override
@@ -77,6 +75,9 @@ public class TColorfulTextView extends TTextView implements TViewObserver {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         this.addObserver();
+
+        _oldTextColor = getCurrentColor();
+        this.setTextColor(_oldTextColor);
     }
 
     @Override

@@ -4,9 +4,6 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -18,6 +15,8 @@ import com.kitzapp.telegram_stats.core.appManagers.TViewObserver;
 
 import java.util.Observable;
 
+import static com.kitzapp.telegram_stats.core.appManagers.ThemeManager.*;
+
 /**
  * Created by Ivan Kuzmin on 29.03.2019;
  * 3van@mail.ru;
@@ -26,12 +25,12 @@ import java.util.Observable;
 
 public class TColorfulChartCircle extends View implements TViewObserver {
 
-    private Paint _paint;
-    private ShapeDrawable _shapeDrawable;
-    private int _oldColor;
-    private int _sizeInsideCircle;
+    private Paint _paintForCircle;
+    private Paint _paintForBackgroundInside;
+    private int _oldBackColor;
     private int _center;
-    private int _width;
+    private int _circleRadius;
+    private int _insideCircleRadius;
 
     public TColorfulChartCircle(Context context) {
         super(context);
@@ -45,23 +44,17 @@ public class TColorfulChartCircle extends View implements TViewObserver {
         super(context, attrs, defStyleAttr);
     }
 
-    public TColorfulChartCircle(Context context, int color) {
+    public TColorfulChartCircle(Context context, int circleColor) {
         super(context);
-        this._paint = AndroidUtilites.getPaint(color, ThemeManager.CHART_LINE_IN_PART_WIDTH_PX);
+        this._paintForCircle = AndroidUtilites.getPaint(circleColor, CHART_CIRCLE_LINE_WIDTH_PX);
         this.init();
     }
 
     @Override
     public void init() {
-        if (_shapeDrawable == null) {
-            _center = ThemeManager.CHART_CIRCLE_HALF_SIZE_PX;
-            _width = _center - ThemeManager.CHART_LINE_FULL_WIDTH_PX;
-
-            _oldColor = getCurrentColor();
-            _shapeDrawable = getCurrentDrawable(_oldColor);
-
-            this.setBackground(_shapeDrawable);
-        }
+        _center = CHART_CIRCLE_HALF_SIZE_PX;
+        _circleRadius = CHART_CIRCLE_RADIUS_PX;
+        _insideCircleRadius = CHART_CIRCLE_RADIUS_INSIDE_PX;
     }
 
     @Override
@@ -77,8 +70,11 @@ public class TColorfulChartCircle extends View implements TViewObserver {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (_paint != null) {
-            canvas.drawCircle(_center, _center, _width, _paint);
+        if (_paintForCircle != null) {
+            canvas.drawCircle(_center, _center, _circleRadius, _paintForCircle);
+        }
+        if (_paintForBackgroundInside != null) {
+            canvas.drawCircle(_center, _center, _insideCircleRadius, _paintForBackgroundInside);
         }
     }
 
@@ -87,18 +83,18 @@ public class TColorfulChartCircle extends View implements TViewObserver {
         if ((byte) arg == ObserverManager.KEY_OBSERVER_THEME_UPDATED) {
             int newColor = getCurrentColor();
 
-            if (_oldColor != newColor) {
+            if (_oldBackColor != newColor) {
                 // BACKGROUND CHANGE COLOR
                 ValueAnimator backRGBAnim = AndroidUtilites.getArgbAnimator(
-                        _oldColor,
+                        _oldBackColor,
                         newColor,
                         animation -> {
                             int color = ((int) animation.getAnimatedValue());
-                            Drawable backgr = this.getBackground();
-                            AndroidUtilites.setDrawFilterATOP(backgr, color);
+                            _paintForBackgroundInside.setColor(color);
+                            this.invalidate();
                         });
                 backRGBAnim.start();
-                _oldColor = newColor;
+                _oldBackColor = newColor;
             }
         }
     }
@@ -113,18 +109,15 @@ public class TColorfulChartCircle extends View implements TViewObserver {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         this.addObserver();
-        getLayoutParams().height = ThemeManager.CHART_CIRCLE_SIZE_PX;
-        getLayoutParams().width = ThemeManager.CHART_CIRCLE_SIZE_PX;
+        getLayoutParams().height = CHART_CIRCLE_SIZE_PX;
+        getLayoutParams().width = CHART_CIRCLE_SIZE_PX;
+
+        _oldBackColor = getCurrentColor();
+        _paintForBackgroundInside =  AndroidUtilites.getPaintFill(_oldBackColor);
     }
 
     private int getCurrentColor() {
-        int color = ThemeManager.getColor(ThemeManager.key_cellBackColor);
+        int color = getColor(key_cellBackColor);
         return color;
-    }
-
-    private ShapeDrawable getCurrentDrawable(int color) {
-        ShapeDrawable oval = new ShapeDrawable (new OvalShape());
-        oval.getPaint().setColor(color);
-        return oval;
     }
 }

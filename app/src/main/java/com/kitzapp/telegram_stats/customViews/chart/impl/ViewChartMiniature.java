@@ -65,7 +65,7 @@ public class ViewChartMiniature extends ViewChartBase {
 
     @Override
     int getLinePaintWidth() {
-        return ThemeManager.CHART_LINE_FULL_WIDTH_PX;
+        return ThemeManager.CHART_LINE_IN_MINIATURE_WIDTH_PX;
     }
 
     @Override

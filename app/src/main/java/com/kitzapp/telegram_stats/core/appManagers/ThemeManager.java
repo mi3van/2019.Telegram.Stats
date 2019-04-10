@@ -33,8 +33,6 @@ public class ThemeManager {
     public static final int MARGIN_4DP_IN_PX;
 
 //    CHART VIEWS DP
-    private static final int CHART_LINE_IN_PART_WIDTH_DP = 2;
-    private static final int CHART_LINE_FULL_WIDTH_DP = 1;
     private static final int CHART_FULL_TOP_BOTTOM_MARGIN_DP = 4;
     private static final int CHART_PART_HEIGHT_DP = 250;
     private static final int CHART_DELIMITER_FATNESS_DP = 1;
@@ -45,8 +43,8 @@ public class ThemeManager {
     private static final int CHART_CIRCLE_SIZE_DP = 10;
 
     //    CHART VIEWS PX
-    public static final int CHART_LINE_IN_PART_WIDTH_PX;
-    public static final int CHART_LINE_FULL_WIDTH_PX;
+    public static final int CHART_LINE_IN_BIG_WIDTH_PX;
+    public static final int CHART_LINE_IN_MINIATURE_WIDTH_PX;
     public static final int CHART_FULL_TOP_BOTTOM_MARGIN_PX;
     public static final int CHART_PART_HEIGHT_PX;
     public static final int CHART_DELIMITER_FATNESS_PX;
@@ -57,8 +55,11 @@ public class ThemeManager {
     public static final int CHART_MINIATURE_VERTICAL_PADDING_SUM_PX;
     public static final int CHART_MINIATURE_VERTICAL_PADDING_HALF_PX;
 
+    public static final int CHART_CIRCLE_LINE_WIDTH_PX;
     public static final int CHART_CIRCLE_SIZE_PX;
     public static final int CHART_CIRCLE_HALF_SIZE_PX;
+    public static final int CHART_CIRCLE_RADIUS_PX;
+    public static final int CHART_CIRCLE_RADIUS_INSIDE_PX;
 
     private static int totalInit = 1;
     public final static int LIGHT = totalInit++;
@@ -113,8 +114,8 @@ public class ThemeManager {
         MARGIN_8DP_IN_PX = MARGIN_16DP_IN_PX >> 1;
         MARGIN_4DP_IN_PX = MARGIN_8DP_IN_PX >> 1;
 
-        CHART_LINE_FULL_WIDTH_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_LINE_FULL_WIDTH_DP);
-        CHART_LINE_IN_PART_WIDTH_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_LINE_IN_PART_WIDTH_DP);
+        CHART_LINE_IN_MINIATURE_WIDTH_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, 1);
+        CHART_LINE_IN_BIG_WIDTH_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, 2);
         CHART_FULL_TOP_BOTTOM_MARGIN_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_FULL_TOP_BOTTOM_MARGIN_DP);
         CHART_PART_HEIGHT_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_PART_HEIGHT_DP);
 
@@ -124,8 +125,12 @@ public class ThemeManager {
         CHART_BIG_VERTICAL_PADDING_HALF_PX = CHART_BIG_VERTICAL_PADDING_SUM_PX >> 1;
         CHART_MINIATURE_VERTICAL_PADDING_SUM_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_MINIATURE_VERTICAL_PADDING_SUM_DP);
         CHART_MINIATURE_VERTICAL_PADDING_HALF_PX = CHART_MINIATURE_VERTICAL_PADDING_SUM_PX >> 1;
+
+        CHART_CIRCLE_LINE_WIDTH_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, 2);
         CHART_CIRCLE_SIZE_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_CIRCLE_SIZE_DP);
         CHART_CIRCLE_HALF_SIZE_PX = CHART_CIRCLE_SIZE_PX >> 1;
+        CHART_CIRCLE_RADIUS_PX = CHART_CIRCLE_HALF_SIZE_PX - CHART_LINE_IN_MINIATURE_WIDTH_PX - 1;
+        CHART_CIRCLE_RADIUS_INSIDE_PX = CHART_CIRCLE_RADIUS_PX - (CHART_CIRCLE_LINE_WIDTH_PX >> 1);
     }
 
     public static void changeThemeAndSave() {

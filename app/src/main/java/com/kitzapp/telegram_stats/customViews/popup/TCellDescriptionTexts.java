@@ -21,28 +21,28 @@ import java.util.Observable;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class TInfoCellForPopup extends LinearLayout implements TViewObserver {
+public class TCellDescriptionTexts extends LinearLayout implements TViewObserver {
     private TTextView _titleTV;
     private TTextView _descriptionTV;
 
     private int _oldTitleColor;
 
-    public TInfoCellForPopup(Context context) {
+    public TCellDescriptionTexts(Context context) {
         super(context);
     }
 
-    public TInfoCellForPopup(Context context, AttributeSet attrs) {
+    public TCellDescriptionTexts(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public TInfoCellForPopup(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TCellDescriptionTexts(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public TInfoCellForPopup(Context context, String title, String description,
-                             int textColor,
-                             LayoutParams layoutParamsText,
-                             LayoutParams layoutParamsDescription) {
+    public TCellDescriptionTexts(Context context, String title, String description,
+                                 int textColor,
+                                 LayoutParams layoutParamsText,
+                                 LayoutParams layoutParamsDescription) {
         super(context);
         this.init();
         this.loadData(title, description, textColor, layoutParamsText, layoutParamsDescription);

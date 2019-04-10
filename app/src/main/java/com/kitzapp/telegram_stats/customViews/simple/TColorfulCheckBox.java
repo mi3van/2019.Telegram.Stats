@@ -30,10 +30,10 @@ public class TColorfulCheckBox extends CheckBox implements TViewObserver {
         void onBoxWasChecked(String key, boolean isChecked);
     }
 
-    private String key;
-    private String name;
-    private int color;
-    private Listener listener;
+    private String _key;
+    private String _name;
+    private int _color;
+    private Listener _listener;
 
     public TColorfulCheckBox(Context context) {
         super(context);
@@ -49,10 +49,10 @@ public class TColorfulCheckBox extends CheckBox implements TViewObserver {
 
     public TColorfulCheckBox(Context context, String key, String name, int color, Listener listener) {
         super(context);
-        this.key = key;
-        this.name = name;
-        this.color = color;
-        this.listener = listener;
+        this._key = key;
+        this._name = name;
+        this._color = color;
+        this._listener = listener;
 
         this.init();
     }
@@ -61,22 +61,20 @@ public class TColorfulCheckBox extends CheckBox implements TViewObserver {
     public void init() {
         this.setTypeface(ThemeManager.rMediumTypeface);
         this.setTextSize(TypedValue.COMPLEX_UNIT_DIP, ThemeManager.TEXT_MEDIUM_SIZE_DP);
-        this.setText(name);
+        this.setText(_name);
 
         this.setChecked(true);
         this.setGravity(Gravity.CENTER_VERTICAL);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            this.setTextColor(color); // red or other text color
+            this.setTextColor(_color); // red or other text _color
         } else {
-            _oldTextColor = getCurrentColor();
-            this.setTextColor(_oldTextColor); // black and white text smooth colors
-            this.setButtonTintList(ColorStateList.valueOf(color));
+            this.setButtonTintList(ColorStateList.valueOf(_color));
         }
 
         setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (listener != null) {
-                listener.onBoxWasChecked(key, isChecked);
+            if (_listener != null) {
+                _listener.onBoxWasChecked(_key, isChecked);
             }
         });
     }
@@ -113,6 +111,11 @@ public class TColorfulCheckBox extends CheckBox implements TViewObserver {
         super.onAttachedToWindow();
         getLayoutParams().height = ThemeManager.CELL_HEIGHT_48DP_IN_PX;
         this.addObserver();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            _oldTextColor = getCurrentColor();
+            this.setTextColor(_oldTextColor); // black and white text smooth colors
+        }
     }
 
     @Override

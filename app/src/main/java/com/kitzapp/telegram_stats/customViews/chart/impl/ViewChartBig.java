@@ -13,8 +13,7 @@ import com.kitzapp.telegram_stats.common.ArraysUtilites;
 import com.kitzapp.telegram_stats.common.MyLongPair;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 import com.kitzapp.telegram_stats.core.appManagers.motions.MotionManagerForBigChart;
-import com.kitzapp.telegram_stats.customViews.popup.TInfoCellForPopup;
-import com.kitzapp.telegram_stats.customViews.simple.TColorfulLinLayout;
+import com.kitzapp.telegram_stats.customViews.popup.TCellDescriptionTexts;
 import com.kitzapp.telegram_stats.customViews.simple.TColorfulTextView;
 import com.kitzapp.telegram_stats.customViews.simple.TDelimiterLine;
 import com.kitzapp.telegram_stats.customViews.simple.TViewRectSelect;
@@ -95,8 +94,7 @@ public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectL
         _motionManagerBig = new MotionManagerForBigChart(getContext(), this, this);
         _oldIndexShowed = -1;
 
-        _containerForCircleViews = new CellContainerForCircleViews(getContext());
-        addView(_containerForCircleViews);
+        this.initPopup();
     }
 
     private boolean _isCoeffXForPopupNeedCalculate = true;
@@ -157,7 +155,7 @@ public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectL
             return;
         }
 
-        this.hidePopupViews();
+        this.recalculatePopupViews();
 
         if (_chartInterface != null) {
             long[] dates = this.getDatesForSend(_leftInArray, _rightInArray);
@@ -248,7 +246,7 @@ public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectL
 
     @Override
     int getLinePaintWidth() {
-        return ThemeManager.CHART_LINE_IN_PART_WIDTH_PX;
+        return ThemeManager.CHART_LINE_IN_BIG_WIDTH_PX;
     }
 
     @Override
@@ -282,6 +280,16 @@ public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectL
         return sendingArray;
     }
 
+    private void initPopup() {
+        _containerForCircleViews = new CellContainerForCircleViews(getContext());
+        addView(_containerForCircleViews);
+
+        for (Map.Entry<String, Line> entry : _chart.getLines().entrySet()) {
+            int color = entry.getValue().getColor();
+            _containerForCircleViews.initNewCircle(color, entry.getKey());
+        }
+    }
+
     @SuppressLint("SimpleDateFormat")
     private void drawPopupViews(int indexShowedPart) {
 
@@ -311,7 +319,7 @@ public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectL
         String dateString = formatter.format(new Date(date));
         titleTextPopup.setText(dateString);
 
-        TInfoCellForPopup cellForPopup;
+        TCellDescriptionTexts cellForPopup;
         String title; int color; String value;
         Line line;    boolean isActiveChart;
 
@@ -322,20 +330,20 @@ public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectL
         layoutParamsText.setMargins(0, 0, ThemeManager.MARGIN_8DP_IN_PX, 0);
         LinearLayout.LayoutParams layoutParamsDescription = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
-        _containerForCircleViews.setVisibility(VISIBLE);
-        _containerForCircleViews.removeAllViews();
         for (Map.Entry<String, Line> entry : _chart.getLines().entrySet()) {
-            line = _chart.getLines().get(entry.getKey());
+            String key = entry.getKey();
+            line = _chart.getLines().get(key);
             isActiveChart = line.getIsActive();
-            if (isActiveChart) {
-                title = line.getName();
-                color = line.getColor();
-                value = String.valueOf(line.getData()[globalIndexArray]);
-                cellForPopup = new TInfoCellForPopup(getContext(), title, value, color, layoutParamsText, layoutParamsDescription);
-                container.addView(cellForPopup);
-                _containerForCircleViews.addCircle(currentX,
-                        _partAxisesY.get(entry.getKey())[indexShowedPart], color);
-            }
+
+            title = line.getName();
+            color = line.getColor();
+            value = String.valueOf(line.getData()[globalIndexArray]);
+            cellForPopup = new TCellDescriptionTexts(getContext(), title, value, color, layoutParamsText, layoutParamsDescription);
+            container.addView(cellForPopup);
+
+            long y = _partAxisesY.get(key)[indexShowedPart];
+
+            _containerForCircleViews.setNewPositionAndAnimate(currentX, y, key, isActiveChart);
         }
 
         if (_verticalDelimiterHeight == 0) {
@@ -346,15 +354,24 @@ public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectL
     }
 
     private void hidePopupViews() {
-        if (_containerForCircleViews != null && _containerForCircleViews.getVisibility() == VISIBLE) {
-            _containerForCircleViews.removeAllViews();
-            _containerForCircleViews.setVisibility(GONE);
+        if (_containerForCircleViews != null) {
+            _containerForCircleViews.hideAllViews();
         }
         if (_verticalDelimiter != null && _verticalDelimiter.getVisibility() == VISIBLE) {
             _verticalDelimiter.setVisibility(INVISIBLE);
         }
         if (AndroidApp.popupWindow.isShowing()) {
             AndroidApp.popupWindow.dismiss();
+        }
+    }
+
+    private void recalculatePopupViews() {
+        Line line; boolean isActiveChart;
+        for (Map.Entry<String, Line> entry : _chart.getLines().entrySet()) {
+            String key = entry.getKey();
+            line = _chart.getLines().get(key);
+            isActiveChart = line.getIsActive();
+            _containerForCircleViews.hideOrShowViewWithTag(key, isActiveChart);
         }
     }
 

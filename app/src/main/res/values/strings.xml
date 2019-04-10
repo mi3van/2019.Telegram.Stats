@@ -3,4 +3,5 @@
     <string name="toolbar_title">Statistics</string>
     <string name="night_mode_title">Night mode</string>
     <string name="followers_title">Followers</string>
+    <string name="detailed_title">Detailed</string>
 </resources>
