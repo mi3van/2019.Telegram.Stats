@@ -8,7 +8,7 @@ import com.kitzapp.telegram_stats.R;
 import com.kitzapp.telegram_stats.core.appManagers.ObserverManager;
 import com.kitzapp.telegram_stats.core.appManagers.motions.BaseMotionManager;
 import com.kitzapp.telegram_stats.customViews.BaseActivity;
-import com.kitzapp.telegram_stats.customViews.TFullCellView;
+import com.kitzapp.telegram_stats.customViews.TFullChartView;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -48,6 +48,7 @@ public class TChartView extends BaseActivity implements TView, Observer {
         int id = item.getItemId();
 
         if (id == R.id.themeBtn) {
+            _mainScrollView.fling(0);
             _chartPresenter.changeCurrentTheme();
             this.updateActionBarBackgr();
             return true;
@@ -61,7 +62,7 @@ public class TChartView extends BaseActivity implements TView, Observer {
     }
 
     @Override
-    public void addChartToContainer(TFullCellView chartView) {
+    public void addChartToContainer(TFullChartView chartView) {
         _containerLayout.addView(chartView);
     }
 

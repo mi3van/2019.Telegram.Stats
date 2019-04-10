@@ -2,15 +2,18 @@ package com.kitzapp.telegram_stats.customViews;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
 import com.kitzapp.telegram_stats.AndroidApp;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
 import com.kitzapp.telegram_stats.core.appManagers.ObserverManager;
 import com.kitzapp.telegram_stats.core.appManagers.TViewObserver;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
-import com.kitzapp.telegram_stats.customViews.ChartView.TViewChartGpraphs;
-import com.kitzapp.telegram_stats.customViews.ChartView.TViewChartTitle;
+import com.kitzapp.telegram_stats.customViews.chart.TViewChartGpraphs;
+import com.kitzapp.telegram_stats.customViews.chart.TViewChartTitle;
 import com.kitzapp.telegram_stats.pojo.chart.Chart;
 
 import java.util.Observable;
@@ -21,7 +24,8 @@ import java.util.Observable;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class TFullCellView extends LinearLayout implements TViewObserver {
+public class TFullChartView extends LinearLayout implements TViewObserver {
+
     private TViewChartTitle _titleCell;
     private TViewChartGpraphs _fullChartCell;
 
@@ -29,22 +33,22 @@ public class TFullCellView extends LinearLayout implements TViewObserver {
 
     private int _oldBackColor;
 
-    public TFullCellView(Context context) {
+    public TFullChartView(Context context) {
         super(context);
         this.init();
     }
 
-    public TFullCellView(Context context, AttributeSet attrs) {
+    public TFullChartView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.init();
     }
 
-    public TFullCellView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TFullChartView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.init();
     }
 
-    public void loadData( Chart chart) {
+    public void loadData(Chart chart) {
         if (_fullChartCell != null) {
             _fullChartCell.loadData(chart);
         } else {

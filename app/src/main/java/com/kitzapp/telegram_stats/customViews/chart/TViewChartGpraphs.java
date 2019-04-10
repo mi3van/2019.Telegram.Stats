@@ -1,12 +1,12 @@
-package com.kitzapp.telegram_stats.customViews.ChartView;
+package com.kitzapp.telegram_stats.customViews.chart;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.LinearLayout;
-import com.kitzapp.telegram_stats.customViews.ChartView.impl.ViewChartBig;
-import com.kitzapp.telegram_stats.customViews.ChartView.impl.ViewChartDatesHoriz;
-import com.kitzapp.telegram_stats.customViews.ChartView.impl.ViewChartMiniature;
+import com.kitzapp.telegram_stats.customViews.chart.impl.ViewChartBig;
+import com.kitzapp.telegram_stats.customViews.chart.impl.ViewChartDatesHoriz;
+import com.kitzapp.telegram_stats.customViews.chart.impl.ViewChartMiniature;
 import com.kitzapp.telegram_stats.customViews.simple.TColorfulCheckBox;
 import com.kitzapp.telegram_stats.pojo.chart.Chart;
 

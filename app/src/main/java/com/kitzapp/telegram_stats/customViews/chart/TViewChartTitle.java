@@ -1,4 +1,4 @@
-package com.kitzapp.telegram_stats.customViews.ChartView;
+package com.kitzapp.telegram_stats.customViews.chart;
 
 import android.animation.ValueAnimator;
 import android.content.Context;

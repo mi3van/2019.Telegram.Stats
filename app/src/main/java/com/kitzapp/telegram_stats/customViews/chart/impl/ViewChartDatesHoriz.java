@@ -1,4 +1,4 @@
-package com.kitzapp.telegram_stats.customViews.ChartView.impl;
+package com.kitzapp.telegram_stats.customViews.chart.impl;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
