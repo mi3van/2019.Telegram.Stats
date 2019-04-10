@@ -51,7 +51,6 @@ public class TInfoCellForPopup extends LinearLayout implements TViewObserver {
     @Override
     public void init() {
         this.setOrientation(HORIZONTAL);
-        _oldTitleColor = getStandartTitleColor();
 
         _titleTV = new TTextView(getContext());
         _titleTV.setTypeface(ThemeManager.rRegularTypeface);
@@ -59,6 +58,8 @@ public class TInfoCellForPopup extends LinearLayout implements TViewObserver {
         _titleTV.setSingleLine();
         _titleTV.setLines(1);
         _titleTV.setEllipsize(TextUtils.TruncateAt.END);
+
+        _oldTitleColor = getStandartTitleColor();
         _titleTV.setTextColor(_oldTitleColor);
 
         addView(_titleTV);

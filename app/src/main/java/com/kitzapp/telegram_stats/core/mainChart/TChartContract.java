@@ -5,7 +5,6 @@ import android.view.View;
 import com.kitzapp.telegram_stats.clean_mvp.mvp.MvpModel;
 import com.kitzapp.telegram_stats.clean_mvp.mvp.MvpPresenter;
 import com.kitzapp.telegram_stats.clean_mvp.mvp.MvpView;
-import com.kitzapp.telegram_stats.customViews.View;
 import com.kitzapp.telegram_stats.pojo.chart.ChartsList;
 
 interface TChartContract {
