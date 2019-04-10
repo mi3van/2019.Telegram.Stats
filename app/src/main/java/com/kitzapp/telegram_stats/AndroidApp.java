@@ -47,7 +47,7 @@ public class AndroidApp extends Application {
         popupWindow.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         assert layoutInflater != null;
-        View popupView = layoutInflater.inflate(R.layout.popup_window_table, null);
+        View popupView = layoutInflater.inflate(R.layout.popup_window, null);
         popupWindow.setContentView(popupView);
         popupWindow.setAnimationStyle(R.style.popup_window_animation);
     }

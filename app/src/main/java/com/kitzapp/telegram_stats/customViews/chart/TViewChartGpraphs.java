@@ -22,7 +22,7 @@ public class TViewChartGpraphs extends LinearLayout implements TColorfulCheckBox
     private ViewChartBig _bigChart;
     private ViewChartDatesHoriz _chartDates;
     private ViewChartMiniature _miniatureChart;
-    private TViewChartCheckBox _chBoxChartIsActive;
+    private TViewChartCheckBoxes _chBoxChartIsActive;
 
     public TViewChartGpraphs(Context context) {
         super(context);
@@ -54,7 +54,7 @@ public class TViewChartGpraphs extends LinearLayout implements TColorfulCheckBox
         _bigChart = new ViewChartBig(getContext(), this);
         _chartDates = new ViewChartDatesHoriz(getContext());
         _miniatureChart = new ViewChartMiniature(getContext(), _bigChart.getRectListener());
-        _chBoxChartIsActive = new TViewChartCheckBox(getContext(), this);
+        _chBoxChartIsActive = new TViewChartCheckBoxes(getContext(), this);
 
         addView(_bigChart);
         addView(_chartDates);

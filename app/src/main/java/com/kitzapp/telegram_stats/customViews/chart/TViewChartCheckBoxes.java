@@ -19,23 +19,23 @@ import java.util.Map;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class TViewChartCheckBox extends LinearLayout {
+public class TViewChartCheckBoxes extends LinearLayout {
 
     private TColorfulCheckBox.Listener _listener;
 
-    public TViewChartCheckBox(Context context) {
+    public TViewChartCheckBoxes(Context context) {
         super(context);
     }
 
-    public TViewChartCheckBox(Context context, AttributeSet attrs) {
+    public TViewChartCheckBoxes(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public TViewChartCheckBox(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TViewChartCheckBoxes(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public TViewChartCheckBox(Context context, TColorfulCheckBox.Listener listener) {
+    public TViewChartCheckBoxes(Context context, TColorfulCheckBox.Listener listener) {
         super(context);
         this.init();
 

@@ -73,7 +73,7 @@ public class ThemeManager {
 //    COLORS BASIC VIEWS
     public static final String key_totalBackColor = "totalBackColor";
     public static final String key_toolbarBackColor = "actionBarBackColor";
-    private static final String key_toolbarTextColor = "actionBarTextColor";
+    public static final String key_toolbarIconColor = "actionBarIconColor";
 
     //    COLORS CELLS
     private static final String key_cellTitleTextColor = "cellTitleTextColor";
@@ -160,7 +160,7 @@ public class ThemeManager {
 
     private static void updateFontsColors() {
         simpleTextPaint.setColor(getColor(key_simpleTextColor));
-        toolbarTextPaint.setColor(getColor(key_toolbarTextColor));
+        toolbarTextPaint.setColor(getColor(key_simpleTextColor));
         chartTitleTextPaint.setColor(getColor(key_cellTitleTextColor));
         chartDescrTextPaint.setColor(getColor(key_chartDescrTextCol));
     }
@@ -176,6 +176,7 @@ public class ThemeManager {
     public static void initThemesHashes() {
         darkThemeColors.put(key_totalBackColor, 0xff151e27);
         darkThemeColors.put(key_toolbarBackColor, 0xff212d3b);
+        darkThemeColors.put(key_toolbarIconColor, 0xffffffff);
         darkThemeColors.put(key_cellTitleTextColor, 0xff7bc4fb);
         darkThemeColors.put(key_cellBackColor , 0xff1d2733);
         darkThemeColors.put(key_cellChartFullBackColor , 0xff19232e);
@@ -184,6 +185,7 @@ public class ThemeManager {
 
         lightThemeColors.put(key_totalBackColor, 0xfff0f0f0);
         lightThemeColors.put(key_toolbarBackColor, 0xffffffff);
+        lightThemeColors.put(key_toolbarIconColor, 0xff8e8e93);
         lightThemeColors.put(key_cellTitleTextColor, 0xff3896d4);
         lightThemeColors.put(key_cellBackColor , 0xffffffff);
         lightThemeColors.put(key_cellChartFullBackColor, 0xffffffff);
@@ -191,11 +193,12 @@ public class ThemeManager {
         lightThemeColors.put(key_rectBackColor, 0xafeeeeee);
 
         //  No change colors
-
-        lightThemeColors.put(key_toolbarTextColor, 0xffffffff); darkThemeColors.put(key_toolbarTextColor, 0xffffffff);
-        lightThemeColors.put(key_chartDescrTextCol, 0x6f666666);darkThemeColors.put(key_chartDescrTextCol, 0x6f666666);
-        lightThemeColors.put(key_rectSelectColor, 0x5Fa5c3d9);  darkThemeColors.put(key_rectSelectColor, 0x5Fa5c3d9);
-        lightThemeColors.put(key_delimiterColor, 0x1F555555);   darkThemeColors.put(key_delimiterColor, 0x1F555555);
+        int color = 0x6f777777;
+        lightThemeColors.put(key_chartDescrTextCol, color);darkThemeColors.put(key_chartDescrTextCol, color);
+        color = 0x5Fa5c3d9;
+        lightThemeColors.put(key_rectSelectColor, color);  darkThemeColors.put(key_rectSelectColor, color);
+        color = 0x2a666666;
+        lightThemeColors.put(key_delimiterColor, color);   darkThemeColors.put(key_delimiterColor, color);
     }
 
     static void initTextPaints() {

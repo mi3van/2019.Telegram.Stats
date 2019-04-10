@@ -109,12 +109,10 @@ public abstract class BaseActivity extends Activity {
     }
 
     private void initToolbarText(ActionBar actionBar) {
-        TextPaint toolbarTextPaint = ThemeManager.toolbarTextPaint;
-
         String toolbarTitle = getResources().getString(R.string.toolbar_title);
 
         SpannableString spanString = new SpannableString(toolbarTitle);
-        spanString.setSpan(new CustomActionBarTypeface(toolbarTextPaint.getTypeface()), 0, spanString.length(),
+        spanString.setSpan(new CustomActionBarTypeface(ThemeManager.toolbarTextPaint.getTypeface()), 0, spanString.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         spanString.setSpan(new RelativeSizeSpan(1f), 0,spanString.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE); // set size
@@ -215,11 +213,11 @@ public abstract class BaseActivity extends Activity {
     }
 
     private int getCurrentToolbarTitleColor() {
-        return ThemeManager.simpleTextPaint.getColor();
+        return ThemeManager.toolbarTextPaint.getColor();
     }
 
     private int getCurrentToolbarIconColor() {
-        return ThemeManager.simpleTextPaint.getColor();
+        return ThemeManager.getColor(ThemeManager.key_toolbarIconColor);
     }
 
     protected void onDestroy() {
