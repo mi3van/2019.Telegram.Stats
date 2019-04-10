@@ -155,6 +155,18 @@ public abstract class BaseActivity extends Activity {
             }
             _window.setStatusBarColor(newColor);
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            View decorView = _window.getDecorView();
+            if (color > 0xff7a7a7a) {
+                if (decorView.getSystemUiVisibility() != View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) {
+                    decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                }
+            } else {
+                if (decorView.getSystemUiVisibility() != 0) {
+                    decorView.setSystemUiVisibility(0);
+                }
+            }
+        }
     }
 
     protected void updateActionBarBackgr() {
