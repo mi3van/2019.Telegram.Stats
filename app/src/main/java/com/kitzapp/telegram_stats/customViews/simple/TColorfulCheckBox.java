@@ -4,9 +4,6 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Build;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -62,22 +59,18 @@ public class TColorfulCheckBox extends CheckBox implements TViewObserver {
 
     @Override
     public void init() {
-        TTextPaint simpleTextPaint = ThemeManager.simpleTextPaint;
-        this.setTypeface(simpleTextPaint.getTypeface());
-        this.setTextSize(TypedValue.COMPLEX_UNIT_DIP, simpleTextPaint.getTextSize());
-        _oldTextColor = getCurrentColor();
-        this.setTextColor(_oldTextColor);
+        this.setTypeface(ThemeManager.rMediumTypeface);
+        this.setTextSize(TypedValue.COMPLEX_UNIT_DIP, ThemeManager.TEXT_MEDIUM_SIZE_DP);
+        this.setText(name);
 
         this.setChecked(true);
         this.setGravity(Gravity.CENTER_VERTICAL);
 
-
-        if (Build.VERSION.SDK_INT < 21) {
-            SpannableString span = SpannableString.valueOf(name);
-            span.setSpan(new ForegroundColorSpan(color), 0, span.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            this.setText(span);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            this.setTextColor(color); // red or other text color
         } else {
-            this.setText(name);
+            _oldTextColor = getCurrentColor();
+            this.setTextColor(_oldTextColor); // black and white text smooth colors
             this.setButtonTintList(ColorStateList.valueOf(color));
         }
 
@@ -100,15 +93,17 @@ public class TColorfulCheckBox extends CheckBox implements TViewObserver {
 
     @Override
     public void update(Observable o, Object arg) {
-        if ((byte) arg == ObserverManager.KEY_OBSERVER_THEME_UPDATED) {
-            int newColor = getCurrentColor();
-            if (_oldTextColor != newColor) {
-                ValueAnimator valueAnimator = AndroidUtilites.getArgbAnimator(
-                        _oldTextColor,
-                        newColor,
-                        animation -> setTextColor((int) animation.getAnimatedValue()));
-                valueAnimator.start();
-                _oldTextColor = newColor;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if ((byte) arg == ObserverManager.KEY_OBSERVER_THEME_UPDATED) {
+                int newColor = getCurrentColor();
+                if (_oldTextColor != newColor) {
+                    ValueAnimator valueAnimator = AndroidUtilites.getArgbAnimator(
+                            _oldTextColor,
+                            newColor,
+                            animation -> setTextColor((int) animation.getAnimatedValue()));
+                    valueAnimator.start();
+                    _oldTextColor = newColor;
+                }
             }
         }
     }
@@ -127,6 +122,6 @@ public class TColorfulCheckBox extends CheckBox implements TViewObserver {
     }
 
     private int getCurrentColor() {
-        return ThemeManager.simpleTextPaint.getColor();
+        return ThemeManager.getColor(ThemeManager.key_blackWhiteTextColor);
     }
 }

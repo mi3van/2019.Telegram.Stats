@@ -12,7 +12,6 @@ import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 import com.kitzapp.telegram_stats.R;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
 import com.kitzapp.telegram_stats.core.appManagers.TViewObserver;
-import com.kitzapp.telegram_stats.customViews.simple.TTextPaint;
 import com.kitzapp.telegram_stats.customViews.simple.TTextView;
 
 import java.util.Observable;
@@ -51,19 +50,18 @@ public class TViewChartTitle extends LinearLayout implements TViewObserver {
     @Override
     public void init() {
         this.setOrientation(VERTICAL);
-        _oldTitleColor = ThemeManager.chartTitleTextPaint.getColor();
+        _oldTitleColor = this.getTextColor();
 
         tTextView = new TTextView(getContext());
-        TTextPaint chartTitleTextPaint = ThemeManager.chartTitleTextPaint;
-        tTextView.setTypeface(chartTitleTextPaint.getTypeface());
+        tTextView.setTypeface(ThemeManager.rBoldTypeface);
         tTextView.setTextColor(_oldTitleColor);
-        tTextView.setTextSizeDP(chartTitleTextPaint.getTextSize());
+        tTextView.setTextSizeDP(ThemeManager.TEXT_BIG_SIZE_DP);
         tTextView.setText(getResources().getString(R.string.followers_title));
 
         setGravity(Gravity.CENTER_VERTICAL);
         addView(tTextView);
 
-        int RightLeftPadding = ThemeManager.CHART_CELL_RIGHTLEFT_MARGIN_PX;
+        int RightLeftPadding = ThemeManager.MARGIN_16DP_IN_PX;
         setPadding(RightLeftPadding, 0, RightLeftPadding, 0);
     }
 
@@ -83,7 +81,7 @@ public class TViewChartTitle extends LinearLayout implements TViewObserver {
     @Override
     public void update(Observable o, Object arg) {
         if ((byte) arg == ObserverManager.KEY_OBSERVER_THEME_UPDATED) {
-            int newTitleColor = ThemeManager.chartTitleTextPaint.getColor();
+            int newTitleColor = this.getTextColor();
 
             // TITLE CHANGE COLOR
             if (newTitleColor != _oldTitleColor) {
@@ -95,6 +93,11 @@ public class TViewChartTitle extends LinearLayout implements TViewObserver {
                 _oldTitleColor = newTitleColor;
             }
         }
+    }
+
+    private int getTextColor() {
+        int color = ThemeManager.getColor(ThemeManager.key_blackWhiteTextColor);
+        return color;
     }
 
     @Override

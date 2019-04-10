@@ -300,7 +300,7 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) getLayoutParams();
         layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
         layoutParams.height = this.getViewHeightForLayout();
-        int marginPx = ThemeManager.CHART_CELL_RIGHTLEFT_MARGIN_PX;
+        int marginPx = ThemeManager.MARGIN_16DP_IN_PX;
         layoutParams.setMargins(marginPx, 0, marginPx, 0);
         this.setLayoutParams(layoutParams);
 

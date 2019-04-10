@@ -39,9 +39,7 @@ public class TColorfulTextView extends TTextView implements TViewObserver {
 
     @Override
     public void init() {
-        TTextPaint simpleTextPaint = ThemeManager.simpleTextPaint;
-        this.setTypeface(simpleTextPaint.getTypeface());
-        this.setTextSizeDP(simpleTextPaint.getTextSize());
+        this.setTypeface(ThemeManager.rRegularTypeface);
         _oldTextColor = getCurrentColor();
         this.setTextColor(_oldTextColor);
     }
@@ -57,7 +55,7 @@ public class TColorfulTextView extends TTextView implements TViewObserver {
     }
 
     private int getCurrentColor() {
-        return ThemeManager.simpleTextPaint.getColor();
+        return ThemeManager.getColor(ThemeManager.key_blackWhiteTextColor);
     }
 
     @Override

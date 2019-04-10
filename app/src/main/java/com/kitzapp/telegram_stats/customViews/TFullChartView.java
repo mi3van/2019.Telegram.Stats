@@ -3,6 +3,7 @@ package com.kitzapp.telegram_stats.customViews;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Rect;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +19,8 @@ import com.kitzapp.telegram_stats.pojo.chart.Chart;
 
 import java.util.Observable;
 
+import static com.kitzapp.telegram_stats.common.AppConts.ELEVATION_CHART_VIEW;
+
 /**
  * Created by Ivan Kuzmin on 24.03.2019;
  * 3van@mail.ru;
@@ -29,7 +32,7 @@ public class TFullChartView extends LinearLayout implements TViewObserver {
     private TViewChartTitle _titleCell;
     private TViewChartGpraphs _fullChartCell;
 
-    private Chart chart;
+    private Chart _chart;
 
     private int _oldBackColor;
 
@@ -49,16 +52,22 @@ public class TFullChartView extends LinearLayout implements TViewObserver {
     }
 
     public void loadData(Chart chart) {
-        if (_fullChartCell != null) {
-            _fullChartCell.loadData(chart);
-        } else {
-            this.initChildViews();
+        if (_chart == null || _chart.hashCode() != chart.hashCode()) {
+            _chart = chart;
+            if (_fullChartCell != null) {
+                _fullChartCell.loadData(chart);
+            } else {
+                this.initChildViews();
+            }
         }
     }
 
     @Override
     public void init() {
         this.setOrientation(VERTICAL);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            this.setElevation(ELEVATION_CHART_VIEW);
+        }
 
         _oldBackColor = this.getCurrentBackColor();
         this.setBackgroundColor(_oldBackColor);

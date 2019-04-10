@@ -1,6 +1,8 @@
 package com.kitzapp.telegram_stats.core.mainChart;
 
 import android.annotation.SuppressLint;
+import android.view.View;
+import android.widget.LinearLayout;
 import com.kitzapp.telegram_stats.BuildConfig;
 import com.kitzapp.telegram_stats.clean_mvp.mvp.BasePresenter;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
@@ -71,11 +73,16 @@ class TChartPresenter extends BasePresenter<TView, TModel> implements TPresenter
             return;
         }
         view.clearChartsContainer();
+        View firstChartsDelimiter = new View(view.getContext());
+        firstChartsDelimiter.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                ThemeManager.CHART_CELL_BOTTOM_MARGIN_PX));
+        view.addViewToContainer(firstChartsDelimiter);
         try {
             for (Chart chart: chartsList.getCharts()) {
                 TFullChartView chartView = createChartView(chart);
                 if (chartView != null) {
-                    view.addChartToContainer(chartView);
+                    view.addViewToContainer(chartView);
                 }
             }
         } catch (Exception e) {

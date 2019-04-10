@@ -33,10 +33,9 @@ public class TChartTextView extends TTextView {
     public void init() {
         int titleColor = getCurrentColor();
 
-        TTextPaint chartDescrTextPaint = ThemeManager.chartDescrTextPaint;
-        setTypeface(chartDescrTextPaint.getTypeface());
+        setTypeface(ThemeManager.rRegularTypeface);
         setTextColor(titleColor);
-        setTextSizeDP(chartDescrTextPaint.getTextSize());
+        setTextSizeDP(ThemeManager.TEXT_SMALL_SIZE_DP);
         setSingleLine(true);
         setEllipsize(TextUtils.TruncateAt.END);
 
@@ -47,7 +46,7 @@ public class TChartTextView extends TTextView {
     }
 
     private int getCurrentColor() {
-        return ThemeManager.chartDescrTextPaint.getColor();
+        return ThemeManager.getColor(ThemeManager.key_grayTextColor);
     }
 
 }

@@ -69,15 +69,13 @@ public class TViewChartCheckBoxes extends LinearLayout {
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         this.setLayoutParams(layoutParams);
 
-        int RightLeftPadding = ThemeManager.CHART_CELL_LEFT_PADDING_CH_BOX_PX;
-        setPadding(RightLeftPadding - 20, 0, 0, 0);
+        setPadding(ThemeManager.MARGIN_16DP_IN_PX, 0, 0, 0);
     }
 
     private TDelimiterLine getDelimiterLine() {
         TDelimiterLine delimiterLine = new TDelimiterLine(getContext());
         LinearLayout.LayoutParams layoutParams = (LayoutParams) delimiterLine.getLayoutParams();
-        layoutParams.setMargins(ThemeManager.CHART_CELL_RIGHTLEFT_MARGIN_PX +
-                ThemeManager.CHART_CELL_RIGHTLEFT_MARGIN_PX, 0, 0, 0);
+        layoutParams.setMargins(ThemeManager.MARGIN_32DP_IN_PX, 0, 0, 0);
         return delimiterLine;
     }
 }

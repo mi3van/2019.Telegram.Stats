@@ -54,7 +54,7 @@ public class TColorfulChartCircle extends View implements TViewObserver {
     @Override
     public void init() {
         if (_shapeDrawable == null) {
-            _center = ThemeManager.CHART_CIRCLE_SIZE_PX >> 1;
+            _center = ThemeManager.CHART_CIRCLE_HALF_SIZE_PX;
             _width = _center - ThemeManager.CHART_LINE_FULL_WIDTH_PX;
 
             _oldColor = getCurrentColor();

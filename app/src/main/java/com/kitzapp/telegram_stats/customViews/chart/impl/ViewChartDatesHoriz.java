@@ -174,8 +174,8 @@ public class ViewChartDatesHoriz extends LinearLayout {
         super.onAttachedToWindow();
         LinearLayout.LayoutParams layoutParams = (LayoutParams) getLayoutParams();
         layoutParams.height = ThemeManager.CELL_HEIGHT_48DP_IN_PX >> 1;
-        int marginPx = ThemeManager.CHART_CELL_RIGHTLEFT_MARGIN_PX;
-        layoutParams.setMargins(marginPx, 0, marginPx, marginPx >> 1);
+        int marginPx = ThemeManager.MARGIN_16DP_IN_PX;
+        layoutParams.setMargins(marginPx, 0, marginPx, ThemeManager.MARGIN_8DP_IN_PX);
     }
 
     private TChartTextView getNewTextView(int typeTexView) {

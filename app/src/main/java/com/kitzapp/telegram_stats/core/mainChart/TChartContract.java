@@ -1,10 +1,11 @@
 package com.kitzapp.telegram_stats.core.mainChart;
 
 import android.content.Context;
+import android.view.View;
 import com.kitzapp.telegram_stats.clean_mvp.mvp.MvpModel;
 import com.kitzapp.telegram_stats.clean_mvp.mvp.MvpPresenter;
 import com.kitzapp.telegram_stats.clean_mvp.mvp.MvpView;
-import com.kitzapp.telegram_stats.customViews.TFullChartView;
+import com.kitzapp.telegram_stats.customViews.View;
 import com.kitzapp.telegram_stats.pojo.chart.ChartsList;
 
 interface TChartContract {
@@ -18,7 +19,7 @@ interface TChartContract {
     interface TView extends MvpView {
         Context getContext();
 
-        void addChartToContainer(TFullChartView chartView);
+        void addViewToContainer(View View);
         void clearChartsContainer();
 
         void showMessageToast(String message);

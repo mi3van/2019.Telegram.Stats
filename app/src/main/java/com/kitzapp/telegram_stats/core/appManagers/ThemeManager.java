@@ -1,9 +1,9 @@
 package com.kitzapp.telegram_stats.core.appManagers;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import com.kitzapp.telegram_stats.AndroidApp;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
-import com.kitzapp.telegram_stats.customViews.simple.TTextPaint;
 
 import java.util.HashMap;
 
@@ -14,24 +14,23 @@ import java.util.HashMap;
 
 public class ThemeManager {
 //    TEXT SIZES DP
-    public static final int TOOLBAR_TEXT_SIZE_DP = 22;
-    public static final int SIMPLE_TEXT_SIZE_DP = 18;
-    public static final int CHART_TITLE_TEXT_SIZE_DP = 18;
-    public static final int CHART_SUB_TEXT_SIZE_DP = 14;
+    public static final int TEXT_BIG_SIZE_DP = 18;
+    public static final int TEXT_MEDIUM_SIZE_DP = 16;
+    public static final int TEXT_SMALL_SIZE_DP = 14;
 
 //    CHART CELLS DP
     private static final int CELL_HEIGHT_48DP = 48;
     private static final int CELL_HEIGHT_56DP = 56;
     private static final int CHART_CELL_BOTTOM_MARGIN_DP = 28;
-    private static final int CHART_CELL_RIGHT_LEFT_MARGIN_DP = 16;
-    private static final int CHART_CELL_LEFT_PADDING_CH_BOX_DP = 14;
 
 //    CHART CELLS PX
     public static final int CELL_HEIGHT_48DP_IN_PX;
     public static final int CELL_HEIGHT_56DP_IN_PX;
     public static final int CHART_CELL_BOTTOM_MARGIN_PX;
-    public static final int CHART_CELL_RIGHTLEFT_MARGIN_PX;
-    public static final int CHART_CELL_LEFT_PADDING_CH_BOX_PX;
+    public static final int MARGIN_32DP_IN_PX;
+    public static final int MARGIN_16DP_IN_PX;
+    public static final int MARGIN_8DP_IN_PX;
+    public static final int MARGIN_4DP_IN_PX;
 
 //    CHART VIEWS DP
     private static final int CHART_LINE_IN_PART_WIDTH_DP = 2;
@@ -43,7 +42,7 @@ public class ThemeManager {
     private static final int CHART_RECT_SELECT_WIDTH_DP = 4;
     private static final int CHART_MINIATURE_VERTICAL_PADDING_SUM_DP = 4;
 
-    private static final int CHART_CIRCLE_SIZE_DP = 12;
+    private static final int CHART_CIRCLE_SIZE_DP = 10;
 
     //    CHART VIEWS PX
     public static final int CHART_LINE_IN_PART_WIDTH_PX;
@@ -58,8 +57,8 @@ public class ThemeManager {
     public static final int CHART_MINIATURE_VERTICAL_PADDING_SUM_PX;
     public static final int CHART_MINIATURE_VERTICAL_PADDING_HALF_PX;
 
-
     public static final int CHART_CIRCLE_SIZE_PX;
+    public static final int CHART_CIRCLE_HALF_SIZE_PX;
 
     private static int totalInit = 1;
     public final static int LIGHT = totalInit++;
@@ -76,32 +75,28 @@ public class ThemeManager {
     public static final String key_toolbarIconColor = "actionBarIconColor";
 
     //    COLORS CELLS
-    private static final String key_cellTitleTextColor = "cellTitleTextColor";
     public static final String key_cellBackColor = "cellBackColor";
     public static final String key_cellChartFullBackColor = "cellChartFullBackColor";
-    private static final String key_chartDescrTextCol = "chartDescrTextColor";
 
     public static final String key_rectSelectColor = "rectSelectColor";
     public static final String key_rectBackColor = "rectBackColor";
 
     //    COLORS OTHER VIEWS
-    private static final String key_simpleTextColor = "simpleTextColor";
+    public static final String key_blackWhiteTextColor = "simpleTextColor";
+    public static final String key_grayTextColor = "chartDescrTextColor";
     public static final String key_delimiterColor = "delimiterColor";
 
     private static final int colorLightBackup;
     private static final int colorDarkBackup;
 
-    public static TTextPaint toolbarTextPaint;
-    public static TTextPaint simpleTextPaint;
-    public static TTextPaint chartTitleTextPaint;
-    public static TTextPaint chartDescrTextPaint;
+    public static Typeface rBoldTypeface;
+    public static Typeface rMediumTypeface;
+    public static Typeface rRegularTypeface;
 
     static {
         currentColors = new HashMap<>();
         darkThemeColors = new HashMap<>();
         lightThemeColors = new HashMap<>();
-
-        initTextPaints();
 
         colorLightBackup = 0x00000000;
         colorDarkBackup = 0xffffffff;
@@ -113,8 +108,10 @@ public class ThemeManager {
         CELL_HEIGHT_48DP_IN_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CELL_HEIGHT_48DP);
         CELL_HEIGHT_56DP_IN_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CELL_HEIGHT_56DP);
         CHART_CELL_BOTTOM_MARGIN_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_CELL_BOTTOM_MARGIN_DP);
-        CHART_CELL_RIGHTLEFT_MARGIN_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_CELL_RIGHT_LEFT_MARGIN_DP);
-        CHART_CELL_LEFT_PADDING_CH_BOX_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_CELL_LEFT_PADDING_CH_BOX_DP);
+        MARGIN_16DP_IN_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, 16);
+        MARGIN_32DP_IN_PX = MARGIN_16DP_IN_PX << 1;
+        MARGIN_8DP_IN_PX = MARGIN_16DP_IN_PX >> 1;
+        MARGIN_4DP_IN_PX = MARGIN_8DP_IN_PX >> 1;
 
         CHART_LINE_FULL_WIDTH_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_LINE_FULL_WIDTH_DP);
         CHART_LINE_IN_PART_WIDTH_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_LINE_IN_PART_WIDTH_DP);
@@ -128,6 +125,7 @@ public class ThemeManager {
         CHART_MINIATURE_VERTICAL_PADDING_SUM_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_MINIATURE_VERTICAL_PADDING_SUM_DP);
         CHART_MINIATURE_VERTICAL_PADDING_HALF_PX = CHART_MINIATURE_VERTICAL_PADDING_SUM_PX >> 1;
         CHART_CIRCLE_SIZE_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_CIRCLE_SIZE_DP);
+        CHART_CIRCLE_HALF_SIZE_PX = CHART_CIRCLE_SIZE_PX >> 1;
     }
 
     public static void changeThemeAndSave() {
@@ -149,20 +147,11 @@ public class ThemeManager {
                 currentColors = lightThemeColors;
             }
 
-            updateFontsColors();
-
             if (save) {
                 AndroidApp.mainRepository.saveNewTheme(theme);
                 AndroidApp.observerManager.notifyMyObservers(ObserverManager.KEY_OBSERVER_THEME_UPDATED);
             }
         }
-    }
-
-    private static void updateFontsColors() {
-        simpleTextPaint.setColor(getColor(key_simpleTextColor));
-        toolbarTextPaint.setColor(getColor(key_simpleTextColor));
-        chartTitleTextPaint.setColor(getColor(key_cellTitleTextColor));
-        chartDescrTextPaint.setColor(getColor(key_chartDescrTextCol));
     }
 
     public static int getColor(String key) {
@@ -177,46 +166,31 @@ public class ThemeManager {
         darkThemeColors.put(key_totalBackColor, 0xff151e27);
         darkThemeColors.put(key_toolbarBackColor, 0xff212d3b);
         darkThemeColors.put(key_toolbarIconColor, 0xffffffff);
-        darkThemeColors.put(key_cellTitleTextColor, 0xff7bc4fb);
         darkThemeColors.put(key_cellBackColor , 0xff1d2733);
         darkThemeColors.put(key_cellChartFullBackColor , 0xff19232e);
-        darkThemeColors.put(key_simpleTextColor , 0xffffffff);
+        darkThemeColors.put(key_blackWhiteTextColor, 0xffffffff);
         darkThemeColors.put(key_rectBackColor, 0xaf19232e);
 
         lightThemeColors.put(key_totalBackColor, 0xfff0f0f0);
         lightThemeColors.put(key_toolbarBackColor, 0xffffffff);
         lightThemeColors.put(key_toolbarIconColor, 0xff8e8e93);
-        lightThemeColors.put(key_cellTitleTextColor, 0xff3896d4);
         lightThemeColors.put(key_cellBackColor , 0xffffffff);
         lightThemeColors.put(key_cellChartFullBackColor, 0xffffffff);
-        lightThemeColors.put(key_simpleTextColor , 0xff000000);
+        lightThemeColors.put(key_blackWhiteTextColor, 0xff000000);
         lightThemeColors.put(key_rectBackColor, 0xafeeeeee);
 
         //  No change colors
         int color = 0x6f777777;
-        lightThemeColors.put(key_chartDescrTextCol, color);darkThemeColors.put(key_chartDescrTextCol, color);
+        lightThemeColors.put(key_grayTextColor, color);    darkThemeColors.put(key_grayTextColor, color);
         color = 0x5Fa5c3d9;
         lightThemeColors.put(key_rectSelectColor, color);  darkThemeColors.put(key_rectSelectColor, color);
         color = 0x2a666666;
         lightThemeColors.put(key_delimiterColor, color);   darkThemeColors.put(key_delimiterColor, color);
     }
 
-    static void initTextPaints() {
-        toolbarTextPaint = new TTextPaint();
-        simpleTextPaint = new TTextPaint();
-        chartTitleTextPaint = new TTextPaint();
-        chartDescrTextPaint = new TTextPaint();
-
-        simpleTextPaint.setTextSize(SIMPLE_TEXT_SIZE_DP);
-        toolbarTextPaint.setTextSize(TOOLBAR_TEXT_SIZE_DP);
-        chartTitleTextPaint.setTextSize(CHART_TITLE_TEXT_SIZE_DP);
-        chartDescrTextPaint.setTextSize(CHART_SUB_TEXT_SIZE_DP);
-    }
-
     public static void initTextFonts(Context context) {
-        toolbarTextPaint.setTypeface(AndroidUtilites.getTypeface(context, "fonts/rmedium.ttf"));
-        chartTitleTextPaint.setTypeface(AndroidUtilites.getTypeface(context, "fonts/rmedium.ttf"));
-        simpleTextPaint.setTypeface(AndroidUtilites.getTypeface(context, "fonts/rregular.ttf"));
-        chartDescrTextPaint.setTypeface(AndroidUtilites.getTypeface(context, "fonts/rregular.ttf"));
+        rBoldTypeface = AndroidUtilites.getTypeface(context, "fonts/rbold.ttf");
+        rMediumTypeface = AndroidUtilites.getTypeface(context, "fonts/rmedium.ttf");
+        rRegularTypeface = AndroidUtilites.getTypeface(context, "fonts/rregular.ttf");
     }
 }

@@ -2,27 +2,29 @@
 <com.kitzapp.telegram_stats.customViews.simple.TColorfulLinLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/totalLayoutPopup"
-        android:layout_width="wrap_content"
+        android:layout_width="170dp"
         android:layout_height="wrap_content"
-        android:padding="8dp"
+        android:minWidth="170dp"
         android:layout_margin="16dp"
-        android:minWidth="80dp"
         android:orientation="vertical"
         android:background="@drawable/popup_background"
-        android:clickable="true">
+        android:clickable="true"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp">
 
     <com.kitzapp.telegram_stats.customViews.simple.TColorfulTextView
-            android:id="@+id/simpleTextPopup"
+            android:id="@+id/titleTextPopup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:ellipsize="end"
-            android:layout_marginBottom="2dp"
             android:maxLines="1"/>
 
     <LinearLayout
             android:id="@+id/containerPopup"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"/>
 

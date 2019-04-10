@@ -43,7 +43,7 @@ public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectL
         void onDatesWasChanged(long[] dates);
     }
 
-    private final String PART_DATE_FORMAT = "EEE, MMM d";
+    private final String PART_DATE_FORMAT = "EEE, d MMM YYYY";
 
     private TViewChartInfoVert _tViewChartInfoVert;
     private TDelimiterLine _verticalDelimiter;
@@ -120,7 +120,7 @@ public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectL
             }
             if (tempIndex >=0 && tempIndex != _oldIndexShowed) {
                 _oldIndexShowed = tempIndex;
-                drawPopupViews(_oldIndexShowed);
+                this.drawPopupViews(_oldIndexShowed);
             }
         }
     }
@@ -292,33 +292,36 @@ public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectL
         //todo logic in popup
         PopupWindow popupWindow = AndroidApp.popupWindow;
         View popupView = popupWindow.getContentView();
-        TColorfulLinLayout linLayout = popupView.findViewById(R.id.totalLayoutPopup);
-        linLayout.init();
-        TColorfulTextView simpleText = popupView.findViewById(R.id.simpleTextPopup);
-        simpleText.init();
-        simpleText.setTextSizeDP(ThemeManager.chartDescrTextPaint.getTextSize());
-        simpleText.setTypeface(ThemeManager.chartTitleTextPaint.getTypeface());
-        int globalIndex;
+        TColorfulTextView titleTextPopup = popupView.findViewById(R.id.titleTextPopup);
+        titleTextPopup.setTextSizeDP(ThemeManager.TEXT_SMALL_SIZE_DP);
+        titleTextPopup.setTypeface(ThemeManager.rBoldTypeface);
+
+        int globalIndexArray;
         if (_leftInArray != 0) {
-            globalIndex = indexShowedPart + _leftInArray - 1;
+            globalIndexArray = indexShowedPart + _leftInArray - 1;
         } else {
-            globalIndex = indexShowedPart + _leftInArray;
+            globalIndexArray = indexShowedPart + _leftInArray;
         }
-        if (globalIndex < 0) {
-            globalIndex = 0;
+        if (globalIndexArray < 0) {
+            globalIndexArray = 0;
         }
 
-        long date = _chart.getAxisX().getData()[globalIndex];
+        long date = _chart.getAxisX().getData()[globalIndexArray];
         SimpleDateFormat formatter = new SimpleDateFormat(PART_DATE_FORMAT);
         String dateString = formatter.format(new Date(date));
-        simpleText.setText(dateString);
+        titleTextPopup.setText(dateString);
 
         TInfoCellForPopup cellForPopup;
         String title; int color; String value;
-        Line line;
-        boolean isActiveChart;
+        Line line;    boolean isActiveChart;
+
         LinearLayout container = popupView.findViewById(R.id.containerPopup);
         container.removeAllViews();
+        LinearLayout.LayoutParams layoutParamsText = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParamsText.weight = 1f;
+        layoutParamsText.setMargins(0, 0, ThemeManager.MARGIN_8DP_IN_PX, 0);
+        LinearLayout.LayoutParams layoutParamsDescription = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
         _containerForCircleViews.setVisibility(VISIBLE);
         _containerForCircleViews.removeAllViews();
         for (Map.Entry<String, Line> entry : _chart.getLines().entrySet()) {
@@ -327,8 +330,8 @@ public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectL
             if (isActiveChart) {
                 title = line.getName();
                 color = line.getColor();
-                value = String.valueOf(line.getData()[globalIndex]);
-                cellForPopup = new TInfoCellForPopup(getContext(), title, value, color);
+                value = String.valueOf(line.getData()[globalIndexArray]);
+                cellForPopup = new TInfoCellForPopup(getContext(), title, value, color, layoutParamsText, layoutParamsDescription);
                 container.addView(cellForPopup);
                 _containerForCircleViews.addCircle(currentX,
                         _partAxisesY.get(entry.getKey())[indexShowedPart], color);

@@ -22,6 +22,8 @@ import com.kitzapp.telegram_stats.customViews.simple.CustomActionBarTypeface;
 
 import java.lang.reflect.Field;
 
+import static com.kitzapp.telegram_stats.common.AppConts.ELEVATION_ACTION_BAR;
+
 /**
  * Created by Ivan Kuzmin on 2019-03-21.
  * Copyright © 2019 Example. All rights reserved.
@@ -87,7 +89,7 @@ public abstract class BaseActivity extends Activity {
             this.setToolbarIconColor(_oldToolbarIconColor);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                _actionBar.setElevation(8);
+                _actionBar.setElevation(ELEVATION_ACTION_BAR);
             }
         }
     }
@@ -112,9 +114,9 @@ public abstract class BaseActivity extends Activity {
         String toolbarTitle = getResources().getString(R.string.toolbar_title);
 
         SpannableString spanString = new SpannableString(toolbarTitle);
-        spanString.setSpan(new CustomActionBarTypeface(ThemeManager.toolbarTextPaint.getTypeface()), 0, spanString.length(),
+        spanString.setSpan(new CustomActionBarTypeface(ThemeManager.rMediumTypeface), 0, spanString.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spanString.setSpan(new RelativeSizeSpan(1f), 0,spanString.length(),
+        spanString.setSpan(new RelativeSizeSpan(1.1f), 0,spanString.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE); // set size
 
         actionBar.setTitle(spanString);
@@ -213,7 +215,7 @@ public abstract class BaseActivity extends Activity {
     }
 
     private int getCurrentToolbarTitleColor() {
-        return ThemeManager.toolbarTextPaint.getColor();
+        return ThemeManager.getColor(ThemeManager.key_blackWhiteTextColor);
     }
 
     private int getCurrentToolbarIconColor() {

@@ -1,11 +1,19 @@
 package com.kitzapp.telegram_stats.customViews.popup;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
+import com.kitzapp.telegram_stats.AndroidApp;
+import com.kitzapp.telegram_stats.common.AndroidUtilites;
+import com.kitzapp.telegram_stats.core.appManagers.ObserverManager;
+import com.kitzapp.telegram_stats.core.appManagers.TViewObserver;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 import com.kitzapp.telegram_stats.customViews.simple.TTextView;
+
+import java.util.Observable;
 
 /**
  * Created by Ivan Kuzmin on 29.03.2019;
@@ -13,12 +21,11 @@ import com.kitzapp.telegram_stats.customViews.simple.TTextView;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class TInfoCellForPopup extends LinearLayout {
-    private TTextView _title;
-    private TTextView _description;
-    private String _titleText;
-    private String _descriptionText;
-    private int _textColor;
+public class TInfoCellForPopup extends LinearLayout implements TViewObserver {
+    private TTextView _titleTV;
+    private TTextView _descriptionTV;
+
+    private int _oldTitleColor;
 
     public TInfoCellForPopup(Context context) {
         super(context);
@@ -32,39 +39,94 @@ public class TInfoCellForPopup extends LinearLayout {
         super(context, attrs, defStyleAttr);
     }
 
-    public TInfoCellForPopup(Context context, String title, String description, int textColor) {
+    public TInfoCellForPopup(Context context, String title, String description,
+                             int textColor,
+                             LayoutParams layoutParamsText,
+                             LayoutParams layoutParamsDescription) {
         super(context);
-        this.init(title, description, textColor);
+        this.init();
+        this.loadData(title, description, textColor, layoutParamsText, layoutParamsDescription);
     }
 
-    private void init(String titleText, String descriptionText, int textColor) {
-        this.setOrientation(VERTICAL);
+    @Override
+    public void init() {
+        this.setOrientation(HORIZONTAL);
+        _oldTitleColor = getStandartTitleColor();
 
-        _titleText = titleText;
-        _descriptionText = descriptionText;
-        _textColor = textColor;
+        _titleTV = new TTextView(getContext());
+        _titleTV.setTypeface(ThemeManager.rRegularTypeface);
+        _titleTV.setTextSizeDP(ThemeManager.TEXT_SMALL_SIZE_DP);
+        _titleTV.setSingleLine();
+        _titleTV.setLines(1);
+        _titleTV.setEllipsize(TextUtils.TruncateAt.END);
+        _titleTV.setTextColor(_oldTitleColor);
+
+        addView(_titleTV);
+
+        _descriptionTV = new TTextView(getContext());
+        _descriptionTV.setTypeface(ThemeManager.rBoldTypeface);
+        _descriptionTV.setTextSizeDP(ThemeManager.TEXT_SMALL_SIZE_DP);
+
+        addView(_descriptionTV);
+    }
+
+    private void loadData(String titleText, String descriptionText, int textColor,
+                          LayoutParams layoutParamsText,
+                          LayoutParams layoutParamsDescription) {
+
+        _titleTV.setLayoutParams(layoutParamsText);
+        _titleTV.setText(titleText);
+
+        _descriptionTV.setLayoutParams(layoutParamsDescription);
+        _descriptionTV.setText(descriptionText);
+        _descriptionTV.setTextColor(textColor);
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         LinearLayout.LayoutParams layoutParams = (LayoutParams) getLayoutParams();
-        layoutParams.setMargins(0, 0, ThemeManager.CHART_CELL_RIGHTLEFT_MARGIN_PX >> 1, 0);
+        layoutParams.width = LayoutParams.MATCH_PARENT;
+        layoutParams.setMargins(0, ThemeManager.MARGIN_4DP_IN_PX, 0, 0);
 
-        _title = new TTextView(getContext());
-        _title.setTypeface(ThemeManager.chartTitleTextPaint.getTypeface());
-        _title.setText(_titleText);
-        _title.setTextSizeDP(ThemeManager.chartTitleTextPaint.getTextSize());
-        _title.setTextColor(_textColor);
-        addView(_title);
+        this.addObserver();
+    }
 
-        _description = new TTextView(getContext());
-        _description.setTypeface(ThemeManager.chartDescrTextPaint.getTypeface());
-        _description.setText(_descriptionText);
-        _description.setTextColor(_textColor);
-        addView(_description);
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        this.deleteObserver();
+    }
 
-        LinearLayout.LayoutParams latyoutParamsTitle = (LayoutParams) _title.getLayoutParams();
-        latyoutParamsTitle.setMargins(0, 0, 0, -4);
+    @Override
+    public void update(Observable o, Object arg) {
+        if ((byte) arg == ObserverManager.KEY_OBSERVER_THEME_UPDATED) {
+            int newTitleColor = this.getStandartTitleColor();
+
+            // TITLE CHANGE COLOR
+            if (newTitleColor != _oldTitleColor) {
+                ValueAnimator textRGBAnim = AndroidUtilites.getArgbAnimator(
+                        _oldTitleColor,
+                        newTitleColor,
+                        animation -> _titleTV.setTextColor((int) animation.getAnimatedValue()));
+                textRGBAnim.start();
+                _oldTitleColor = newTitleColor;
+            }
+        }
+    }
+
+    private int getStandartTitleColor() {
+        int color = ThemeManager.getColor(ThemeManager.key_blackWhiteTextColor);
+        return color;
+    }
+
+    @Override
+    public void addObserver() {
+        AndroidApp.observerManager.addObserver(this);
+    }
+
+    @Override
+    public void deleteObserver() {
+        AndroidApp.observerManager.deleteObserver(this);
     }
 }

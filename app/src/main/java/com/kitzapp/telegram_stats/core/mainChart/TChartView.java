@@ -2,6 +2,7 @@ package com.kitzapp.telegram_stats.core.mainChart;
 
 import android.content.Context;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import com.kitzapp.telegram_stats.R;
@@ -62,8 +63,8 @@ public class TChartView extends BaseActivity implements TView, Observer {
     }
 
     @Override
-    public void addChartToContainer(TFullChartView chartView) {
-        _containerLayout.addView(chartView);
+    public void addViewToContainer(View view) {
+        _containerLayout.addView(view);
     }
 
     @Override

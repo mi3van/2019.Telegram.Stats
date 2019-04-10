@@ -36,9 +36,10 @@ public class CellContainerForCircleViews extends FrameLayout {
     void addCircle(float x, float y, int color) {
         TColorfulChartCircle tChartCircle = new TColorfulChartCircle(getContext(), color);
         this.addView(tChartCircle);
-        float x1 = x - (ThemeManager.CHART_CIRCLE_SIZE_PX >> 1);
+        int halfSize = ThemeManager.CHART_CIRCLE_HALF_SIZE_PX;
+        float x1 = x - halfSize;
         tChartCircle.setX(x1);
-        float y1 = y - (ThemeManager.CHART_CIRCLE_SIZE_PX >> 1);
+        float y1 = y - halfSize;
         tChartCircle.setY(y1);
     }
 
