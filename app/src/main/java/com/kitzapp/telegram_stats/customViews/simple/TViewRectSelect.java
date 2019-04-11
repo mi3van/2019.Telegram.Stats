@@ -76,7 +76,6 @@ public class TViewRectSelect extends View implements TViewObserver, MotionMagicF
         this.init();
     }
 
-    @Override
     public void init() {
 
         // LAYOUT PARAMS

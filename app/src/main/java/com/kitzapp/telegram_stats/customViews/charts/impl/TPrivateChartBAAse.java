@@ -1,4 +1,4 @@
-package com.kitzapp.telegram_stats.customViews.chart.impl;
+package com.kitzapp.telegram_stats.customViews.charts.impl;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -8,10 +8,8 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import com.kitzapp.telegram_stats.AndroidApp;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
 import com.kitzapp.telegram_stats.common.ArraysUtilites;
-import com.kitzapp.telegram_stats.core.appManagers.TViewObserver;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 import com.kitzapp.telegram_stats.pojo.chart.Chart;
 import com.kitzapp.telegram_stats.pojo.chart.impl.Line;
@@ -25,7 +23,7 @@ import java.util.Map;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-abstract class ViewChartBase extends FrameLayout implements TViewObserver {
+abstract class TPrivateChartBAAse extends FrameLayout {
     private final int FLAG_Y_NOT_AVAILABLE = -5;
 
     protected Chart _chart = null;
@@ -39,17 +37,17 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
     protected int _maxAxisXx;
     private long _maxAxisY;
 
-    public ViewChartBase(Context context) {
+    public TPrivateChartBAAse(Context context) {
         super(context);
         this.init();
     }
 
-    public ViewChartBase(Context context, AttributeSet attrs) {
+    public TPrivateChartBAAse(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.init();
     }
 
-    public ViewChartBase(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TPrivateChartBAAse(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.init();
     }
@@ -59,7 +57,6 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
         this.invalidate();
     }
 
-    @Override
     public void init() {
         setWillNotDraw(false);
     }
@@ -303,8 +300,6 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
         int marginPx = ThemeManager.MARGIN_16DP_IN_PX;
         layoutParams.setMargins(marginPx, 0, marginPx, 0);
         this.setLayoutParams(layoutParams);
-
-        this.addObserver();
     }
 
     protected boolean getChartIsActive(String key) {
@@ -315,22 +310,6 @@ abstract class ViewChartBase extends FrameLayout implements TViewObserver {
             e.printStackTrace();
         }
         return isActive;
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        this.deleteObserver();
-    }
-
-    @Override
-    public void addObserver() {
-        AndroidApp.observerManager.addObserver(this);
-    }
-
-    @Override
-    public void deleteObserver() {
-        AndroidApp.observerManager.deleteObserver(this);
     }
 
 }

@@ -24,22 +24,14 @@ public class TColorfulTextView extends TTextView implements TViewObserver {
 
     public TColorfulTextView(Context context) {
         super(context);
-        this.init();
     }
 
     public TColorfulTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.init();
     }
 
     public TColorfulTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        this.init();
-    }
-
-    @Override
-    public void init() {
-        this.setTypeface(ThemeManager.rRegularTypeface);
     }
 
     @Override

@@ -9,7 +9,6 @@ import com.kitzapp.telegram_stats.R;
 import com.kitzapp.telegram_stats.core.appManagers.ObserverManager;
 import com.kitzapp.telegram_stats.core.appManagers.motions.BaseMotionManager;
 import com.kitzapp.telegram_stats.customViews.BaseActivity;
-import com.kitzapp.telegram_stats.customViews.TFullChartView;
 
 import java.util.Observable;
 import java.util.Observer;

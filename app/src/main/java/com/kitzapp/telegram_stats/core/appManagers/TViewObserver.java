@@ -10,7 +10,7 @@ import java.util.Observer;
 
 public interface TViewObserver extends Observer {
 
-    void init();
+//    Don't forget to init colors in void onAttachedToWindow
 
     void addObserver();
 

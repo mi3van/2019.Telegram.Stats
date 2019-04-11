@@ -39,7 +39,6 @@ public class TColorfulLinLayout extends LinearLayout implements TViewObserver {
         this.init();
     }
 
-    @Override
     public void init() {
         setWillNotDraw(false);
     }

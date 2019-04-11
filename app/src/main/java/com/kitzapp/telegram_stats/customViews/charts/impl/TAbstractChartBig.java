@@ -1,4 +1,4 @@
-package com.kitzapp.telegram_stats.customViews.chart.impl;
+package com.kitzapp.telegram_stats.customViews.charts.impl;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -16,6 +16,7 @@ import com.kitzapp.telegram_stats.core.appManagers.motions.MotionManagerForBigCh
 import com.kitzapp.telegram_stats.customViews.popup.TCellDescriptionTexts;
 import com.kitzapp.telegram_stats.customViews.simple.TColorfulTextView;
 import com.kitzapp.telegram_stats.customViews.simple.TDelimiterLine;
+import com.kitzapp.telegram_stats.customViews.simple.TViewChartInfoVert;
 import com.kitzapp.telegram_stats.customViews.simple.TViewRectSelect;
 import com.kitzapp.telegram_stats.pojo.chart.impl.Line;
 
@@ -23,7 +24,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Observable;
 
 import static com.kitzapp.telegram_stats.common.AppConts.INTEGER_MAX_VALUE;
 import static com.kitzapp.telegram_stats.common.AppConts.INTEGER_MIN_VALUE;
@@ -34,7 +34,12 @@ import static com.kitzapp.telegram_stats.common.AppConts.INTEGER_MIN_VALUE;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectListener, MotionManagerForBigChart.OnMyTouchListener {
+interface ChartVoids {
+
+    TViewRectSelect.RectListener getRectListener();
+}
+
+public abstract class TAbstractChartBig extends TPrivateChartBAAse implements ChartVoids, TViewRectSelect.RectListener, MotionManagerForBigChart.OnMyTouchListener {
 
     public interface BigChartInterface {
         void onMiniatureViewIsLocked(boolean isLocked);
@@ -42,7 +47,7 @@ public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectL
         void onDatesWasChanged(long[] dates);
     }
 
-    private final String PART_DATE_FORMAT = "EEE, d MMM YYYY";
+    private final String PART_DATE_FORMAT = "EEE, d MMM yyyy";
 
     private TViewChartInfoVert _tViewChartInfoVert;
     private TDelimiterLine _verticalDelimiter;
@@ -56,23 +61,23 @@ public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectL
     private int _leftInArray;
     private BigChartInterface _chartInterface;
 
-    private CellContainerForCircleViews _containerForCircleViews;
+    private TViewContainerCircleViews _containerForCircleViews;
     private int _verticalDelimiterHeight;
     private int _xoffVerticalDelimiterH;
 
-    public ViewChartBig(Context context) {
+    public TAbstractChartBig(Context context) {
         super(context);
     }
 
-    public ViewChartBig(Context context, AttributeSet attrs) {
+    public TAbstractChartBig(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ViewChartBig(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TAbstractChartBig(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public ViewChartBig(Context context, BigChartInterface bigChartInterface) {
+    public TAbstractChartBig(Context context, BigChartInterface bigChartInterface) {
         super(context);
         _chartInterface = bigChartInterface;
     }
@@ -230,11 +235,6 @@ public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectL
         return new MyLongPair(max, min);
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
-
-    }
-
     public TViewRectSelect.RectListener getRectListener() {
         return this;
     }
@@ -281,7 +281,7 @@ public class ViewChartBig extends ViewChartBase implements TViewRectSelect.RectL
     }
 
     private void initPopup() {
-        _containerForCircleViews = new CellContainerForCircleViews(getContext());
+        _containerForCircleViews = new TViewContainerCircleViews(getContext());
         addView(_containerForCircleViews);
 
         for (Map.Entry<String, Line> entry : _chart.getLines().entrySet()) {

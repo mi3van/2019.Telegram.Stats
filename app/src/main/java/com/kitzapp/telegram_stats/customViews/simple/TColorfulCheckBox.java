@@ -57,7 +57,6 @@ public class TColorfulCheckBox extends CheckBox implements TViewObserver {
         this.init();
     }
 
-    @Override
     public void init() {
         this.setTypeface(ThemeManager.rMediumTypeface);
         this.setTextSize(TypedValue.COMPLEX_UNIT_DIP, ThemeManager.TEXT_MEDIUM_SIZE_DP);

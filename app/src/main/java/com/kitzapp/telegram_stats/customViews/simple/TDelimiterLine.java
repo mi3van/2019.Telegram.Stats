@@ -40,7 +40,6 @@ public class TDelimiterLine extends View implements TViewObserver {
         this.init();
     }
 
-    @Override
     public void init() {
         _oldBackColor = this.getCurrentBackColor();
         this.setBackgroundColor(_oldBackColor);

@@ -13,27 +13,26 @@ import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class TChartTextView extends TTextView {
+public class TChartDescrTextView extends TTextView {
 
-    public TChartTextView(Context context) {
+    public TChartDescrTextView(Context context) {
         super(context);
-        this.init();
     }
 
-    public TChartTextView(Context context, AttributeSet attrs) {
+    public TChartDescrTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.init();
     }
 
-    public TChartTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TChartDescrTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        this.init();
     }
 
+    @Override
     public void init() {
+        super.init();
+
         int titleColor = getCurrentColor();
 
-        setTypeface(ThemeManager.rRegularTypeface);
         setTextColor(titleColor);
         setTextSizeDP(ThemeManager.TEXT_SMALL_SIZE_DP);
         setSingleLine(true);

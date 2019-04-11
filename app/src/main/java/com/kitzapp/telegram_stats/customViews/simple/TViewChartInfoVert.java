@@ -1,4 +1,4 @@
-package com.kitzapp.telegram_stats.customViews.chart.impl;
+package com.kitzapp.telegram_stats.customViews.simple;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -6,24 +6,21 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.LinearLayout;
 
-import com.kitzapp.telegram_stats.customViews.simple.TChartTextView;
-import com.kitzapp.telegram_stats.customViews.simple.TDelimiterLine;
-
 /**
  * Created by Ivan Kuzmin on 28.03.2019;
  * 3van@mail.ru;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-class TViewChartInfoVert extends LinearLayout {
+public class TViewChartInfoVert extends LinearLayout {
     private final int COUNT_LINES = 6;
 
-    private TChartTextView _tTextView1;
-    private TChartTextView _tTextView2;
-    private TChartTextView _tTextView3;
-    private TChartTextView _tTextView4;
-    private TChartTextView _tTextView5;
-    private TChartTextView _tTextView6;
+    private TChartDescrTextView _tTextView1;
+    private TChartDescrTextView _tTextView2;
+    private TChartDescrTextView _tTextView3;
+    private TChartDescrTextView _tTextView4;
+    private TChartDescrTextView _tTextView5;
+    private TChartDescrTextView _tTextView6;
 
     private long[] _followers = null;
     private long _maxY = 0;
@@ -81,7 +78,7 @@ class TViewChartInfoVert extends LinearLayout {
         double topMargin = (long) (calculating + calculating + calculating * 0.5);
         _maxY -= topMargin;
 
-        TChartTextView currentTextView;
+        TChartDescrTextView currentTextView;
 
         double tempValue = ((double)(_maxY - _minY) / (COUNT_LINES - 1));
         double tempY = _minY;
@@ -124,8 +121,8 @@ class TViewChartInfoVert extends LinearLayout {
         return folowerStr;
     }
 
-    private TChartTextView getCurrentTextView(int index) {
-        TChartTextView tChartTextView = null;
+    private TChartDescrTextView getCurrentTextView(int index) {
+        TChartDescrTextView tChartTextView = null;
         switch (index) {
             case 5:
                 tChartTextView = _tTextView1;
@@ -156,12 +153,12 @@ class TViewChartInfoVert extends LinearLayout {
         getLayoutParams().height = LayoutParams.MATCH_PARENT;
     }
 
-    private TChartTextView getNewTextView() {
+    private TChartDescrTextView getNewTextView() {
         return this.getNewTextView(false);
     }
 
-    private TChartTextView getNewTextView(boolean isFirst) {
-        TChartTextView tChartTextView = new TChartTextView(getContext());
+    private TChartDescrTextView getNewTextView(boolean isFirst) {
+        TChartDescrTextView tChartTextView = new TChartDescrTextView(getContext());
         tChartTextView.setGravity(Gravity.BOTTOM | Gravity.START);
         if (!isFirst) {
             LayoutParams layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT, 1f);

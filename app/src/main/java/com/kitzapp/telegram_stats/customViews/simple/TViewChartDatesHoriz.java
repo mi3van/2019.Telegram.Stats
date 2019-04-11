@@ -1,13 +1,11 @@
-package com.kitzapp.telegram_stats.customViews.chart.impl;
+package com.kitzapp.telegram_stats.customViews.simple;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.LinearLayout;
-
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
-import com.kitzapp.telegram_stats.customViews.simple.TChartTextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -20,33 +18,33 @@ import java.util.Date;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class ViewChartDatesHoriz extends LinearLayout {
+public class TViewChartDatesHoriz extends LinearLayout {
     private final int TEXT_VIEW_TYPE_DEFAULT = 0;
     private final int TEXT_VIEW_TYPE_LEFT = -2;
     private final int TEXT_VIEW_TYPE_RIGHT = 2;
     private final String MMM_D_FORMAT = "MMM d";
     private final String M_Y_FORMAT = "M/y";
 
-    private TChartTextView _tTextView1;
-    private TChartTextView _tTextView2;
-    private TChartTextView _tTextView3;
-    private TChartTextView _tTextView4;
-    private TChartTextView _tTextView5;
+    private TChartDescrTextView _tTextView1;
+    private TChartDescrTextView _tTextView2;
+    private TChartDescrTextView _tTextView3;
+    private TChartDescrTextView _tTextView4;
+    private TChartDescrTextView _tTextView5;
 
     private long[] _dates = null;
     private int hashCodeDates;
 
-    public ViewChartDatesHoriz(Context context) {
+    public TViewChartDatesHoriz(Context context) {
         super(context);
         this.init();
     }
 
-    public ViewChartDatesHoriz(Context context, AttributeSet attrs) {
+    public TViewChartDatesHoriz(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.init();
     }
 
-    public ViewChartDatesHoriz(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TViewChartDatesHoriz(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.init();
     }
@@ -86,7 +84,7 @@ public class ViewChartDatesHoriz extends LinearLayout {
         Calendar calendar = Calendar.getInstance();
 
         int datesLength = dates.length;
-        TChartTextView currentTextView;
+        TChartDescrTextView currentTextView;
         String dateFormat; String dateString;
         SimpleDateFormat formatter;
 
@@ -146,8 +144,8 @@ public class ViewChartDatesHoriz extends LinearLayout {
 //        return newDate;
 //    }
 
-    private TChartTextView getCurrentTextView(int index) {
-        TChartTextView _tChartTextView = null;
+    private TChartDescrTextView getCurrentTextView(int index) {
+        TChartDescrTextView _tChartTextView = null;
         switch (index) {
             case 0:
                 _tChartTextView = _tTextView1;
@@ -178,8 +176,8 @@ public class ViewChartDatesHoriz extends LinearLayout {
         layoutParams.setMargins(marginPx, 0, marginPx, ThemeManager.MARGIN_8DP_IN_PX);
     }
 
-    private TChartTextView getNewTextView(int typeTexView) {
-        TChartTextView tChartTextView = new TChartTextView(getContext());
+    private TChartDescrTextView getNewTextView(int typeTexView) {
+        TChartDescrTextView tChartTextView = new TChartDescrTextView(getContext());
 
         float weight;
         switch (typeTexView) {

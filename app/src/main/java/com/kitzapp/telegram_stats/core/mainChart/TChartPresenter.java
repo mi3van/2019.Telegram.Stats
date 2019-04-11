@@ -7,7 +7,7 @@ import com.kitzapp.telegram_stats.BuildConfig;
 import com.kitzapp.telegram_stats.clean_mvp.mvp.BasePresenter;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 import com.kitzapp.telegram_stats.core.mainChart.TChartContract.TPresenter;
-import com.kitzapp.telegram_stats.customViews.TFullChartView;
+import com.kitzapp.telegram_stats.customViews.charts.TChartCardCell;
 import com.kitzapp.telegram_stats.pojo.chart.Chart;
 import com.kitzapp.telegram_stats.pojo.chart.ChartsList;
 
@@ -80,10 +80,8 @@ class TChartPresenter extends BasePresenter<TView, TModel> implements TPresenter
         view.addViewToContainer(firstChartsDelimiter);
         try {
             for (Chart chart: chartsList.getCharts()) {
-                TFullChartView chartView = createChartView(chart);
-                if (chartView != null) {
-                    view.addViewToContainer(chartView);
-                }
+                TChartCardCell chartCardCell = createChartView(chart);
+                view.addViewToContainer(chartCardCell);
             }
         } catch (Exception e) {
             view.showMessageToast(e.getMessage());
@@ -98,13 +96,10 @@ class TChartPresenter extends BasePresenter<TView, TModel> implements TPresenter
         }
     }
 
-    private TFullChartView createChartView(Chart chart) {
-        if (view == null) {
-            return null;
-        }
-        TFullChartView chartView = new TFullChartView(view.getContext());
-        chartView.loadData(chart);
-        return chartView;
+    private TChartCardCell createChartView(Chart chart) throws Exception {
+        TChartCardCell chartCardCell = new TChartCardCell(view.getContext());
+        chartCardCell.loadData(chart);
+        return chartCardCell;
     }
 
     @Override

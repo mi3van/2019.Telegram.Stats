@@ -48,8 +48,7 @@ public class TCellDescriptionTexts extends LinearLayout implements TViewObserver
         this.loadData(title, description, textColor, layoutParamsText, layoutParamsDescription);
     }
 
-    @Override
-    public void init() {
+        public void init() {
         this.setOrientation(HORIZONTAL);
 
         _titleTV = new TTextView(getContext());

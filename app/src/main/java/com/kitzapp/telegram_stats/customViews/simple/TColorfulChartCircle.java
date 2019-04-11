@@ -6,11 +6,9 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
-
 import com.kitzapp.telegram_stats.AndroidApp;
-import com.kitzapp.telegram_stats.core.appManagers.ObserverManager;
-import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
+import com.kitzapp.telegram_stats.core.appManagers.ObserverManager;
 import com.kitzapp.telegram_stats.core.appManagers.TViewObserver;
 
 import java.util.Observable;
@@ -50,7 +48,6 @@ public class TColorfulChartCircle extends View implements TViewObserver {
         this.init();
     }
 
-    @Override
     public void init() {
         _center = CHART_CIRCLE_HALF_SIZE_PX;
         _circleRadius = CHART_CIRCLE_RADIUS_PX;

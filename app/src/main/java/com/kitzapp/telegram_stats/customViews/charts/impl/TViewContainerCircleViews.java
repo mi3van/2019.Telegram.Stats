@@ -1,6 +1,5 @@
-package com.kitzapp.telegram_stats.customViews.chart.impl;
+package com.kitzapp.telegram_stats.customViews.charts.impl;
 
-import android.animation.Animator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
@@ -20,22 +19,22 @@ import static com.kitzapp.telegram_stats.common.AppConts.DELAY_ELEMENTS_ANIM;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public class CellContainerForCircleViews extends FrameLayout {
+public class TViewContainerCircleViews extends FrameLayout {
     private final float NOT_ALLOW_INDEX = -20f;
     private HashMap<String, View> _circleViews = new HashMap<>();
     private int _halfSize;
 
-    public CellContainerForCircleViews(Context context) {
+    public TViewContainerCircleViews(Context context) {
         super(context);
         this.init();
     }
 
-    public CellContainerForCircleViews(Context context, AttributeSet attrs) {
+    public TViewContainerCircleViews(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.init();
     }
 
-    public CellContainerForCircleViews(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TViewContainerCircleViews(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.init();
     }

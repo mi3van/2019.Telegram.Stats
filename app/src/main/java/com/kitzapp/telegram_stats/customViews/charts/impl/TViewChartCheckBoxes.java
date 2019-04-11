@@ -1,4 +1,4 @@
-package com.kitzapp.telegram_stats.customViews.chart;
+package com.kitzapp.telegram_stats.customViews.charts.impl;
 
 import android.content.Context;
 import android.util.AttributeSet;

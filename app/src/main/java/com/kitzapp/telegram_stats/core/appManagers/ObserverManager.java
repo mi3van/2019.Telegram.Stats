@@ -9,10 +9,9 @@ import java.util.*;
  */
 
 public class ObserverManager extends Observable {
-
-    private static byte totalInit = 1;
-    public final static byte KEY_OBSERVER_THEME_UPDATED = totalInit++;
-    public final static byte KEY_OBSERVER_PROHIBITED_SCROLL = totalInit++;
+    private static byte localInit = 0;
+    public final static byte KEY_OBSERVER_THEME_UPDATED = localInit++;
+    public final static byte KEY_OBSERVER_PROHIBITED_SCROLL = localInit++;
 
     public void notifyMyObservers(byte keyObserver) {
         this.setChanged();
