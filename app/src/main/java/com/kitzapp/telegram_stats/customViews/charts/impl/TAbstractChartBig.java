@@ -34,19 +34,9 @@ import static com.kitzapp.telegram_stats.common.AppConts.INTEGER_MIN_VALUE;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-interface ChartVoids {
-
-    TViewRectSelect.RectListener getRectListener();
-}
-
-public abstract class TAbstractChartBig extends TPrivateChartBAAse implements ChartVoids, TViewRectSelect.RectListener, MotionManagerForBigChart.OnMyTouchListener {
-
-    public interface BigChartInterface {
-        void onMiniatureViewIsLocked(boolean isLocked);
-
-        void onDatesWasChanged(long[] dates);
-    }
-
+public abstract class TAbstractChartBig extends TPrivateChartBAAse implements InterfaceChartBig,
+                                                                            TViewRectSelect.RectListener,
+                                                                            MotionManagerForBigChart.OnMyTouchListener {
     private final String PART_DATE_FORMAT = "EEE, d MMM yyyy";
 
     private TViewChartInfoVert _tViewChartInfoVert;
@@ -59,7 +49,7 @@ public abstract class TAbstractChartBig extends TPrivateChartBAAse implements Ch
     private MotionManagerForBigChart _motionManagerBig;
     private int _oldIndexShowed;
     private int _leftInArray;
-    private BigChartInterface _chartInterface;
+    private InterfaceChartBig.Listener _chartBigListener;
 
     private TViewContainerCircleViews _containerForCircleViews;
     private int _verticalDelimiterHeight;
@@ -77,9 +67,9 @@ public abstract class TAbstractChartBig extends TPrivateChartBAAse implements Ch
         super(context, attrs, defStyleAttr);
     }
 
-    public TAbstractChartBig(Context context, BigChartInterface bigChartInterface) {
+    public TAbstractChartBig(Context context, InterfaceChartBig.Listener chartBigListener) {
         super(context);
-        _chartInterface = bigChartInterface;
+        _chartBigListener = chartBigListener;
     }
 
     @Override
@@ -130,8 +120,8 @@ public abstract class TAbstractChartBig extends TPrivateChartBAAse implements Ch
 
     @Override
     public void onMiniatureViewIsLocked(boolean isLocked) {
-        if (_chartInterface != null) {
-            _chartInterface.onMiniatureViewIsLocked(isLocked);
+        if (_chartBigListener != null) {
+            _chartBigListener.onMiniatureViewIsLocked(isLocked);
         }
     }
 
@@ -162,9 +152,9 @@ public abstract class TAbstractChartBig extends TPrivateChartBAAse implements Ch
 
         this.recalculatePopupViews();
 
-        if (_chartInterface != null) {
+        if (_chartBigListener != null) {
             long[] dates = this.getDatesForSend(_leftInArray, _rightInArray);
-            _chartInterface.onDatesWasChanged(dates);
+            _chartBigListener.onDatesWasChanged(dates);
         }
 
         // Get new part arrays for draw Y
@@ -355,7 +345,7 @@ public abstract class TAbstractChartBig extends TPrivateChartBAAse implements Ch
 
     private void hidePopupViews() {
         if (_containerForCircleViews != null) {
-            _containerForCircleViews.hideAllViews();
+            _containerForCircleViews.hideAllViewsWithoutAnimation();
         }
         if (_verticalDelimiter != null && _verticalDelimiter.getVisibility() == VISIBLE) {
             _verticalDelimiter.setVisibility(INVISIBLE);
@@ -380,6 +370,8 @@ public abstract class TAbstractChartBig extends TPrivateChartBAAse implements Ch
         super.onAttachedToWindow();
         this.getViewTreeObserver().addOnScrollChangedListener(this::hidePopupViews);
     }
+
+
 
     @Override
     protected void onDetachedFromWindow() {

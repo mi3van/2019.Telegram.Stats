@@ -28,7 +28,7 @@ import static com.kitzapp.telegram_stats.common.AppConts.ELEVATION_CHART_VIEW;
 
 public class TChartCardCell extends LinearLayout implements TViewObserver,
                                                             TColorfulCheckBox.Listener,
-                                                            TAbstractChartBig.BigChartInterface {
+                                                            InterfaceChartBig.Listener {
     private int _oldBackColor;
 
     private Chart _chart = null;

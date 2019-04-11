@@ -10,7 +10,7 @@ import com.kitzapp.telegram_stats.customViews.simple.TViewRectSelect;
  */
 
 public abstract class TChartsFabric {
-    public abstract TAbstractChartBig createChartBig(Context context, TAbstractChartBig.BigChartInterface bigChartInterface);
+    public abstract TAbstractChartBig createChartBig(Context context, InterfaceChartBig.Listener bigChartInterface);
 
     public abstract TAbstractChartMiniature createChartMiniature(Context context, TViewRectSelect.RectListener listener);
 }

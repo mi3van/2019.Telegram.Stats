@@ -2,6 +2,7 @@ package com.kitzapp.telegram_stats.customViews.charts.chart1_OnceY;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import com.kitzapp.telegram_stats.customViews.charts.impl.InterfaceChartBig;
 import com.kitzapp.telegram_stats.customViews.charts.impl.TAbstractChartBig;
 
 /**
@@ -13,7 +14,7 @@ import com.kitzapp.telegram_stats.customViews.charts.impl.TAbstractChartBig;
 @SuppressLint("ViewConstructor")
 class ChartBigOnceY extends TAbstractChartBig {
 
-    public ChartBigOnceY(Context context, BigChartInterface bigChartInterface) {
+    public ChartBigOnceY(Context context, InterfaceChartBig.Listener bigChartInterface) {
         super(context, bigChartInterface);
     }
 }

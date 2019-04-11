@@ -2,6 +2,7 @@ package com.kitzapp.telegram_stats.customViews.charts.chart4_Daily;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import com.kitzapp.telegram_stats.customViews.charts.impl.InterfaceChartBig;
 import com.kitzapp.telegram_stats.customViews.charts.impl.TAbstractChartBig;
 
 /**
@@ -13,7 +14,7 @@ import com.kitzapp.telegram_stats.customViews.charts.impl.TAbstractChartBig;
 @SuppressLint("ViewConstructor")
 class ChartBigDaily extends TAbstractChartBig {
 
-    public ChartBigDaily(Context context, BigChartInterface bigChartInterface) {
+    public ChartBigDaily(Context context, InterfaceChartBig.Listener bigChartInterface) {
         super(context, bigChartInterface);
     }
 }
