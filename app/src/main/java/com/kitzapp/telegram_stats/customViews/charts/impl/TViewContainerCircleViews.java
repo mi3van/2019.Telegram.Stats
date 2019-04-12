@@ -3,6 +3,8 @@ package com.kitzapp.telegram_stats.customViews.charts.impl;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewPropertyAnimator;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 import com.kitzapp.telegram_stats.customViews.simple.TColorfulChartCircle;
@@ -10,7 +12,6 @@ import com.kitzapp.telegram_stats.customViews.simple.TColorfulChartCircle;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.kitzapp.telegram_stats.common.AppConts.DELAY_ELEMENTS_ANIM;
 
 /**
  * Created by Ivan Kuzmin on 29.03.2019;
@@ -24,11 +25,11 @@ public class TViewContainerCircleViews extends FrameLayout {
     public static final byte ANIMATION_TYPE_SCALE = localInit++;
     public static final byte ANIMATION_TYPE_TRANSLATION = localInit++;
 
-    private final float NOT_ALLOW_INDEX = -20f;
+    private final float NOT_ALLOW_INDEX = Float.MIN_VALUE;
 
-    private HashMap<String, View> _circleViews = new HashMap<>();
+    private HashMap<String, TColorfulChartCircle> _circleViews = new HashMap<>();
     private int _halfSize;
-    private int _oldXIndex = 0;
+    private float _stepX;
 
     public TViewContainerCircleViews(Context context) {
         super(context);
@@ -57,6 +58,71 @@ public class TViewContainerCircleViews extends FrameLayout {
         this.addView(tChartCircle);
     }
 
+    void setNewPositionAndAnimate(String viewKey, float x, float y, boolean isVisible) {
+        if (_circleViews.isEmpty()) {
+            return;
+        }
+        View circleView = _circleViews.get(viewKey);
+        if (circleView == null) {
+            return;
+        }
+
+        float oldX = circleView.getX();
+        float oldY = circleView.getY();
+
+        float currentX = (x == NOT_ALLOW_INDEX)? oldX: x - _halfSize;
+        float currentY = (y == NOT_ALLOW_INDEX)? oldY: y - _halfSize;
+
+        float alpha;
+        if (isVisible) {
+            if (!circleView.isShown()) {
+                circleView.setVisibility(VISIBLE);
+                circleView.setAlpha(0f);
+            }
+            alpha = 1f;
+        } else {
+            alpha = 0f;
+        }
+
+//        if (animationType == ANIMATION_TYPE_NANI) {
+            circleView.setAlpha(alpha);
+            circleView.setX(currentX);
+            circleView.setY(currentY);
+//        } else {
+//            if (x == oldX && y == oldY) {
+//                return;
+//            }
+//            ViewPropertyAnimator animate = circleView.animate();
+//            if (animationType == ANIMATION_TYPE_SCALE) {
+//                animate.alpha(alpha).
+//                        scaleY(alpha).
+//                        scaleX(alpha).
+//                        setDuration(DELAY_ELEMENTS_ANIM_MIDDLE);
+//                circleView.setX(currentX);
+//                circleView.setY(currentY);
+//            } else if (animationType == ANIMATION_TYPE_TRANSLATION) {
+//                animate.x(currentX).
+//                        y(currentY).
+//                        setDuration(DELAY_ELEMENTS_ANIM_MIDDLE);
+//            }
+//            animate.setInterpolator(new AccelerateDecelerateInterpolator()).
+//                    start();
+//        }
+    }
+
+    void hideAllViewsWithoutAnimation() {
+        if (_circleViews.isEmpty()) {
+            return;
+        }
+        for (Map.Entry<String, TColorfulChartCircle> entry: _circleViews.entrySet()) {
+            View view = entry.getValue();
+            if (view == null) {
+                return;
+            }
+            view.setAlpha(0f);
+        }
+    }
+
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -65,82 +131,10 @@ public class TViewContainerCircleViews extends FrameLayout {
         layoutParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
     }
 
-    void hideOrShowViewWithTag(String viewKey, boolean isActivate) {
-        View circleView = this.getView(viewKey);
-        if (circleView != null) {
-            float alphaAndScale = isActivate? 1f: 0f;
-            if (circleView.getAlpha() != alphaAndScale) {
-                circleView.animate().alpha(alphaAndScale).scaleX(alphaAndScale).scaleY(alphaAndScale).setDuration(DELAY_ELEMENTS_ANIM).start();
-            }
-        }
-    }
-
-    private void setNewXAndAnimate(String viewKey, float x, boolean isActive) {
-        this.setNewPositionAndAnimate(x, NOT_ALLOW_INDEX, viewKey, isActive);
-    }
-
-    private void setNewYAndAnimate(String viewKey, float y, boolean isActive) {
-        this.setNewPositionAndAnimate(NOT_ALLOW_INDEX, y, viewKey, isActive);
-    }
-
-    void setNewPositionAndAnimate(float x, float y, String viewKey, boolean isActive) {
-        View circleView = getView(viewKey);
-        if (circleView == null) {
-            return;
-        }
-
-        this.hideViewWithCallback(viewKey, () -> {
-            if (isActive) {
-                if (x != NOT_ALLOW_INDEX) {
-                    float x1 = x - _halfSize;
-                    circleView.setX(x1);
-                }
-                if (y != NOT_ALLOW_INDEX) {
-                    float y1 = y - _halfSize;
-                    circleView.setY(y1);
-                }
-
-                this.hideOrShowViewWithTag(viewKey, isActive);
-            }
-        });
-    }
-
-    private void hideViewWithCallback(String viewKey, Runnable callback) {
-        View circleView = this.getView(viewKey);
-        if (circleView != null) {
-            float alpha = 0f;
-            circleView.animate().
-                    alpha(alpha).
-                    scaleX(alpha).
-                    scaleY(alpha).
-                    setDuration(DELAY_ELEMENTS_ANIM).
-                    withEndAction(callback).start();
-        }
-    }
-
-    private View getView(String key) {
-        if (_circleViews.isEmpty()) {
-            return null;
-        }
-        return _circleViews.get(key);
-    }
-
     @Override
     public void removeAllViews() {
         _circleViews = new HashMap<>();
         super.removeAllViews();
     }
 
-    void hideAllViewsWithoutAnimation() {
-        if (_circleViews.isEmpty()) {
-            return;
-        }
-        for (Map.Entry<String, View> entry: _circleViews.entrySet()) {
-            View circleView = getView(entry.getKey());
-            if (circleView == null) {
-                return;
-            }
-            circleView.setAlpha(0f);
-        }
-    }
 }

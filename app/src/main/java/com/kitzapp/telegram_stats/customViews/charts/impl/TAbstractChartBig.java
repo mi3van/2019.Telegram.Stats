@@ -150,7 +150,7 @@ public abstract class TAbstractChartBig extends TPrivateChartBAAse implements In
             return;
         }
 
-        this.recalculatePopupViews();
+        this.hidePopupViews();
 
         if (_chartBigListener != null) {
             long[] dates = this.getDatesForSend(_leftInArray, _rightInArray);
@@ -333,7 +333,8 @@ public abstract class TAbstractChartBig extends TPrivateChartBAAse implements In
 
             long y = _partAxisesY.get(key)[indexShowedPart];
 
-            _containerForCircleViews.setNewPositionAndAnimate(currentX, y, key, isActiveChart);
+            boolean isVisibleCircle = isActiveChart;
+            _containerForCircleViews.setNewPositionAndAnimate(key, currentX, y, isVisibleCircle);
         }
 
         if (_verticalDelimiterHeight == 0) {
@@ -355,15 +356,15 @@ public abstract class TAbstractChartBig extends TPrivateChartBAAse implements In
         }
     }
 
-    private void recalculatePopupViews() {
-        Line line; boolean isActiveChart;
-        for (Map.Entry<String, Line> entry : _chart.getLines().entrySet()) {
-            String key = entry.getKey();
-            line = _chart.getLines().get(key);
-            isActiveChart = line.getIsActive();
-            _containerForCircleViews.hideOrShowViewWithTag(key, isActiveChart);
-        }
-    }
+//    private void recalculatePopupViews() {
+//        Line line; boolean isActiveChart;
+//        for (Map.Entry<String, Line> entry : _chart.getLines().entrySet()) {
+//            String key = entry.getKey();
+//            line = _chart.getLines().get(key);
+//            isActiveChart = line.getIsActive();
+//            _containerForCircleViews.hideOrShowViewWithTag(key, isActiveChart);
+//        }
+//    }
 
     @Override
     protected void onAttachedToWindow() {
