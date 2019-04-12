@@ -1,7 +1,5 @@
 package com.kitzapp.telegram_stats.customViews.charts.impl;
 
-import com.kitzapp.telegram_stats.customViews.simple.TViewRectSelect;
-
 /**
  * Created by Ivan Kuzmin on 2019-04-11;
  * 3van@mail.ru;
@@ -9,8 +7,6 @@ import com.kitzapp.telegram_stats.customViews.simple.TViewRectSelect;
  */
 
 public interface TAbstractChartBigInterface {
-
-    TViewRectSelect.RectListener getRectListener();
 
     interface Listener {
 

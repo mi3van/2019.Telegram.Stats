@@ -15,12 +15,12 @@ import com.kitzapp.telegram_stats.customViews.simple.TViewRectSelect;
 
 public class FabricPercentage extends TChartsFabric {
     @Override
-    public TAbstractChartBig createChartBig(Context context, TAbstractChartBigInterface.Listener bigChartInterface) {
-        return new ChartBigPercentage(context, bigChartInterface);
+    public TAbstractChartBig createChartBig(Context context, TAbstractChartMiniature chartMiniature) {
+        return new ChartBigPercentage(context, chartMiniature);
     }
 
     @Override
-    public TAbstractChartMiniature createChartMiniature(Context context, TViewRectSelect.RectListener listener) {
-        return new ChartMiniaturePercentage(context, listener);
+    public TAbstractChartMiniature createChartMiniature(Context context) {
+        return new ChartMiniaturePercentage(context);
     }
 }

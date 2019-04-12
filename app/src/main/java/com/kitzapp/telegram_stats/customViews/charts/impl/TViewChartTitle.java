@@ -1,6 +1,7 @@
 package com.kitzapp.telegram_stats.customViews.charts.impl;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.LinearLayout;
@@ -44,6 +45,9 @@ public class TViewChartTitle extends LinearLayout {
         tTextView.setTypeface(ThemeManager.rBoldTypeface);
         tTextView.setTextSizeDP(ThemeManager.TEXT_BIG_SIZE_DP);
         tTextView.setText(getResources().getString(R.string.followers_title));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            tTextView.setTextDirection(TEXT_DIRECTION_LOCALE);
+        }
 
         setGravity(Gravity.CENTER_VERTICAL);
         addView(tTextView);

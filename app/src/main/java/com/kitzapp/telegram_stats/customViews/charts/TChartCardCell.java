@@ -14,7 +14,6 @@ import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 import com.kitzapp.telegram_stats.customViews.charts.impl.*;
 import com.kitzapp.telegram_stats.customViews.simple.TColorfulCheckBox;
 import com.kitzapp.telegram_stats.customViews.simple.TViewChartDatesHoriz;
-import com.kitzapp.telegram_stats.customViews.simple.TViewRectSelect;
 import com.kitzapp.telegram_stats.pojo.chart.Chart;
 
 import java.util.Observable;
@@ -29,13 +28,12 @@ import static com.kitzapp.telegram_stats.common.AppConts.ELEVATION_CHART_VIEW;
 
 public class TChartCardCell extends LinearLayout implements TViewObserver,
                                                             TColorfulCheckBox.Listener,
-                                                            TAbstractChartBigInterface.Listener,
-        TViewRectSelect.RectListener {
+                                                            TAbstractChartBigInterface.Listener {
     private int _oldBackColor;
 
     private Chart _chart = null;
     private TViewChartTitle _titleCell;
-//    private TAbstractChartBig _bigChart;
+    private TAbstractChartBig _bigChart;
     private TAbstractChartMiniature _miniatureChart;
     private TViewChartDatesHoriz _chartDates;
     private TViewChartCheckBoxes _chBoxChartIsActive;
@@ -62,7 +60,7 @@ public class TChartCardCell extends LinearLayout implements TViewObserver,
                 this.createViews();
             }
 
-//            _bigChart.loadData(_chart);
+            _bigChart.loadData(_chart);
             _miniatureChart.loadData(_chart);
             _chBoxChartIsActive.loadData(_chart);
         }
@@ -84,13 +82,14 @@ public class TChartCardCell extends LinearLayout implements TViewObserver,
         TChartsFabric chartsFabric = TChartsAbstractFabric.createChartFabric(type);
 
         _titleCell = new TViewChartTitle(getContext());
-//        _bigChart = chartsFabric.createChartBig(getContext(), this);
+        _miniatureChart = chartsFabric.createChartMiniature(getContext());
+        _bigChart = chartsFabric.createChartBig(getContext(), _miniatureChart);
+        _bigChart.setDelegate(this);
         _chartDates = new TViewChartDatesHoriz(getContext());
-        _miniatureChart = chartsFabric.createChartMiniature(getContext(), this);// _bigChart.getRectListener());
         _chBoxChartIsActive = new TViewChartCheckBoxes(getContext(), this);
 
         addView(_titleCell);
-//        addView(_bigChart);
+        addView(_bigChart);
         addView(_chartDates);
         addView(_miniatureChart);
         addView(_chBoxChartIsActive);
@@ -101,7 +100,7 @@ public class TChartCardCell extends LinearLayout implements TViewObserver,
         try {
             _chart.getLines().get(key).setIsActive(isChecked);
             _miniatureChart.wasChangedActiveChart();
-//            _bigChart.recalculateYAndUpdateView();
+            _bigChart.wasChangedActiveChart();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -168,8 +167,4 @@ public class TChartCardCell extends LinearLayout implements TViewObserver,
         return ThemeManager.getColor(ThemeManager.key_cellBackColor);
     }
 
-    @Override
-    public void onRectCursorsWasChanged(float leftCursor, float rightCursor) {
-
-    }
 }

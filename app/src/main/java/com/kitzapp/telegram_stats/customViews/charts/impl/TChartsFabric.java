@@ -1,7 +1,6 @@
 package com.kitzapp.telegram_stats.customViews.charts.impl;
 
 import android.content.Context;
-import com.kitzapp.telegram_stats.customViews.simple.TViewRectSelect;
 
 /**
  * Created by Ivan Kuzmin on 2019-04-11;
@@ -10,7 +9,7 @@ import com.kitzapp.telegram_stats.customViews.simple.TViewRectSelect;
  */
 
 public abstract class TChartsFabric {
-    public abstract TAbstractChartBig createChartBig(Context context, TAbstractChartBigInterface.Listener bigChartInterface);
+    public abstract TAbstractChartBig createChartBig(Context context, TAbstractChartMiniature chartMiniature);
 
-    public abstract TAbstractChartMiniature createChartMiniature(Context context, TViewRectSelect.RectListener listener);
+    public abstract TAbstractChartMiniature createChartMiniature(Context context);
 }

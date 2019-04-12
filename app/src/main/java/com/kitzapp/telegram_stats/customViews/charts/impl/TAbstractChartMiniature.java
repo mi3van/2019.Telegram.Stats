@@ -1,17 +1,11 @@
 package com.kitzapp.telegram_stats.customViews.charts.impl;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
-import com.kitzapp.telegram_stats.AndroidApp;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
-import com.kitzapp.telegram_stats.common.AppConts;
-import com.kitzapp.telegram_stats.core.appManagers.ObserverManager;
-import com.kitzapp.telegram_stats.core.appManagers.TViewObserver;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 import com.kitzapp.telegram_stats.customViews.simple.TViewRectSelect;
 import com.kitzapp.telegram_stats.pojo.chart.Chart;
@@ -19,9 +13,6 @@ import com.kitzapp.telegram_stats.pojo.chart.impl.Line;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Observable;
-
-import static com.kitzapp.telegram_stats.common.AppConts.*;
 
 /**
  * Created by Ivan Kuzmin on 24.03.2019;
@@ -29,23 +20,17 @@ import static com.kitzapp.telegram_stats.common.AppConts.*;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public abstract class TAbstractChartMiniature extends TPrivateChartBAAse {
+public abstract class TAbstractChartMiniature extends TPrivateChartBAAse implements TViewRectSelect.RectListener {
     private int MAX_DOTS_FOR_APPROX_CHART_FULL = 1024;
     private final int FLAG_Y_NOT_AVAILABLE = -5;
 
-    private Chart _chart = null;
     private HashMap<String, long[]> _axisesYOriginalArrays = new HashMap<>();
-    private HashMap<String, Paint> _paints;
 
     private float[] _axisXForCanvas = null;
     private HashMap<String, long[]> _axisesYForCanvas = new HashMap<>();
-    private HashMap<String, Path> _linesPathes = new HashMap<>();
-
-    private int _maxAxisXx;
-    private long _maxAxisY;
 
     private TViewRectSelect _viewRectSelect;
-    private TViewRectSelect.RectListener _rectListener;
+    private TAbstractChartMiniatureInterface.Listener _miniatureListener;
 
     public TAbstractChartMiniature(Context context) {
         super(context);
@@ -59,24 +44,20 @@ public abstract class TAbstractChartMiniature extends TPrivateChartBAAse {
         super(context, attrs, defStyleAttr);
     }
 
-    public TAbstractChartMiniature(Context context, TViewRectSelect.RectListener rectListener) {
-        super(context);
-        _rectListener = rectListener;
-        this.init();
+    public void setMiniatureListener(TAbstractChartMiniatureInterface.Listener miniatureListener) {
+        _miniatureListener = miniatureListener;
     }
 
     @Override
     protected void init() {
         super.init();
-        if (_rectListener != null) {
-            super.init();
-            _viewRectSelect = new TViewRectSelect(getContext(), _rectListener);
-            this.addView(_viewRectSelect);
-        }
+        _viewRectSelect = new TViewRectSelect(getContext());
+        _viewRectSelect.setRectDelegate(this);
+        this.addView(_viewRectSelect);
     }
 
     public void loadData(Chart chart) {
-        _chart = chart;
+        super.loadData(chart);
         _axisesYOriginalArrays = null;
         _viewWidth = 0;
 
@@ -95,7 +76,7 @@ public abstract class TAbstractChartMiniature extends TPrivateChartBAAse {
             boolean isNeedPathAnimation = true;
 //                  FIRST LAUNCH INIT
             if (_axisesYOriginalArrays == null) {
-                _axisesYOriginalArrays = this.getInitAxysesYAndInitPaints();
+                _axisesYOriginalArrays = this.getInitAxysesYAndInitMax();
                 isNeedPathAnimation = false;
             }
 
@@ -108,36 +89,36 @@ public abstract class TAbstractChartMiniature extends TPrivateChartBAAse {
                 this.initAxisesForCanvas();
 
                 _linesPathes = this.getLinesPathes(_axisXForCanvas, _axisesYForCanvas);
+                if (_miniatureListener != null) {
+                    _miniatureListener.onLinesPathesWasChanged(_linesPathes, _maxAxisXx);
+                }
             }
 
-            this.drawPathes(canvas, _linesPathes, isNeedPathAnimation);
+            super.drawPathes(canvas, _linesPathes, isNeedPathAnimation);
         }
     }
 
     //    isNeedInitPaints
     protected void initAxisesForCanvas() {
 
-        _axisXForCanvas = this.recalculateAxisX();
+        _axisXForCanvas = this.recalculateAxisX(_maxAxisXx);
 
-        _axisesYForCanvas = getAxisesForCanvas(_axisesYOriginalArrays, _maxAxisY);
+        _axisesYForCanvas = this.getAxisesForCanvas(_axisesYOriginalArrays, _maxAxisY);
     }
 
-    private float[] recalculateAxisX() {
-        float[] newAxisX = new float[_maxAxisXx];
-        float stepX = (_viewWidth) / (_maxAxisXx - 1);
-        // CONVERT X AND Y's TO CANVAS SIZE
-        newAxisX = new float[_maxAxisXx];
+    private float[] recalculateAxisX(int maxAxisXx) {
+        float[] newAxisX = new float[maxAxisXx];
+        float stepX = (_viewWidth) / (maxAxisXx - 1);
         newAxisX[0] = getPaddingRightLeft() + 1;
-        for (int i = 1; i < _maxAxisXx; i++) {
+        for (int i = 1; i < maxAxisXx; i++) {
             newAxisX[i] = newAxisX[i - 1] + stepX;
         }
         return newAxisX;
     }
 
-    private HashMap<String, long[]> getInitAxysesYAndInitPaints() {
+    private HashMap<String, long[]> getInitAxysesYAndInitMax() {
         HashMap<String, long[]> tempAxyses = new HashMap<>();
 
-        _paints = new HashMap<>();
         Line line;
         int currentColumnsCount;
         for (Map.Entry<String, Line> entry : _chart.getLines().entrySet()) {
@@ -150,10 +131,6 @@ public abstract class TAbstractChartMiniature extends TPrivateChartBAAse {
                 if (_maxAxisXx < currentColumnsCount) {
                     _maxAxisXx = currentColumnsCount;
                 }
-
-                // INIT PAINT
-                Paint linePaint = AndroidUtilites.getPaint(entry.getValue().getColor(), this.getLinePaintWidth());
-                _paints.put(entry.getKey(), linePaint);
 
                 // INIT AXIS Y AND FIND MAX Y
                 long[] axisY = new long[currentColumnsCount];
@@ -175,7 +152,7 @@ public abstract class TAbstractChartMiniature extends TPrivateChartBAAse {
         return this.getAxisesForCanvas(originalArray, maxAxisY, 0);
     }
 
-    protected HashMap<String, long[]> getAxisesForCanvas(HashMap<String, long[]> originalArray,
+    private HashMap<String, long[]> getAxisesForCanvas(HashMap<String, long[]> originalArray,
                                                          long maxAxisY,
                                                          long minAxisY) {
         HashMap<String, long[]> tempArray = new HashMap<>();
@@ -252,52 +229,6 @@ public abstract class TAbstractChartMiniature extends TPrivateChartBAAse {
         return newPathesLines;
     }
 
-    private void drawPathes(Canvas canvas, HashMap<String, Path> pathHashMap, boolean withAnimation) {
-        boolean isActiveChart;
-        Path path;
-        Paint paint;
-        for (Map.Entry<String, Path> entry : pathHashMap.entrySet()) {
-            paint = _paints.get(entry.getKey());
-            path = entry.getValue();
-            isActiveChart = getChartIsActive(entry.getKey());
-
-            if (paint == null && entry.getValue() == null) {
-                continue;
-            }
-
-            if (withAnimation) {
-                canvas.drawPath(path, paint);
-
-                int newAlpha = paint.getAlpha();
-                if ((isActiveChart && newAlpha == MAX_VALUE_ALPHA) || (!isActiveChart && newAlpha == MIN_VALUE_ALPHA)) {
-                    continue;
-                }
-
-
-                if (isActiveChart) {
-                    if (newAlpha + STEP_ALPHA_FOR_ANIM <= MAX_VALUE_ALPHA) {
-                        newAlpha += STEP_ALPHA_FOR_ANIM;
-                    } else {
-                        newAlpha = MAX_VALUE_ALPHA;
-                    }
-                } else {
-                    if (newAlpha - STEP_ALPHA_FOR_ANIM >= MIN_VALUE_ALPHA) {
-                        newAlpha -= STEP_ALPHA_FOR_ANIM;
-                    } else {
-                        newAlpha = MIN_VALUE_ALPHA;
-                    }
-                }
-                paint.setAlpha(newAlpha);
-
-                postInvalidateDelayed(AppConts.DELAY_STEP_ELEMENTS_ANIM);
-            } else {
-                int alpha = isActiveChart? MAX_VALUE_ALPHA : MIN_VALUE_ALPHA;
-                paint.setAlpha(alpha);
-                canvas.drawPath(path, paint);
-            }
-        }
-    }
-
     public void setMiniatureIsLocked(boolean isLocked) {
         _viewRectSelect.setMiniatureIsLocked(isLocked);
     }
@@ -351,11 +282,6 @@ public abstract class TAbstractChartMiniature extends TPrivateChartBAAse {
     }
 
     @Override
-    public void wasChangedActiveChart() {
-        this.invalidate();
-    }
-
-    @Override
     protected int getChartVerticalPadding() {
         return ThemeManager.CHART_MINIATURE_VERTICAL_PADDING_SUM_PX;
     }
@@ -363,16 +289,6 @@ public abstract class TAbstractChartMiniature extends TPrivateChartBAAse {
     @Override
     protected int getChartHalfVerticalPadding() {
         return ThemeManager.CHART_MINIATURE_VERTICAL_PADDING_HALF_PX;
-    }
-
-    protected boolean getChartIsActive(String key) {
-        boolean isActive = false;
-        try {
-            isActive = _chart.getLines().get(key).getIsActive();
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-        return isActive;
     }
 
     private int getMaxDotsForApproxChart() {
@@ -387,5 +303,12 @@ public abstract class TAbstractChartMiniature extends TPrivateChartBAAse {
         layoutParams.height -= (ThemeManager.CHART_FULL_TOP_BOTTOM_MARGIN_PX << 1);
         layoutParams.topMargin = ThemeManager.CHART_FULL_TOP_BOTTOM_MARGIN_PX;
         layoutParams.bottomMargin = ThemeManager.CHART_FULL_TOP_BOTTOM_MARGIN_PX;
+    }
+
+    @Override
+    public void onRectCursorsWasChanged(float leftCursor, float rightCursor) {
+        if (_miniatureListener != null) {
+            _miniatureListener.onRectCursorsWasChanged(leftCursor, rightCursor);
+        }
     }
 }

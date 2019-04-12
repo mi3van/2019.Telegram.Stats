@@ -14,7 +14,7 @@ import com.kitzapp.telegram_stats.customViews.simple.TViewRectSelect;
 @SuppressLint("ViewConstructor")
 class ChartMiniaturePercentage extends TAbstractChartMiniature {
 
-    public ChartMiniaturePercentage(Context context, TViewRectSelect.RectListener rectListener) {
-        super(context, rectListener);
+    public ChartMiniaturePercentage(Context context) {
+        super(context);
     }
 }

@@ -70,10 +70,8 @@ public class TViewRectSelect extends View implements TViewObserver, MotionMagicF
         this.init();
     }
 
-    public TViewRectSelect(Context context, RectListener rectListener) {
-        super(context);
+    public void setRectDelegate(RectListener rectListener) {
         this._rectListener = rectListener;
-        this.init();
     }
 
     public void init() {

@@ -69,7 +69,7 @@ public class TViewChartCheckBoxes extends LinearLayout {
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         this.setLayoutParams(layoutParams);
 
-        setPadding(ThemeManager.MARGIN_16DP_IN_PX, 0, 0, 0);
+        setPadding(ThemeManager.MARGIN_16DP_IN_PX, 0, ThemeManager.MARGIN_16DP_IN_PX, 0);
     }
 
     private TDelimiterLine getDelimiterLine() {

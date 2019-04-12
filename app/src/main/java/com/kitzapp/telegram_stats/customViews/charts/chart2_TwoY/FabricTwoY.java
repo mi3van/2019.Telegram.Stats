@@ -15,12 +15,12 @@ import com.kitzapp.telegram_stats.customViews.simple.TViewRectSelect;
 
 public class FabricTwoY extends TChartsFabric {
     @Override
-    public TAbstractChartBig createChartBig(Context context, TAbstractChartBigInterface.Listener bigChartInterface) {
-        return new ChartBigTwoY(context, bigChartInterface);
+    public TAbstractChartBig createChartBig(Context context, TAbstractChartMiniature chartMiniature) {
+        return new ChartBigTwoY(context, chartMiniature);
     }
 
     @Override
-    public TAbstractChartMiniature createChartMiniature(Context context, TViewRectSelect.RectListener listener) {
-        return new ChartMiniatureTwoY(context, listener);
+    public TAbstractChartMiniature createChartMiniature(Context context) {
+        return new ChartMiniatureTwoY(context);
     }
 }

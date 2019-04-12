@@ -14,7 +14,7 @@ import com.kitzapp.telegram_stats.customViews.simple.TViewRectSelect;
 @SuppressLint("ViewConstructor")
 class ChartMiniatureOnceY extends TAbstractChartMiniature {
 
-    public ChartMiniatureOnceY(Context context, TViewRectSelect.RectListener rectListener) {
-        super(context, rectListener);
+    public ChartMiniatureOnceY(Context context) {
+        super(context);
     }
 }

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
-
 import com.kitzapp.telegram_stats.AndroidApp;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
 import com.kitzapp.telegram_stats.core.appManagers.ObserverManager;
@@ -48,7 +47,7 @@ public class TCellDescriptionTexts extends LinearLayout implements TViewObserver
         this.loadData(title, description, textColor, layoutParamsText, layoutParamsDescription);
     }
 
-        public void init() {
+    public void init() {
         this.setOrientation(HORIZONTAL);
 
         _titleTV = new TTextView(getContext());
