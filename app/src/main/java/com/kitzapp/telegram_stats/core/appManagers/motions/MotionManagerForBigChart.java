@@ -57,9 +57,4 @@ public class MotionManagerForBigChart extends BaseMotionManager  {
             _myTouchListener.onMiniatureViewIsLocked(isLocked);
         }
     }
-
-    @Override
-    protected byte getKeyNotifyObservers() {
-        return ObserverManager.KEY_OBSERVER_PROHIBITED_SCROLL;
-    }
 }

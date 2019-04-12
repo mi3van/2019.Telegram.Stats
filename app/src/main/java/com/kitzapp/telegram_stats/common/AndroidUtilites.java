@@ -2,7 +2,6 @@ package com.kitzapp.telegram_stats.common;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Paint;
@@ -26,7 +25,7 @@ public class AndroidUtilites {
     private static final Hashtable<String, Typeface> typefaceCache = new Hashtable<>();
 
     public static ValueAnimator getArgbAnimator(int fromColor, int toColor, ValueAnimator.AnimatorUpdateListener listener){
-        @SuppressLint("RestrictedApi") ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), fromColor, toColor);
+        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), fromColor, toColor);
         colorAnimation.setDuration(DELAY_COLOR_ANIM);
         colorAnimation.addUpdateListener(listener);
         return colorAnimation;

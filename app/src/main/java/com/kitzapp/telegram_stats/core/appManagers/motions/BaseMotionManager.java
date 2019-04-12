@@ -5,6 +5,7 @@ import android.content.Context;
 import android.view.MotionEvent;
 import android.view.View;
 import com.kitzapp.telegram_stats.AndroidApp;
+import com.kitzapp.telegram_stats.core.appManagers.ObserverManager;
 import com.kitzapp.telegram_stats.core.mainChart.TChartView;
 
 import java.util.Observable;
@@ -28,7 +29,6 @@ public abstract class BaseMotionManager extends Observable implements View.OnTou
 
     BaseMotionManager(Context _context, View motionView) {
         this._context = _context;
-        this.addObserver();
 
         if (motionView != null) {
             motionView.setOnTouchListener(this);
@@ -71,12 +71,18 @@ public abstract class BaseMotionManager extends Observable implements View.OnTou
         this.notifyObservers(this.getKeyNotifyObservers());
     }
 
-    protected abstract byte getKeyNotifyObservers();
+    private byte getKeyNotifyObservers() {
+        return ObserverManager.KEY_OBSERVER_PROHIBITED_SCROLL;
+    }
 
     protected abstract void motionCancel();
 
     public boolean getIsProhibitedScroll() {
         return _isProhibitedScroll;
+    }
+
+    public void attachView() {
+        this.addObserver();
     }
 
     public void deattachView() {

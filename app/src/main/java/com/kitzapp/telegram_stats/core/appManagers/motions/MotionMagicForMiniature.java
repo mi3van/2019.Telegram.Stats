@@ -166,9 +166,4 @@ public class MotionMagicForMiniature extends BaseMotionManager {
             _isProhibitedScroll = true;
         }
     }
-
-    @Override
-    protected byte getKeyNotifyObservers() {
-        return ObserverManager.KEY_OBSERVER_PROHIBITED_SCROLL;
-    }
 }

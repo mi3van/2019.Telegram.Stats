@@ -92,8 +92,6 @@ public class TViewRectSelect extends View implements TViewObserver, MotionMagicF
 
         int _widthVPaint = (int) _verticalPaint.getStrokeWidth();
         _halfWidthVPaint = _widthVPaint >> 1;
-
-        _motionMagic = new MotionMagicForMiniature(getContext(), this, this, MAX_CURSORS_WIDTH);
     }
 
     @Override
@@ -124,10 +122,10 @@ public class TViewRectSelect extends View implements TViewObserver, MotionMagicF
     }
 
     private void initRectangles(int heightCanvas) {
-        int _vertCoeff = 1;
+        int _vertCoeff = (int) _verticalPaint.getStrokeWidth() >> 2;
 
 //            CENTER RECT SETUP
-        _centerRect.top = -_vertCoeff;
+        _centerRect.top = - _vertCoeff;
         _centerRect.bottom = heightCanvas + _vertCoeff;
 
 //            INIT LEFT BACKGR RECT
@@ -184,77 +182,74 @@ public class TViewRectSelect extends View implements TViewObserver, MotionMagicF
         }
     }
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        this.addObserver();
-        // first init
-        this.setCursorsFirstInit();
-    }
-
     private void setCursorsFirstInit() {
         _leftCursor = MAX_LEFT_CURSOR_VALUE;
         _rightCursor = MAX_RIGHT_CURSOR;
     }
 
     private void setLeftCursor(float leftCursor, boolean calculateAnyway, boolean needInvalidate) {
-//        boolean isCursorAvailWidth = (_rightCursor - leftCursor >= MAX_CURSORS_WIDTH); // CHECKED IN MOTION MAGIC
-//        if (isCursorAvailWidth) {
-            boolean leftAvail = (leftCursor != _leftCursor) || calculateAnyway;
-            if (leftAvail) {
+        boolean leftAvail = (leftCursor != _leftCursor) || calculateAnyway;
+        if (leftAvail) {
 
-                // SETUP LEFT CURSOR
-                _leftCursor = Math.max(leftCursor, MIN_LEFT_CURSOR_VALUE);
-                if (_leftCursor > MAX_LEFT_CURSOR_VALUE) {
-                    _leftCursor = MAX_LEFT_CURSOR_VALUE;
-                }
-                // CONFIGURE VALUES
-                int leftCursorInPX = (int) (_canvasWidth * _leftCursor);
-                int leftCurrentV = _halfWidthVPaint + leftCursorInPX;
-                _centerRect.left = leftCurrentV;
-
-                // CONFIGURE LEFT BACKGR
-                _isLeftBackgroundDraw = _centerRect.left - _halfWidthVPaint > 0;
-                if (_isLeftBackgroundDraw) {
-                    _rectLeftBack.right = leftCurrentV - _halfWidthVPaint;
-                }
-
-                if (needInvalidate) {
-                    this.sendNewCursors(_leftCursor, _rightCursor);
-                    invalidate();
-                }
+            // SETUP LEFT CURSOR
+            _leftCursor = Math.max(leftCursor, MIN_LEFT_CURSOR_VALUE);
+            if (_leftCursor > MAX_LEFT_CURSOR_VALUE) {
+                _leftCursor = MAX_LEFT_CURSOR_VALUE;
             }
-//        }
+            // CONFIGURE VALUES
+            int leftCursorInPX = (int) (_canvasWidth * _leftCursor);
+            int leftCurrentV = _halfWidthVPaint + leftCursorInPX;
+            _centerRect.left = leftCurrentV;
+
+            // CONFIGURE LEFT BACKGR
+            _isLeftBackgroundDraw = _centerRect.left - _halfWidthVPaint > 0;
+            if (_isLeftBackgroundDraw) {
+                _rectLeftBack.right = leftCurrentV - _halfWidthVPaint;
+            }
+
+            if (needInvalidate) {
+                this.sendNewCursors(_leftCursor, _rightCursor);
+                invalidate();
+            }
+        }
     }
 
     private void setRightCursor(float rightCursor, boolean calculateAnyway, boolean needInvalidate) {
-//        boolean isCursorAvailWidth = (rightCursor - _leftCursor >= MAX_CURSORS_WIDTH); // CHECKED IN MOTION MAGIC
-//        if (isCursorAvailWidth) {
-            boolean rightAvail = (rightCursor != _rightCursor) || calculateAnyway;
-            if (rightAvail) {
+        boolean rightAvail = (rightCursor != _rightCursor) || calculateAnyway;
+        if (rightAvail) {
 
-                // SETUP RIGHT CURSOR
-                _rightCursor = Math.max(rightCursor, MIN_RIGHT_CURSOR);
-                if (_rightCursor > MAX_RIGHT_CURSOR) {
-                    _rightCursor = MAX_RIGHT_CURSOR;
-                }
-                // CONFIGURE VALUES
-                int rightCursorInPX = (int) (_canvasWidth * _rightCursor);
-                int currentRightV = rightCursorInPX - _halfWidthVPaint;
-                _centerRect.right = currentRightV;
-
-                // CONFIGURE RIGHT BACKGR
-                _isRightBackroundDraw = _centerRect.right + _halfWidthVPaint < _canvasWidth;
-                if (_isRightBackroundDraw) {
-                    _rectRightBack.left = currentRightV + _halfWidthVPaint;
-                }
-
-                if (needInvalidate) {
-                    this.sendNewCursors(_leftCursor, _rightCursor);
-                    invalidate();
-                }
+            // SETUP RIGHT CURSOR
+            _rightCursor = Math.max(rightCursor, MIN_RIGHT_CURSOR);
+            if (_rightCursor > MAX_RIGHT_CURSOR) {
+                _rightCursor = MAX_RIGHT_CURSOR;
             }
-//        }
+            // CONFIGURE VALUES
+            int rightCursorInPX = (int) (_canvasWidth * _rightCursor);
+            int currentRightV = rightCursorInPX - _halfWidthVPaint;
+            _centerRect.right = currentRightV;
+
+            // CONFIGURE RIGHT BACKGR
+            _isRightBackroundDraw = _centerRect.right + _halfWidthVPaint < _canvasWidth;
+            if (_isRightBackroundDraw) {
+                _rectRightBack.left = currentRightV + _halfWidthVPaint;
+            }
+
+            if (needInvalidate) {
+                this.sendNewCursors(_leftCursor, _rightCursor);
+                invalidate();
+            }
+        }
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        this.addObserver();
+
+        _motionMagic = new MotionMagicForMiniature(getContext(), this, this, MAX_CURSORS_WIDTH);
+        _motionMagic.attachView();
+        // first init
+        this.setCursorsFirstInit();
     }
 
     @Override

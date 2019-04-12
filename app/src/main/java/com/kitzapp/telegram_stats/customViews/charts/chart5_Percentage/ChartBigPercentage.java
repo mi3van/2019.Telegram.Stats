@@ -2,7 +2,7 @@ package com.kitzapp.telegram_stats.customViews.charts.chart5_Percentage;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import com.kitzapp.telegram_stats.customViews.charts.impl.InterfaceChartBig;
+import com.kitzapp.telegram_stats.customViews.charts.impl.TAbstractChartBigInterface;
 import com.kitzapp.telegram_stats.customViews.charts.impl.TAbstractChartBig;
 
 /**
@@ -14,7 +14,7 @@ import com.kitzapp.telegram_stats.customViews.charts.impl.TAbstractChartBig;
 @SuppressLint("ViewConstructor")
 class ChartBigPercentage extends TAbstractChartBig {
 
-    public ChartBigPercentage(Context context, InterfaceChartBig.Listener bigChartInterface) {
+    public ChartBigPercentage(Context context, TAbstractChartBigInterface.Listener bigChartInterface) {
         super(context, bigChartInterface);
     }
 }

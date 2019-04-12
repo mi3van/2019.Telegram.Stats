@@ -8,7 +8,7 @@ import com.kitzapp.telegram_stats.customViews.simple.TViewRectSelect;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public interface InterfaceChartBig {
+public interface TAbstractChartBigInterface {
 
     TViewRectSelect.RectListener getRectListener();
 
