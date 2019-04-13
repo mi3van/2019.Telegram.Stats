@@ -1,11 +1,9 @@
 package com.kitzapp.telegram_stats.customViews.charts.chart2_TwoY;
 
 import android.content.Context;
-import com.kitzapp.telegram_stats.customViews.charts.impl.TAbstractChartBigInterface;
-import com.kitzapp.telegram_stats.customViews.charts.impl.TAbstractChartBig;
-import com.kitzapp.telegram_stats.customViews.charts.impl.TAbstractChartMiniature;
-import com.kitzapp.telegram_stats.customViews.charts.impl.TChartsFabric;
-import com.kitzapp.telegram_stats.customViews.simple.TViewRectSelect;
+import com.kitzapp.telegram_stats.customViews.charts.base.TChartBigView;
+import com.kitzapp.telegram_stats.customViews.charts.base.TChartMiniatureView;
+import com.kitzapp.telegram_stats.customViews.charts.TChartsFabric;
 
 /**
  * Created by Ivan Kuzmin on 2019-04-11;
@@ -15,12 +13,12 @@ import com.kitzapp.telegram_stats.customViews.simple.TViewRectSelect;
 
 public class FabricTwoY extends TChartsFabric {
     @Override
-    public TAbstractChartBig createChartBig(Context context, TAbstractChartMiniature chartMiniature) {
+    public TChartBigView createChartBig(Context context, TChartMiniatureView chartMiniature) {
         return new ChartBigTwoY(context, chartMiniature);
     }
 
     @Override
-    public TAbstractChartMiniature createChartMiniature(Context context) {
+    public TChartMiniatureView createChartMiniature(Context context) {
         return new ChartMiniatureTwoY(context);
     }
 }

@@ -2,8 +2,7 @@ package com.kitzapp.telegram_stats.customViews.charts.chart1_OnceY;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import com.kitzapp.telegram_stats.customViews.charts.impl.TAbstractChartMiniature;
-import com.kitzapp.telegram_stats.customViews.simple.TViewRectSelect;
+import com.kitzapp.telegram_stats.customViews.charts.base.TChartMiniatureView;
 
 /**
  * Created by Ivan Kuzmin on 2019-04-11;
@@ -12,7 +11,7 @@ import com.kitzapp.telegram_stats.customViews.simple.TViewRectSelect;
  */
 
 @SuppressLint("ViewConstructor")
-class ChartMiniatureOnceY extends TAbstractChartMiniature {
+class ChartMiniatureOnceY extends TChartMiniatureView {
 
     public ChartMiniatureOnceY(Context context) {
         super(context);

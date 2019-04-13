@@ -1,9 +1,10 @@
-package com.kitzapp.telegram_stats.customViews.charts.impl;
+package com.kitzapp.telegram_stats.customViews.charts.base;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Path;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.LinearLayout;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
@@ -14,13 +15,7 @@ import com.kitzapp.telegram_stats.pojo.chart.impl.Line;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by Ivan Kuzmin on 24.03.2019;
- * 3van@mail.ru;
- * Copyright © 2019 Example. All rights reserved.
- */
-
-public abstract class TAbstractChartMiniature extends TPrivateChartBAAse implements TViewRectSelect.RectListener {
+public abstract class TChartMiniatureView extends TAbstractChartBase implements TViewRectSelect.RectListener {
     private int MAX_DOTS_FOR_APPROX_CHART_FULL = 1024;
     private final int FLAG_Y_NOT_AVAILABLE = -5;
 
@@ -30,21 +25,23 @@ public abstract class TAbstractChartMiniature extends TPrivateChartBAAse impleme
     private HashMap<String, long[]> _axisesYForCanvas = new HashMap<>();
 
     private TViewRectSelect _viewRectSelect;
-    private TAbstractChartMiniatureInterface.Listener _miniatureListener;
+    private TChartMiniatureInterface.Listener _miniatureListener;
 
-    public TAbstractChartMiniature(Context context) {
+    protected HashMap<String, Path> _linesPathesForMiniature = new HashMap<>();
+
+    public TChartMiniatureView(Context context) {
         super(context);
     }
 
-    public TAbstractChartMiniature(Context context, AttributeSet attrs) {
+    public TChartMiniatureView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public TAbstractChartMiniature(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TChartMiniatureView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public void setMiniatureListener(TAbstractChartMiniatureInterface.Listener miniatureListener) {
+    public void setMiniatureListener(TChartMiniatureInterface.Listener miniatureListener) {
         _miniatureListener = miniatureListener;
     }
 
@@ -58,65 +55,55 @@ public abstract class TAbstractChartMiniature extends TPrivateChartBAAse impleme
 
     public void loadData(Chart chart) {
         super.loadData(chart);
-        _axisesYOriginalArrays = null;
-        _viewWidth = 0;
 
-        this.invalidate();
+        _axisesYOriginalArrays = this.getOriginalAxysesYAndInitMaxs();
+
+        _isDrawing = true;
     }
 
-
     @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+    public void onSurfaceDraw(Canvas canvas) {
+        if (_isDrawing) {
+            Log.d("DRAW", String.format("MINIATURE draw: %d", _chart.getCountDots()));
 
-        if (_chart != null) {
-            int canvasHeight = getHeight() - getChartVerticalPadding();
-            int canvasWidth = getWidth() - ((getPaddingRightLeft() + 1) << 1);
-
-            boolean isNeedPathAnimation = true;
-//                  FIRST LAUNCH INIT
-            if (_axisesYOriginalArrays == null) {
-                _axisesYOriginalArrays = this.getInitAxysesYAndInitMax();
-                isNeedPathAnimation = false;
-            }
-
-            boolean isNeedInitAxises = _viewWidth != canvasWidth;
+            int width = getWidth();// - ((getPaddingRightLeft()) << 1);
+            boolean isNeedInitAxises = _viewWidth != width;
             if (isNeedInitAxises) {
-                _viewHeight = canvasHeight;
-                _viewWidth = canvasWidth;
-                MAX_DOTS_FOR_APPROX_CHART_FULL = (int)_viewWidth >> 1;
-
+                _viewWidth = width;
+                _viewHeight = getHeight() - getChartVerticalPadding();
                 this.initAxisesForCanvas();
-
-                _linesPathes = this.getLinesPathes(_axisXForCanvas, _axisesYForCanvas);
-                if (_miniatureListener != null) {
-                    _miniatureListener.onLinesPathesWasChanged(_linesPathes, _maxAxisXx);
-                }
             }
-
-            super.drawPathes(canvas, _linesPathes, isNeedPathAnimation);
+            drawPathes(canvas, _linesPathes, _isFirstDraw);
+            _isFirstDraw = false;
         }
     }
 
     //    isNeedInitPaints
     protected void initAxisesForCanvas() {
+        MAX_DOTS_FOR_APPROX_CHART_FULL = (int)_viewWidth >> 1;
 
         _axisXForCanvas = this.recalculateAxisX(_maxAxisXx);
 
         _axisesYForCanvas = this.getAxisesForCanvas(_axisesYOriginalArrays, _maxAxisY);
+
+        _linesPathes = this.getLinesPathes(_axisXForCanvas, _axisesYForCanvas);
+        _linesPathesForMiniature = this.getLinesPathes(_axisXForCanvas, _axisesYForCanvas);
+        if (_miniatureListener != null) {
+            _miniatureListener.onLinesPathesWasChanged(_linesPathesForMiniature, _maxAxisXx);
+        }
     }
 
     private float[] recalculateAxisX(int maxAxisXx) {
         float[] newAxisX = new float[maxAxisXx];
         float stepX = (_viewWidth) / (maxAxisXx - 1);
-        newAxisX[0] = getPaddingRightLeft() + 1;
+        newAxisX[0] = getPaddingRightLeft();
         for (int i = 1; i < maxAxisXx; i++) {
             newAxisX[i] = newAxisX[i - 1] + stepX;
         }
         return newAxisX;
     }
 
-    private HashMap<String, long[]> getInitAxysesYAndInitMax() {
+    private HashMap<String, long[]> getOriginalAxysesYAndInitMaxs() {
         HashMap<String, long[]> tempAxyses = new HashMap<>();
 
         Line line;

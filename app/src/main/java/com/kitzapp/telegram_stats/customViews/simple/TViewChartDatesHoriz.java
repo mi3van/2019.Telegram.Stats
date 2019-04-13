@@ -8,8 +8,6 @@ import android.widget.LinearLayout;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -23,7 +21,6 @@ public class TViewChartDatesHoriz extends LinearLayout {
     private final int TEXT_VIEW_TYPE_LEFT = -2;
     private final int TEXT_VIEW_TYPE_RIGHT = 2;
     private final String MMM_D_FORMAT = "MMM d";
-    private final String M_Y_FORMAT = "M/y";
 
     private TChartDescrTextView _tTextView1;
     private TChartDescrTextView _tTextView2;
@@ -31,8 +28,9 @@ public class TViewChartDatesHoriz extends LinearLayout {
     private TChartDescrTextView _tTextView4;
     private TChartDescrTextView _tTextView5;
 
-    private long[] _dates = null;
-    private int hashCodeDates;
+    private int _oldLeftIndex, _oldRightIndex;
+    private String[] _fullDatesArray = new String[]{""};
+    private int[] _showingIndexies = new int[5];
 
     public TViewChartDatesHoriz(Context context) {
         super(context);
@@ -49,100 +47,75 @@ public class TViewChartDatesHoriz extends LinearLayout {
         this.init();
     }
 
-    private void init() {
-        setWillNotDraw(false);
-        this.setOrientation(HORIZONTAL);
+    public void setNewDates(long[] arrayDates) {
+        if (arrayDates == null) {
+            return;
+        }
+        _oldLeftIndex = -1;
+        _oldRightIndex = -1;
 
-        _tTextView1 = this.getNewTextView(TEXT_VIEW_TYPE_LEFT);
-        _tTextView2 = this.getNewTextView(TEXT_VIEW_TYPE_DEFAULT);
-        _tTextView3 = this.getNewTextView(TEXT_VIEW_TYPE_DEFAULT);
-        _tTextView4 = this.getNewTextView(TEXT_VIEW_TYPE_DEFAULT);
-        _tTextView5 = this.getNewTextView(TEXT_VIEW_TYPE_RIGHT);
-
-        this.addView(_tTextView1);
-        this.addView(_tTextView2);
-        this.addView(_tTextView3);
-        this.addView(_tTextView4);
-        this.addView(_tTextView5);
+        _fullDatesArray = this.getFullDatasStringsArray(arrayDates);
     }
 
-    public void setDatesAndInit(long[] arrayDates) {
-        if (arrayDates != null) {
-            int hashCodeNew = Arrays.hashCode(arrayDates);
-            if (hashCodeNew == hashCodeDates) {
-                return;
-            }
-            this._dates = arrayDates;
-            hashCodeDates = Arrays.hashCode(arrayDates);
-
-            this.initDatesView(_dates);
+    public void onDatesChangeSection(int leftInArray, int rightInArray) {
+        boolean isIndexesInOutSector = leftInArray < 0 || rightInArray > _fullDatesArray.length;
+        if (isIndexesInOutSector) {
+            return;
         }
+        boolean isDatesCalculated = _oldLeftIndex == leftInArray && _oldRightIndex == rightInArray;
+        if (isDatesCalculated) {
+            return;
+        }
+        _oldLeftIndex = leftInArray;
+        _oldRightIndex = rightInArray;
+
+        _showingIndexies = this.getIndexesForShow(leftInArray, rightInArray);
+
+        for(int i = 0; i < _showingIndexies.length; i++) {
+            int globalIndex = _showingIndexies[i];
+            String dataText = _fullDatesArray[globalIndex];
+            getCurrentTextView(i).setText(dataText);
+        }
+    }
+
+    private int[] getIndexesForShow(int leftCursorArray, int rightCursorArray) {
+
+        int lengthPartArray = rightCursorArray - leftCursorArray;
+
+        int[] sendingArray = new int[5];
+        sendingArray[0] = 0;
+        sendingArray[4] = lengthPartArray - 1;
+        sendingArray[2] = sendingArray[4] >> 1;
+        sendingArray[1] = sendingArray[2] >> 1;
+        sendingArray[3] = sendingArray[1]  + sendingArray[2];
+
+        for (int i = 0; i < sendingArray.length; i++) {
+            sendingArray[i] = sendingArray[i] + leftCursorArray;
+        }
+
+        return sendingArray;
     }
 
     @SuppressLint("SimpleDateFormat")
-    private void initDatesView(long[] dates) {
-        Calendar calendar = Calendar.getInstance();
-
+    private String[] getFullDatasStringsArray(long[] dates) {
         int datesLength = dates.length;
-        TChartDescrTextView currentTextView;
-        String dateFormat; String dateString;
-        SimpleDateFormat formatter;
 
-        int currentDayInYear;   int nextDayInYear;  int nextIndex;
-        long date;              long nextDate = 0;
+        String[] newStringArray = new String[datesLength];
+
+        String dateString;
+        SimpleDateFormat formatter;
+        long date;
 
         for (int i = 0; i < datesLength; i++) {
-            date = i == 0 ? dates[0] : nextDate;
+            date = dates[i];
 
-            nextIndex = i + 1;
-            if (nextIndex < datesLength) {
-                nextDate = dates[nextIndex];
-
-                calendar.setTimeInMillis(nextDate);
-                nextDayInYear = calendar.get(Calendar.DAY_OF_YEAR);
-
-                calendar.setTimeInMillis(date);
-                currentDayInYear = calendar.get(Calendar.DAY_OF_YEAR);
-
-                if (currentDayInYear > nextDayInYear) {
-                    dateFormat = M_Y_FORMAT;
-                } else {
-                    dateFormat = MMM_D_FORMAT;
-//                    date = getFormattedDay(date, calendar);
-                }
-            } else {
-                dateFormat = MMM_D_FORMAT;
-//                date = getFormattedDay(date, calendar);
-            }
-
-            currentTextView = getCurrentTextView(i);
-            if (currentTextView == null) {
-                continue;
-            }
-            formatter = new SimpleDateFormat(dateFormat);
+            formatter = new SimpleDateFormat(MMM_D_FORMAT);
             dateString = formatter.format(new Date(date));
 
-
-            currentTextView.setText(dateString);
+            newStringArray[i] = dateString;
         }
+        return newStringArray;
     }
-
-//    private long getFormattedDay(long originalDate, Calendar calendar) {
-//        long newDate = originalDate;
-//        calendar.setTimeInMillis(newDate);
-//
-//        int currentDayInMonth = calendar.get(Calendar.DAY_OF_MONTH);
-//
-//        if (currentDayInMonth % 2 != 0) {
-//            if (currentDayInMonth == 31) {
-//                newDate += DateUtils.DAY_IN_MILLIS << 1;
-//            } else {
-//                newDate += DateUtils.DAY_IN_MILLIS;
-//            }
-//        }
-//
-//        return newDate;
-//    }
 
     private TChartDescrTextView getCurrentTextView(int index) {
         TChartDescrTextView _tChartTextView = null;
@@ -166,6 +139,22 @@ public class TViewChartDatesHoriz extends LinearLayout {
         return _tChartTextView;
     }
 
+    private void init() {
+        setWillNotDraw(false);
+        this.setOrientation(HORIZONTAL);
+
+        _tTextView1 = this.getNewTextView(TEXT_VIEW_TYPE_LEFT);
+        _tTextView2 = this.getNewTextView(TEXT_VIEW_TYPE_DEFAULT);
+        _tTextView3 = this.getNewTextView(TEXT_VIEW_TYPE_DEFAULT);
+        _tTextView4 = this.getNewTextView(TEXT_VIEW_TYPE_DEFAULT);
+        _tTextView5 = this.getNewTextView(TEXT_VIEW_TYPE_RIGHT);
+
+        this.addView(_tTextView1);
+        this.addView(_tTextView2);
+        this.addView(_tTextView3);
+        this.addView(_tTextView4);
+        this.addView(_tTextView5);
+    }
 
     @Override
     protected void onAttachedToWindow() {
@@ -200,4 +189,21 @@ public class TViewChartDatesHoriz extends LinearLayout {
 
         return tChartTextView;
     }
+
+//    private long getFormattedDay(long originalDate, Calendar calendar) {
+//        long newDate = originalDate;
+//        calendar.setTimeInMillis(newDate);
+//
+//        int currentDayInMonth = calendar.get(Calendar.DAY_OF_MONTH);
+//
+//        if (currentDayInMonth % 2 != 0) {
+//            if (currentDayInMonth == 31) {
+//                newDate += DateUtils.DAY_IN_MILLIS << 1;
+//            } else {
+//                newDate += DateUtils.DAY_IN_MILLIS;
+//            }
+//        }
+//
+//        return newDate;
+//    }
 }

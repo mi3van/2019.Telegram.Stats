@@ -1,16 +1,16 @@
-package com.kitzapp.telegram_stats.customViews.charts.impl;
+package com.kitzapp.telegram_stats.customViews.charts.base;
 
 import android.graphics.Path;
 
 import java.util.HashMap;
 
 /**
- * Created by Ivan Kuzmin on 2019-04-11;
+ * Created by Ivan Kuzmin on 24.03.2019;
  * 3van@mail.ru;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public interface TAbstractChartMiniatureInterface {
+public interface TChartMiniatureInterface {
 
     interface Listener {
 

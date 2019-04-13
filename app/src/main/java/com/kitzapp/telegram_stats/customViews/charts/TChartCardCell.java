@@ -11,7 +11,7 @@ import com.kitzapp.telegram_stats.common.AndroidUtilites;
 import com.kitzapp.telegram_stats.core.appManagers.ObserverManager;
 import com.kitzapp.telegram_stats.core.appManagers.TViewObserver;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
-import com.kitzapp.telegram_stats.customViews.charts.impl.*;
+import com.kitzapp.telegram_stats.customViews.charts.base.*;
 import com.kitzapp.telegram_stats.customViews.simple.TColorfulCheckBox;
 import com.kitzapp.telegram_stats.customViews.simple.TViewChartDatesHoriz;
 import com.kitzapp.telegram_stats.pojo.chart.Chart;
@@ -28,13 +28,13 @@ import static com.kitzapp.telegram_stats.common.AppConts.ELEVATION_CHART_VIEW;
 
 public class TChartCardCell extends LinearLayout implements TViewObserver,
                                                             TColorfulCheckBox.Listener,
-                                                            TAbstractChartBigInterface.Listener {
+                                                            TChartBigInterface.Listener {
     private int _oldBackColor;
 
     private Chart _chart = null;
     private TViewChartTitle _titleCell;
-    private TAbstractChartBig _bigChart;
-    private TAbstractChartMiniature _miniatureChart;
+    private TChartBigView _bigChart;
+    private TChartMiniatureView _miniatureChart;
     private TViewChartDatesHoriz _chartDates;
     private TViewChartCheckBoxes _chBoxChartIsActive;
 
@@ -115,7 +115,16 @@ public class TChartCardCell extends LinearLayout implements TViewObserver,
 
     @Override
     public void onDatesWasChanged(long[] dates) {
-        _chartDates.setDatesAndInit(dates);
+        if (_chartDates != null) {
+            _chartDates.setNewDates(dates);
+        }
+    }
+
+    @Override
+    public void onDatesChangeSection(int leftInArray, int rightInArray) {
+        if (_chartDates != null) {
+            _chartDates.onDatesChangeSection(leftInArray, rightInArray);
+        }
     }
 
     @Override

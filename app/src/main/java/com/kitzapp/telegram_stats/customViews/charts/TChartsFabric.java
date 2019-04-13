@@ -1,6 +1,5 @@
-package com.kitzapp.telegram_stats.customViews.charts.chart2_TwoY;
+package com.kitzapp.telegram_stats.customViews.charts;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import com.kitzapp.telegram_stats.customViews.charts.base.TChartBigView;
 import com.kitzapp.telegram_stats.customViews.charts.base.TChartMiniatureView;
@@ -11,10 +10,8 @@ import com.kitzapp.telegram_stats.customViews.charts.base.TChartMiniatureView;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-@SuppressLint("ViewConstructor")
-class ChartBigTwoY extends TChartBigView {
+public abstract class TChartsFabric {
+    public abstract TChartBigView createChartBig(Context context, TChartMiniatureView chartMiniature);
 
-    ChartBigTwoY(Context context, TChartMiniatureView chartMiniature) {
-        super(context, chartMiniature);
-    }
+    public abstract TChartMiniatureView createChartMiniature(Context context);
 }

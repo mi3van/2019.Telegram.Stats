@@ -1,4 +1,4 @@
-package com.kitzapp.telegram_stats.customViews.charts.impl;
+package com.kitzapp.telegram_stats.customViews.charts.base;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -6,19 +6,21 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Path;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import com.kitzapp.telegram_stats.AndroidApp;
 import com.kitzapp.telegram_stats.R;
-import com.kitzapp.telegram_stats.common.ArraysUtilites;
 import com.kitzapp.telegram_stats.common.MyLongPair;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 import com.kitzapp.telegram_stats.core.appManagers.motions.MotionManagerForBigChart;
+import com.kitzapp.telegram_stats.customViews.charts.base.impl.TAnimMatrixMath;
 import com.kitzapp.telegram_stats.customViews.popup.TCellDescriptionTexts;
 import com.kitzapp.telegram_stats.customViews.simple.TColorfulTextView;
 import com.kitzapp.telegram_stats.customViews.simple.TDelimiterLine;
 import com.kitzapp.telegram_stats.customViews.simple.TViewChartInfoVert;
+import com.kitzapp.telegram_stats.pojo.chart.Chart;
 import com.kitzapp.telegram_stats.pojo.chart.impl.Line;
 
 import java.text.SimpleDateFormat;
@@ -29,17 +31,9 @@ import java.util.Map;
 import static com.kitzapp.telegram_stats.common.AppConts.INTEGER_MAX_VALUE;
 import static com.kitzapp.telegram_stats.common.AppConts.INTEGER_MIN_VALUE;
 
-/**
- * Created by Ivan Kuzmin on 24.03.2019;
- * 3van@mail.ru;
- * Copyright © 2019 Example. All rights reserved.
- */
-
-public abstract class TAbstractChartBig extends TPrivateChartBAAse implements TAbstractChartBigInterface,
-                                                                            TAbstractChartMiniatureInterface.Listener,
+public abstract class TChartBigView extends TAbstractChartBase implements TChartBigInterface,
+                                                                            TChartMiniatureInterface.Listener,
                                                                             MotionManagerForBigChart.OnMyTouchListener {
-    private final String PART_DATE_FORMAT = "EEE, d MMM yyyy";
-
     private TViewChartInfoVert _tViewChartInfoVert;
     private TDelimiterLine _verticalDelimiter;
 
@@ -50,11 +44,10 @@ public abstract class TAbstractChartBig extends TPrivateChartBAAse implements TA
     private int _rightInArray;
 
     private MotionManagerForBigChart _motionManagerBig;
-    private TAbstractChartBigInterface.Listener _chartBigListener;
+    private TChartBigInterface.Listener _chartBigListener;
 
     private Matrix _matrix = new Matrix();
-    private TMatrixValues _matrixValues = new TMatrixValues();
-    private boolean _isNeedPathAnimation = false;
+    private TAnimMatrixMath _matrixAnimMath = new TAnimMatrixMath();
 
 //    private TViewContainerCircleViews _containerCircleViewsPopup;
 //    private int _verticalDelimiterHeightForPopup;
@@ -63,24 +56,24 @@ public abstract class TAbstractChartBig extends TPrivateChartBAAse implements TA
 //    private boolean _isCoeffXForPopupNeedCalculate = true;
 //    private float _coeffXForPopup = 0;
 
-    public TAbstractChartBig(Context context) {
+    public TChartBigView(Context context) {
         super(context);
     }
 
-    public TAbstractChartBig(Context context, AttributeSet attrs) {
+    public TChartBigView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public TAbstractChartBig(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TChartBigView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public TAbstractChartBig(Context context, TAbstractChartMiniature chartMiniature) {
+    public TChartBigView(Context context, TChartMiniatureView chartMiniature) {
         super(context);
         chartMiniature.setMiniatureListener(this);
     }
 
-    public void setDelegate(TAbstractChartBigInterface.Listener chartBigListener) {
+    public void setDelegate(TChartBigInterface.Listener chartBigListener) {
         _chartBigListener = chartBigListener;
     }
 
@@ -95,25 +88,59 @@ public abstract class TAbstractChartBig extends TPrivateChartBAAse implements TA
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+    public void loadData(Chart chart) {
+        super.loadData(chart);
 
-        if (!_linesPathes.isEmpty()) {
-            this.drawPathes(canvas, _linesPathes, _isNeedPathAnimation);
-            _isNeedPathAnimation = true;
+        if (_chart != null && _chartBigListener != null) {
+            long[] axisX = _chart.getAxisX().getData();
+            _chartBigListener.onDatesWasChanged(axisX);
         }
     }
 
     @Override
-    protected void drawPathes(Canvas canvas, HashMap<String, Path> pathHashMap, boolean withAnimation) {
+    public void onLinesPathesWasChanged(HashMap<String, Path> linesPathes, int maxAxisXx) {
+        _linesPathes = linesPathes;
+        _maxAxisXx = maxAxisXx;
 
+        _matrixAnimMath.reset();
+        _matrix.reset();
+        _isFirstDraw = true;
+
+        _isDrawing = true;
+    }
+
+    @Override
+    public void onSurfaceDraw(Canvas canvas) {
+        if (_isDrawing) {
+            Log.d("DRAW", String.format("BIG draw: %d", _chart.getCountDots()));
+            drawPathes(canvas, _linesPathes, _isFirstDraw);
+            _isFirstDraw = false;
+        }
+    }
+
+    @Override
+    protected void drawPathes(Canvas canvas, HashMap<String, Path> pathHashMap, boolean isFirstDraw) {
+        if (isFirstDraw) {
+            _matrixAnimMath.calculateWithoutAnim(_matrix);
+            this.applyMatrixForPathes(pathHashMap);
+        }
+        super.drawPathes(canvas, pathHashMap, isFirstDraw);
+
+        if (!_matrixAnimMath.isAnimationEnd()) {
+            _matrixAnimMath.makeStep(_matrix);
+            this.applyMatrixForPathes(pathHashMap);
+//            _isDrawing = true;
+        }
+    }
+
+    private void applyMatrixForPathes(HashMap<String, Path> pathHashMap) {
         for (Map.Entry<String, Path> entry: pathHashMap.entrySet()) {
             Path path = entry.getValue();
+            if (path == null) {
+                continue;
+            }
             path.transform(_matrix);
         }
-
-        super.drawPathes(canvas, pathHashMap, withAnimation);
-
     }
 
     @Override
@@ -157,8 +184,7 @@ public abstract class TAbstractChartBig extends TPrivateChartBAAse implements TA
         this.hidePopupViews();
 
         if (_chartBigListener != null) {
-            long[] dates = this.getDatesForSend(_leftInArray, _rightInArray);
-            _chartBigListener.onDatesWasChanged(dates);
+            _chartBigListener.onDatesChangeSection(_leftInArray, _rightInArray);
         }
 
         // Get new part arrays for draw Y
@@ -172,15 +198,15 @@ public abstract class TAbstractChartBig extends TPrivateChartBAAse implements TA
 
 //        this.updateMaxAndMin();
 
-        this.configureMatrixScaleX(leftCursor, rightCursor);
+        this.configureMatrix(leftCursor, rightCursor);
 
         invalidate();
     }
 
-    private void configureMatrixScaleX(float leftCursor, float rightCursor) {
-        _matrix.reset();
-        float scale = (rightCursor - leftCursor);
-        _matrix.setScale(scale, 1f);
+    private void configureMatrix(float leftCursor, float rightCursor) {
+        float needScaleX = (rightCursor - leftCursor);
+
+        _matrixAnimMath.setScaleXNeed(needScaleX);
     }
 
 //    private float[] getAxisXCalculated(float leftInPx, float rightInPx, float[] originalAxisX) {
@@ -209,7 +235,7 @@ public abstract class TAbstractChartBig extends TPrivateChartBAAse implements TA
 //        }
 //        long _tempMinAxisY = maxAndMinInPoint.getMin();
 //
-//        _tViewChartInfoVert.setDatesAndInit(_tempMaxAxisY, _tempMinAxisY);
+//        _tViewChartInfoVert.setNewDates(_tempMaxAxisY, _tempMinAxisY);
 //
 //        _partAxisesY = getAxisesForCanvas(_partAxisesY, _tempMaxAxisY, _tempMinAxisY);
 //    }
@@ -245,17 +271,6 @@ public abstract class TAbstractChartBig extends TPrivateChartBAAse implements TA
     }
 
     @Override
-    public void onLinesPathesWasChanged(HashMap<String, Path> linesPathes, int maxAxisXx) {
-        _maxAxisXx = maxAxisXx;
-
-        _linesPathes = new HashMap<>();
-        for (Map.Entry<String, Path> entry: linesPathes.entrySet()) {
-            _linesPathes.put(entry.getKey(), entry.getValue());
-        }
-        _isNeedPathAnimation = false;
-    }
-
-    @Override
     protected int getViewHeightForLayout() {
         return ThemeManager.CHART_PART_HEIGHT_PX;
     }
@@ -263,32 +278,6 @@ public abstract class TAbstractChartBig extends TPrivateChartBAAse implements TA
     @Override
     protected int getLinePaintWidth() {
         return ThemeManager.CHART_LINE_IN_BIG_WIDTH_PX;
-    }
-
-    private long[] getDatesForSend(int leftCursorArray, int rightCursorArray) {
-        long[] partdatesArray = ArraysUtilites.getRange(leftCursorArray, rightCursorArray, _chart.getAxisX().getData());
-        int lengthPartArray = partdatesArray.length;
-
-        int maxSizeSendingArray = 6;
-        long[] sendingArray;
-
-        if (lengthPartArray > maxSizeSendingArray) {
-            sendingArray = new long[5];
-            int index1 = 0;
-            int index5 = lengthPartArray - 1;
-            int index3 = index5 >> 1;
-            int index2 = index3 >> 1;
-            int index4 = index2 + index3;
-            sendingArray[0] = partdatesArray[index1];
-            sendingArray[1] = partdatesArray[index2];
-            sendingArray[2] = partdatesArray[index3];
-            sendingArray[3] = partdatesArray[index4];
-            sendingArray[4] = partdatesArray[index5];
-        } else {
-            sendingArray = partdatesArray;
-        }
-
-        return sendingArray;
     }
 
     private void initPopup() {
@@ -310,6 +299,7 @@ public abstract class TAbstractChartBig extends TPrivateChartBAAse implements TA
 //        }
     }
 
+    private final String POPUP_DATE_FORMAT = "EEE, d MMM yyyy";
     @SuppressLint("SimpleDateFormat")
     private void drawPopupViews(int indexShowedPart) {
 
@@ -335,7 +325,7 @@ public abstract class TAbstractChartBig extends TPrivateChartBAAse implements TA
         }
 
         long date = _chart.getAxisX().getData()[globalIndexArray];
-        SimpleDateFormat formatter = new SimpleDateFormat(PART_DATE_FORMAT);
+        SimpleDateFormat formatter = new SimpleDateFormat(POPUP_DATE_FORMAT);
         String dateString = formatter.format(new Date(date));
         titleTextPopup.setText(dateString);
 

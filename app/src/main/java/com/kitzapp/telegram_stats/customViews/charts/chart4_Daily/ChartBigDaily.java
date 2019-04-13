@@ -2,9 +2,8 @@ package com.kitzapp.telegram_stats.customViews.charts.chart4_Daily;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import com.kitzapp.telegram_stats.customViews.charts.impl.TAbstractChartBigInterface;
-import com.kitzapp.telegram_stats.customViews.charts.impl.TAbstractChartBig;
-import com.kitzapp.telegram_stats.customViews.charts.impl.TAbstractChartMiniature;
+import com.kitzapp.telegram_stats.customViews.charts.base.TChartBigView;
+import com.kitzapp.telegram_stats.customViews.charts.base.TChartMiniatureView;
 
 /**
  * Created by Ivan Kuzmin on 2019-04-11;
@@ -13,9 +12,9 @@ import com.kitzapp.telegram_stats.customViews.charts.impl.TAbstractChartMiniatur
  */
 
 @SuppressLint("ViewConstructor")
-class ChartBigDaily extends TAbstractChartBig {
+class ChartBigDaily extends TChartBigView {
 
-    public ChartBigDaily(Context context, TAbstractChartMiniature chartMiniature) {
+    public ChartBigDaily(Context context, TChartMiniatureView chartMiniature) {
         super(context, chartMiniature);
     }
 }

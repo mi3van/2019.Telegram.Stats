@@ -4,7 +4,6 @@ import com.kitzapp.telegram_stats.customViews.charts.chart2_TwoY.FabricTwoY;
 import com.kitzapp.telegram_stats.customViews.charts.chart3_Stacked.FabricStacked;
 import com.kitzapp.telegram_stats.customViews.charts.chart4_Daily.FabricDaily;
 import com.kitzapp.telegram_stats.customViews.charts.chart5_Percentage.FabricPercentage;
-import com.kitzapp.telegram_stats.customViews.charts.impl.TChartsFabric;
 import com.kitzapp.telegram_stats.customViews.charts.chart1_OnceY.FabricOnceY;
 
 import static com.kitzapp.telegram_stats.pojo.chart.Chart.*;

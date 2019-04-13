@@ -1,10 +1,8 @@
-package com.kitzapp.telegram_stats.customViews.charts.impl;
+package com.kitzapp.telegram_stats.customViews.charts.base;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewPropertyAnimator;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 import com.kitzapp.telegram_stats.customViews.simple.TColorfulChartCircle;
