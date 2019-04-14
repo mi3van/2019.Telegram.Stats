@@ -6,7 +6,9 @@ package com.kitzapp.telegram_stats.customViews.charts.base;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-public interface TChartBigInterface {
+public interface TChartBigViewInterface {
+
+    void setDelegate(TChartBigViewInterface.Listener chartBigListener);
 
     interface Listener {
 

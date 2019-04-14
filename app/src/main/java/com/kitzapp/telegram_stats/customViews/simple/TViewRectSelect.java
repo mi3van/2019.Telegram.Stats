@@ -239,6 +239,14 @@ public class TViewRectSelect extends View implements TViewObserver, MotionMagicF
         }
     }
 
+    private final float ALLOW_VALUE_DIFF = 0.5f;
+    private boolean isCursorsInAvailable(float oldCursor, float newCursor) {
+        boolean isAvailable = (newCursor != oldCursor &&
+                Math.abs(oldCursor - newCursor) >= ALLOW_VALUE_DIFF);
+
+        return isAvailable;
+    }
+
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();

@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Path;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -15,7 +14,6 @@ import com.kitzapp.telegram_stats.R;
 import com.kitzapp.telegram_stats.common.MyLongPair;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 import com.kitzapp.telegram_stats.core.appManagers.motions.MotionManagerForBigChart;
-import com.kitzapp.telegram_stats.customViews.charts.base.impl.TAnimMatrixMath;
 import com.kitzapp.telegram_stats.customViews.popup.TCellDescriptionTexts;
 import com.kitzapp.telegram_stats.customViews.simple.TColorfulTextView;
 import com.kitzapp.telegram_stats.customViews.simple.TDelimiterLine;
@@ -31,8 +29,8 @@ import java.util.Map;
 import static com.kitzapp.telegram_stats.common.AppConts.INTEGER_MAX_VALUE;
 import static com.kitzapp.telegram_stats.common.AppConts.INTEGER_MIN_VALUE;
 
-public abstract class TChartBigView extends TAbstractChartBase implements TChartBigInterface,
-                                                                            TChartMiniatureInterface.Listener,
+public abstract class TChartBigView extends TAbstractChartBase implements TChartBigViewInterface,
+                                                                            TChartMiniatureVInterface.Listener,
                                                                             MotionManagerForBigChart.OnMyTouchListener {
     private TViewChartInfoVert _tViewChartInfoVert;
     private TDelimiterLine _verticalDelimiter;
@@ -44,7 +42,7 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
     private int _rightInArray;
 
     private MotionManagerForBigChart _motionManagerBig;
-    private TChartBigInterface.Listener _chartBigListener;
+    private TChartBigViewInterface.Listener _chartBigListener;
 
     private Matrix _matrix = new Matrix();
     private TAnimMatrixMath _matrixAnimMath = new TAnimMatrixMath();
@@ -73,7 +71,7 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
         chartMiniature.setMiniatureListener(this);
     }
 
-    public void setDelegate(TChartBigInterface.Listener chartBigListener) {
+    public void setDelegate(TChartBigViewInterface.Listener chartBigListener) {
         _chartBigListener = chartBigListener;
     }
 
@@ -89,58 +87,36 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
 
     @Override
     public void loadData(Chart chart) {
+        if (chart == null) {
+            return;
+        }
         super.loadData(chart);
+        _matrixAnimMath.reset();
+        _matrix.reset();
 
-        if (_chart != null && _chartBigListener != null) {
+        if (_chartBigListener != null) {
             long[] axisX = _chart.getAxisX().getData();
             _chartBigListener.onDatesWasChanged(axisX);
         }
     }
 
     @Override
-    public void onLinesPathesWasChanged(HashMap<String, Path> linesPathes, int maxAxisXx) {
-        _linesPathes = linesPathes;
-        _maxAxisXx = maxAxisXx;
+    public void onDataWasRecalculated(float[] axisXForCanvas) {
+        _axisXForCanvas = axisXForCanvas;
+        _linesPathes = getLinesPathes(_axisXForCanvas, _axisesYOriginalArrays);
 
-        _matrixAnimMath.reset();
-        _matrix.reset();
         _isFirstDraw = true;
 
-        _isDrawing = true;
+        invalidate();
     }
 
     @Override
-    public void onSurfaceDraw(Canvas canvas) {
-        if (_isDrawing) {
-            Log.d("DRAW", String.format("BIG draw: %d", _chart.getCountDots()));
-            drawPathes(canvas, _linesPathes, _isFirstDraw);
-            _isFirstDraw = false;
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        if (_linesPathes.isEmpty()) {
+            return;
         }
-    }
-
-    @Override
-    protected void drawPathes(Canvas canvas, HashMap<String, Path> pathHashMap, boolean isFirstDraw) {
-        if (isFirstDraw) {
-            _matrixAnimMath.calculateWithoutAnim(_matrix);
-            this.applyMatrixForPathes(pathHashMap);
-        }
-        super.drawPathes(canvas, pathHashMap, isFirstDraw);
-
-        if (!_matrixAnimMath.isAnimationEnd()) {
-            _matrixAnimMath.makeStep(_matrix);
-            this.applyMatrixForPathes(pathHashMap);
-//            _isDrawing = true;
-        }
-    }
-
-    private void applyMatrixForPathes(HashMap<String, Path> pathHashMap) {
-        for (Map.Entry<String, Path> entry: pathHashMap.entrySet()) {
-            Path path = entry.getValue();
-            if (path == null) {
-                continue;
-            }
-            path.transform(_matrix);
-        }
+        drawPathes(canvas, _linesPathes);
     }
 
     @Override
@@ -200,13 +176,23 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
 
         this.configureMatrix(leftCursor, rightCursor);
 
-        invalidate();
+        this.invalidate();
     }
 
     private void configureMatrix(float leftCursor, float rightCursor) {
         float needScaleX = (rightCursor - leftCursor);
 
         _matrixAnimMath.setScaleXNeed(needScaleX);
+    }
+
+    private void applyMatrixForPathes(HashMap<String, Path> pathHashMap) {
+        for (Map.Entry<String, Path> entry: pathHashMap.entrySet()) {
+            Path path = entry.getValue();
+            if (path == null) {
+                continue;
+            }
+            path.transform(_matrix);
+        }
     }
 
 //    private float[] getAxisXCalculated(float leftInPx, float rightInPx, float[] originalAxisX) {
@@ -261,6 +247,10 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
             }
         }
         return new MyLongPair(max, min);
+    }
+
+    private void getCalcArrayForHeightView(HashMap<String, long[]> axisesYOriginalArrays) {
+
     }
 
     @Override
@@ -387,6 +377,16 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
 //    }
 
     @Override
+    protected int getChartVerticalPadding() {
+        return ThemeManager.CHART_BIG_VERTICAL_PADDING_SUM_PX;
+    }
+
+    @Override
+    protected int getChartHalfVerticalPadding() {
+        return ThemeManager.CHART_BIG_VERTICAL_PADDING_HALF_PX;
+    }
+
+    @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
@@ -399,15 +399,5 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
     protected void onDetachedFromWindow() {
         _motionManagerBig.deattachView();
         super.onDetachedFromWindow();
-    }
-
-    @Override
-    protected int getChartVerticalPadding() {
-        return ThemeManager.CHART_BIG_VERTICAL_PADDING_SUM_PX;
-    }
-
-    @Override
-    protected int getChartHalfVerticalPadding() {
-        return ThemeManager.CHART_BIG_VERTICAL_PADDING_HALF_PX;
     }
 }

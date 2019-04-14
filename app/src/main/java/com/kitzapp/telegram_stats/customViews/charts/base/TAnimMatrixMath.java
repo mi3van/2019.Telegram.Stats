@@ -1,4 +1,4 @@
-package com.kitzapp.telegram_stats.customViews.charts.base.impl;
+package com.kitzapp.telegram_stats.customViews.charts.base;
 
 import android.graphics.Matrix;
 
@@ -9,8 +9,6 @@ import android.graphics.Matrix;
  */
 
 public class TAnimMatrixMath {
-    private final double ALLOWED_LIMIT = 0.001;
-
     private boolean _isAnimationEnd = false;
 
     private float scaleXCurrent = 1f;
@@ -47,7 +45,7 @@ public class TAnimMatrixMath {
     }
 
     public boolean isAnimationEnd() {
-        boolean isScaleAnimEnd = scaleXNeed <= scaleXCurrent + ALLOWED_LIMIT && scaleXNeed >= scaleXCurrent - ALLOWED_LIMIT;
+        boolean isScaleAnimEnd = true;// scaleXNeed <= scaleXCurrent + ALLOWED_LIMIT && scaleXNeed >= scaleXCurrent - ALLOWED_LIMIT;
         if (isScaleAnimEnd) {
             _isAnimationEnd = true;
         } else {

@@ -28,7 +28,7 @@ import static com.kitzapp.telegram_stats.common.AppConts.ELEVATION_CHART_VIEW;
 
 public class TChartCardCell extends LinearLayout implements TViewObserver,
                                                             TColorfulCheckBox.Listener,
-                                                            TChartBigInterface.Listener {
+                                                            TChartBigViewInterface.Listener {
     private int _oldBackColor;
 
     private Chart _chart = null;
@@ -99,8 +99,8 @@ public class TChartCardCell extends LinearLayout implements TViewObserver,
     public void onBoxWasChecked(String key, boolean isChecked) {
         try {
             _chart.getLines().get(key).setIsActive(isChecked);
-            _miniatureChart.wasChangedActiveChart();
-            _bigChart.wasChangedActiveChart();
+            _miniatureChart.wasChangedIsActiveChart();
+            _bigChart.wasChangedIsActiveChart();
         } catch (Exception e) {
             e.printStackTrace();
         }

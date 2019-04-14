@@ -4,14 +4,13 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PixelFormat;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
-import com.kitzapp.telegram_stats.customViews.charts.base.impl.ChartSurfaceView;
-import com.kitzapp.telegram_stats.customViews.charts.base.impl.ChartSurfaceViewInterface;
+import com.kitzapp.telegram_stats.common.AppConts;
+import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 import com.kitzapp.telegram_stats.pojo.chart.Chart;
 import com.kitzapp.telegram_stats.pojo.chart.impl.Line;
 
@@ -26,15 +25,17 @@ import static com.kitzapp.telegram_stats.common.AppConts.*;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-abstract class TAbstractChartBase extends FrameLayout implements ChartSurfaceViewInterface.Listener {
-
-    private ChartSurfaceView _chartSurfaceView;
+abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartBaseInterface {
+    protected final int FLAG_Y_NOT_AVAILABLE = -5;
 
     protected Chart _chart = null;
     private HashMap<String, Paint> _paints = new HashMap<>();
     protected HashMap<String, Path> _linesPathes = new HashMap<>();
+
+    protected HashMap<String, long[]> _axisesYOriginalArrays = new HashMap<>();
+    protected float[] _axisXForCanvas = null;
+
     protected boolean _isFirstDraw = true;
-    protected boolean _isDrawing = false;
 
     protected float _viewHeight;
     protected float _viewWidth;
@@ -59,19 +60,16 @@ abstract class TAbstractChartBase extends FrameLayout implements ChartSurfaceVie
 
     protected void init() {
         setWillNotDraw(false);
-
-        _chartSurfaceView = new ChartSurfaceView(getContext());
-        _chartSurfaceView.setDelegate(this);
-        _chartSurfaceView.setZOrderOnTop(true);
-        _chartSurfaceView.getHolder().setFormat(PixelFormat.TRANSPARENT);
-
-        addView(_chartSurfaceView);
     }
 
     public void loadData(Chart chart) {
+        if (chart == null) {
+            return;
+        }
         this._chart = chart;
         _paints = getNewPaints(_chart);
-        _viewWidth = 0;
+
+        _axisesYOriginalArrays = this.getOriginalAxysesYAndInitMaxs();
 
         _isFirstDraw = true;
     }
@@ -81,35 +79,61 @@ abstract class TAbstractChartBase extends FrameLayout implements ChartSurfaceVie
     protected abstract int getChartHalfVerticalPadding();
     protected abstract int getViewHeightForLayout();
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
+    protected HashMap<String, Path> getLinesPathes(float[] axisXForCanvas, HashMap<String, long[]> axisesYForCanvas) {
+        HashMap<String, Path> newPathesLines = new HashMap<>();
+        if (axisesYForCanvas.isEmpty()) {
+            return newPathesLines;
+        }
 
-        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) getLayoutParams();
-        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        layoutParams.height = this.getViewHeightForLayout();
+        Line line;
+        Path pathLine;
+        for (Map.Entry<String, long[]> entry : axisesYForCanvas.entrySet()) {
+            line = _chart.getLines().get(entry.getKey());
+            if (line == null) {
+                continue;
+            }
 
-        int paddingPx = this.getPaddingRightLeft();
-        setPadding(paddingPx, 0, paddingPx, 0);
-        this.setLayoutParams(layoutParams);
+            long[] axisYForCanvas = entry.getValue();
+            int columnsCount = axisYForCanvas.length;
+
+            pathLine = new Path();
+            float firstX = axisXForCanvas[0];
+            long firstY = axisYForCanvas[0];
+
+            pathLine.moveTo(firstX, firstY);
+            long currentY;
+            float currentX;
+
+            for (int i = 1; i < columnsCount; i++) {
+                currentY = axisYForCanvas[i];
+                if (currentY > FLAG_Y_NOT_AVAILABLE) {
+                    currentX = axisXForCanvas[i];
+
+                    pathLine.lineTo(currentX, currentY);
+                }
+            }
+
+            newPathesLines.put(entry.getKey(), pathLine);
+        }
+        return newPathesLines;
     }
 
-    public void wasChangedActiveChart() {
-        this.invalidate();
-    };
-
-    protected int getPaddingRightLeft() {
-        return 0;
+    protected void drawPathes(Canvas canvas, HashMap<String, Path> pathHashMap) {
+        if (_isFirstDraw) {
+            this.drawPathesWithoutAnim(canvas, pathHashMap, _paints);
+            _isFirstDraw = false;
+        } else {
+            this.drawPathesAlphaAnim(canvas, pathHashMap, _paints);
+        }
     }
 
-    protected void drawPathes(Canvas canvas, HashMap<String, Path> pathHashMap, boolean isFirstDraw) {
+    private void drawPathesAlphaAnim(Canvas canvas, HashMap<String, Path> pathHashMap, HashMap<String, Paint> paintsMap) {
         boolean isActiveChart;
-        Path path;
-        Paint paint;
+        Path path;  Paint paint;
+        int newAlpha, oldAlpha;
 
-        _isDrawing = false;
         for (Map.Entry<String, Path> entry : pathHashMap.entrySet()) {
-            paint = _paints.get(entry.getKey());
+            paint = paintsMap.get(entry.getKey());
             path = entry.getValue();
             isActiveChart = this.getChartIsActive(entry.getKey());
 
@@ -117,38 +141,61 @@ abstract class TAbstractChartBase extends FrameLayout implements ChartSurfaceVie
                 continue;
             }
 
-            if (!isFirstDraw) {
-                canvas.drawPath(path, paint);
+            canvas.drawPath(path, paint);
 
-                int newAlpha = paint.getAlpha();
-                boolean isDrawEnded = (isActiveChart && newAlpha == MAX_VALUE_ALPHA) || (!isActiveChart && newAlpha == MIN_VALUE_ALPHA);
-                if (isDrawEnded) {
-                    continue;
-                } else {
-                    _isDrawing = true;
-                }
+            oldAlpha = paint.getAlpha();
 
-                if (isActiveChart) {
-                    if (newAlpha + STEP_ALPHA_FOR_ANIM <= MAX_VALUE_ALPHA) {
-                        newAlpha += STEP_ALPHA_FOR_ANIM;
-                    } else {
-                        newAlpha = MAX_VALUE_ALPHA;
-                    }
-                } else {
-                    if (newAlpha - STEP_ALPHA_FOR_ANIM >= MIN_VALUE_ALPHA) {
-                        newAlpha -= STEP_ALPHA_FOR_ANIM;
-                    } else {
-                        newAlpha = MIN_VALUE_ALPHA;
-                    }
-                }
-                paint.setAlpha(newAlpha);
-//                postInvalidateDelayed(AppConts.DELAY_STEP_ELEMENTS_ANIM);
+            boolean isDrawEnded = (isActiveChart && oldAlpha == MAX_VALUE_ALPHA) ||
+                    (!isActiveChart && oldAlpha == MIN_VALUE_ALPHA);
+
+            if (isDrawEnded) {
+                continue;
+            }
+
+            newAlpha = this.getNewAlpha(isActiveChart, oldAlpha);
+
+            paint.setAlpha(newAlpha);
+            postInvalidateDelayed(AppConts.DELAY_STEP_ELEMENTS_ANIM);
+        }
+    }
+
+    protected void drawPathesWithoutAnim(Canvas canvas, HashMap<String, Path> pathHashMap, HashMap<String, Paint> paintsMap) {
+        boolean isActiveChart;
+        Path path;
+        Paint paint;
+
+        for (Map.Entry<String, Path> entry : pathHashMap.entrySet()) {
+            paint = paintsMap.get(entry.getKey());
+            path = entry.getValue();
+            isActiveChart = this.getChartIsActive(entry.getKey());
+
+            if (paint == null && entry.getValue() == null) {
+                continue;
+            }
+            int alpha = isActiveChart ? MAX_VALUE_ALPHA : MIN_VALUE_ALPHA;
+            paint.setAlpha(alpha);
+            canvas.drawPath(path, paint);
+        }
+    }
+
+    private int getNewAlpha(boolean isActiveChart, int alpha) {
+        int newAlpha = alpha;
+
+        if (isActiveChart) {
+            if (newAlpha + STEP_ALPHA_FOR_ANIM <= MAX_VALUE_ALPHA) {
+                newAlpha += STEP_ALPHA_FOR_ANIM;
             } else {
-                int alpha = isActiveChart ? MAX_VALUE_ALPHA : MIN_VALUE_ALPHA;
-                paint.setAlpha(alpha);
-                canvas.drawPath(path, paint);
+                newAlpha = MAX_VALUE_ALPHA;
+            }
+        } else {
+            if (newAlpha - STEP_ALPHA_FOR_ANIM >= MIN_VALUE_ALPHA) {
+                newAlpha -= STEP_ALPHA_FOR_ANIM;
+            } else {
+                newAlpha = MIN_VALUE_ALPHA;
             }
         }
+
+        return newAlpha;
     }
 
     protected boolean getChartIsActive(String key) {
@@ -177,4 +224,59 @@ abstract class TAbstractChartBase extends FrameLayout implements ChartSurfaceVie
         }
         return tempPaints;
     }
+
+    private HashMap<String, long[]> getOriginalAxysesYAndInitMaxs() {
+        HashMap<String, long[]> tempAxyses = new HashMap<>();
+
+        Line line;
+        int currentColumnsCount;
+        for (Map.Entry<String, Line> entry : _chart.getLines().entrySet()) {
+            line = entry.getValue();
+            currentColumnsCount = line.getCountDots();
+
+            if (currentColumnsCount > 1) {
+
+                // INIT MAX IN X AXIS
+                if (_maxAxisXx < currentColumnsCount) {
+                    _maxAxisXx = currentColumnsCount;
+                }
+
+                // INIT AXIS Y AND FIND MAX Y
+                long[] axisY = new long[currentColumnsCount];
+                long currentY;
+                for (int i = 0; i < currentColumnsCount; i++) {
+                    currentY = line.getData()[i];
+                    if (_maxAxisY < currentY) {
+                        _maxAxisY = currentY;
+                    }
+                    axisY[i] = currentY;
+                }
+                tempAxyses.put(entry.getKey(), axisY);
+            }
+        }
+        return tempAxyses;
+    }
+
+    protected int getMarginRightLeft() {
+        return ThemeManager.MARGIN_16DP_IN_PX;
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) getLayoutParams();
+        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        layoutParams.height = this.getViewHeightForLayout();
+
+        int marginPx = this.getMarginRightLeft();
+        layoutParams.setMargins(marginPx, 0, marginPx, 0);
+        this.setLayoutParams(layoutParams);
+    }
+
+    @Override
+    public void wasChangedIsActiveChart() {
+        invalidate();
+    }
+
 }
