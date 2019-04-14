@@ -46,21 +46,22 @@ public abstract class TChartMiniatureView extends TAbstractChartBase implements 
 
     @Override
     protected void onDraw(Canvas canvas) {
-        int newWidth = getWidth();
-        if (_isFirstDraw || _viewWidth != newWidth) {
-            _viewWidth = newWidth;
-            _viewHeight = getHeight() - getChartVerticalPadding();
+        super.onDraw(canvas);
+
+        if (_isFirstDraw || _viewWidth != getWidth()) {
             this.initAxisesForCanvas();
         }
+
         drawPathes(canvas, _linesPathes);
     }
 
     //    isNeedInitPaints
     private void initAxisesForCanvas() {
-        MAX_DOTS_FOR_APPROX_CHART_FULL = (int)_viewWidth >> 1;
+        this.updateSizeValues();
+
+        MAX_DOTS_FOR_APPROX_CHART_FULL = (int) _calculatingViewWidth >> 1;
 
         _axisXForCanvas = this.recalculateAxisX(_maxAxisXx);
-
         _axisesYForCanvas = this.getAxisesForCanvas(_axisesYOriginalArrays, _maxAxisY);
 
         _linesPathes = this.getLinesPathes(_axisXForCanvas, _axisesYForCanvas);
@@ -70,10 +71,12 @@ public abstract class TChartMiniatureView extends TAbstractChartBase implements 
         }
     }
 
+    private final int paintWidthForCalculateX = getLinePaintWidth();
+    private final int paintHalfWidthForCalculateX = paintWidthForCalculateX >> 1;
     private float[] recalculateAxisX(int maxAxisXx) {
         float[] newAxisX = new float[maxAxisXx];
-        float stepX = (_viewWidth) / (maxAxisXx - 1);
-        newAxisX[0] = 0;
+        float stepX = (_calculatingViewWidth - paintWidthForCalculateX) / (maxAxisXx - 1);
+        newAxisX[0] = getChartHorizPadding() + paintHalfWidthForCalculateX;
         for (int i = 1; i < maxAxisXx; i++) {
             newAxisX[i] = newAxisX[i - 1] + stepX;
         }
@@ -90,8 +93,8 @@ public abstract class TChartMiniatureView extends TAbstractChartBase implements 
         HashMap<String, long[]> tempArray = new HashMap<>();
 
         if (!originalArray.isEmpty()) {
-            float widthInPx = maxAxisY - minAxisY;
-            float persent = widthInPx / _viewHeight;
+            float segment = maxAxisY - minAxisY;
+            float persent = segment / _calculatingViewHeight;
             long[] tempAxisY;
             int countDots;
             long[] axisY;
@@ -106,7 +109,7 @@ public abstract class TChartMiniatureView extends TAbstractChartBase implements 
                 for (int i = 0; i < countDots; i++) {
                     tempValue = tempAxisY[i] - minAxisY;
                     tempValue /= persent;
-                    convertedY = (long) (_viewHeight - tempValue + getChartHalfVerticalPadding());
+                    convertedY = (long) (_calculatingViewHeight - tempValue + getChartHalfVerticalPadding());
                     if (convertedY < 0) {
                         convertedY = 0;
                     }
@@ -172,16 +175,6 @@ public abstract class TChartMiniatureView extends TAbstractChartBase implements 
         _viewRectSelect.setMiniatureIsLocked(isLocked);
     }
 
-    @Override
-    protected int getChartVerticalPadding() {
-        return ThemeManager.CHART_MINIATURE_VERTICAL_PADDING_SUM_PX;
-    }
-
-    @Override
-    protected int getChartHalfVerticalPadding() {
-        return ThemeManager.CHART_MINIATURE_VERTICAL_PADDING_HALF_PX;
-    }
-
     private int getMaxDotsForApproxChart() {
         return MAX_DOTS_FOR_APPROX_CHART_FULL;
     }
@@ -194,6 +187,16 @@ public abstract class TChartMiniatureView extends TAbstractChartBase implements 
     @Override
     protected int getLinePaintWidth() {
         return ThemeManager.CHART_LINE_IN_MINIATURE_WIDTH_PX;
+    }
+
+    @Override
+    protected int getChartVerticalPadding() {
+        return ThemeManager.CHART_MINIATURE_VERTICAL_PADDING_SUM_PX;
+    }
+
+    @Override
+    protected int getChartHalfVerticalPadding() {
+        return ThemeManager.CHART_MINIATURE_VERTICAL_PADDING_HALF_PX;
     }
 
     @Override

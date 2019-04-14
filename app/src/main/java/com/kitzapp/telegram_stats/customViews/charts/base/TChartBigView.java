@@ -91,6 +91,7 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
             return;
         }
         super.loadData(chart);
+
         _matrixAnimMath.reset();
         _matrix.reset();
 
@@ -100,8 +101,16 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
         }
     }
 
+    private boolean isOriginalArrayWasFlipped = false;
     @Override
     public void onDataWasRecalculated(float[] axisXForCanvas) {
+
+        this.updateSizeValues();
+
+        if (!isOriginalArrayWasFlipped) {
+            this.calcArrayForViewFlipVert(_axisesYOriginalArrays);
+            isOriginalArrayWasFlipped = true;
+        }
         _axisXForCanvas = axisXForCanvas;
         _linesPathes = getLinesPathes(_axisXForCanvas, _axisesYOriginalArrays);
 
@@ -113,6 +122,7 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
         if (_linesPathes.isEmpty()) {
             return;
         }
@@ -168,8 +178,8 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
 //         Get new part arrays for draw X
 //        _partAxisXForGraph = getPartOfFullAxisX(_leftInArray, _rightInArray);
 //
-//        float leftInPx = leftCursor * _viewWidth;
-//        float rightInPx = rightCursor * _viewWidth;
+//        float leftInPx = leftCursor * _calculatingViewWidth;
+//        float rightInPx = rightCursor * _calculatingViewWidth;
 //        _partAxisXForGraph = getAxisXCalculated(leftInPx, rightInPx, _partAxisXForGraph);
 
 //        this.updateMaxAndMin();
@@ -200,7 +210,7 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
 //        float[] newAxis = new float[lengthX];
 //
 //        float widthInPx = rightInPx - leftInPx;
-//        float persent = widthInPx / _viewWidth;
+//        float persent = widthInPx / _calculatingViewWidth;
 //        float tempValueX;
 //        for (int i = 0; i < lengthX; i++) {
 //            tempValueX = originalAxisX[i] - leftInPx;
@@ -249,8 +259,22 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
         return new MyLongPair(max, min);
     }
 
-    private void getCalcArrayForHeightView(HashMap<String, long[]> axisesYOriginalArrays) {
+    private void calcArrayForViewFlipVert(HashMap<String, long[]> axisesYOriginalArrays) {
+        if (axisesYOriginalArrays.isEmpty()) {
+            return;
+        }
 
+        float coeff = _maxAxisY / _calculatingViewHeight;
+
+        for (Map.Entry<String, long[]> entry : axisesYOriginalArrays.entrySet()) {
+            long[] array = entry.getValue();
+            float tempValue;
+            for (int i = 0; i < array.length; i++) {
+                tempValue = array[i] / coeff;
+                array[i] = (long) (_calculatingViewHeight - tempValue + getChartHalfVerticalPadding());
+            }
+            entry.setValue(array);
+        }
     }
 
     @Override

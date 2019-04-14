@@ -37,8 +37,9 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
 
     protected boolean _isFirstDraw = true;
 
-    protected float _viewHeight;
     protected float _viewWidth;
+    protected float _calculatingViewHeight;
+    protected float _calculatingViewWidth;
 
     protected int _maxAxisXx;
     protected long _maxAxisY;
@@ -67,17 +68,24 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
             return;
         }
         this._chart = chart;
-        _paints = getNewPaints(_chart);
 
+        _paints = getNewPaints(_chart);
         _axisesYOriginalArrays = this.getOriginalAxysesYAndInitMaxs();
 
         _isFirstDraw = true;
     }
 
+    protected void updateSizeValues() {
+        _calculatingViewHeight = getHeight() - getChartVerticalPadding();
+        _calculatingViewWidth = getWidth() - getChartHorizPaddingSum();
+        _viewWidth = getWidth();
+    }
+
     protected abstract int getLinePaintWidth();
+    protected abstract int getViewHeightForLayout();
+
     protected abstract int getChartVerticalPadding();
     protected abstract int getChartHalfVerticalPadding();
-    protected abstract int getViewHeightForLayout();
 
     protected HashMap<String, Path> getLinesPathes(float[] axisXForCanvas, HashMap<String, long[]> axisesYForCanvas) {
         HashMap<String, Path> newPathesLines = new HashMap<>();
@@ -257,8 +265,17 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
         return tempAxyses;
     }
 
-    protected int getMarginRightLeft() {
+    protected int getChartHorizPaddingSum() {
+        return ThemeManager.MARGIN_32DP_IN_PX;
+    }
+
+    protected int getChartHorizPadding() {
         return ThemeManager.MARGIN_16DP_IN_PX;
+    }
+
+    @Override
+    public void wasChangedIsActiveChart() {
+        invalidate();
     }
 
     @Override
@@ -268,15 +285,9 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) getLayoutParams();
         layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
         layoutParams.height = this.getViewHeightForLayout();
-
-        int marginPx = this.getMarginRightLeft();
-        layoutParams.setMargins(marginPx, 0, marginPx, 0);
         this.setLayoutParams(layoutParams);
-    }
 
-    @Override
-    public void wasChangedIsActiveChart() {
-        invalidate();
+        int paddingPx = this.getChartHorizPadding();
+        setPadding(paddingPx, 0, paddingPx, 0);
     }
-
 }

@@ -52,6 +52,7 @@ public class ThemeManager {
     public static final int CHART_RECT_SELECT_WIDTH_PX;
     public static final int CHART_BIG_VERTICAL_PADDING_SUM_PX;
     public static final int CHART_BIG_VERTICAL_PADDING_HALF_PX;
+
     public static final int CHART_MINIATURE_VERTICAL_PADDING_SUM_PX;
     public static final int CHART_MINIATURE_VERTICAL_PADDING_HALF_PX;
 
@@ -123,6 +124,7 @@ public class ThemeManager {
         CHART_RECT_SELECT_WIDTH_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_RECT_SELECT_WIDTH_DP);
         CHART_BIG_VERTICAL_PADDING_SUM_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_CIRCLE_SIZE_DP);
         CHART_BIG_VERTICAL_PADDING_HALF_PX = CHART_BIG_VERTICAL_PADDING_SUM_PX >> 1;
+
         CHART_MINIATURE_VERTICAL_PADDING_SUM_PX = AndroidUtilites.convertDpToPx(AndroidApp.resources, CHART_MINIATURE_VERTICAL_PADDING_SUM_DP);
         CHART_MINIATURE_VERTICAL_PADDING_HALF_PX = CHART_MINIATURE_VERTICAL_PADDING_SUM_PX >> 1;
 
