@@ -28,6 +28,7 @@ import java.util.Map;
 
 import static com.kitzapp.telegram_stats.common.AppConts.INTEGER_MAX_VALUE;
 import static com.kitzapp.telegram_stats.common.AppConts.INTEGER_MIN_VALUE;
+import static com.kitzapp.telegram_stats.core.appManagers.ThemeManager.CHART_LINE_IN_MINIATURE_WIDTH_PX;
 
 public abstract class TChartBigView extends TAbstractChartBase implements TChartBigViewInterface,
                                                                             TChartMiniatureVInterface.Listener,
@@ -43,9 +44,6 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
 
     private MotionManagerForBigChart _motionManagerBig;
     private TChartBigViewInterface.Listener _chartBigListener;
-
-    private Matrix _matrix = new Matrix();
-
 
 //    private TViewContainerCircleViews _containerCircleViewsPopup;
 //    private int _verticalDelimiterHeightForPopup;
@@ -92,9 +90,6 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
         }
         super.loadData(chart);
 
-//        _matrixAnimMath.reset();
-        _matrix.reset();
-
         if (_chartBigListener != null) {
             long[] axisX = _chart.getAxisX().getData();
             _chartBigListener.onDatesWasChanged(axisX);
@@ -112,11 +107,8 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
             isOriginalArrayWasFlipped = true;
         }
         _axisXForCanvas = axisXForCanvas;
-        _linesPathes = getLinesPathes(_axisXForCanvas, _axisesYOriginalArrays);
 
         _isFirstDraw = true;
-
-        invalidate();
     }
 
     @Override
@@ -154,20 +146,19 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
 
     @Override
     public void onRectCursorsWasChanged(float leftCursor, float rightCursor) {
+        if (_leftCursor == leftCursor && _rightCursor == rightCursor && !_isFirstDraw) {
+            return;
+        }
         _leftCursor = leftCursor;_rightCursor = rightCursor;
 
-        _leftInArray = (int) (_maxAxisXx * leftCursor);
-        _rightInArray = (int) (_maxAxisXx * rightCursor);
+        _leftInArray = Math.round (_maxAxisXx * leftCursor);
+        _rightInArray = Math.round (_maxAxisXx * rightCursor);
 
-//        _isCoeffXForPopupNeedCalculate = true;
-//
         int countPoints = _rightInArray - _leftInArray;
 
         if (countPoints < 2) {
             return;
         }
-
-        this.hidePopupViews();
 
         if (_chartBigListener != null) {
             _chartBigListener.onDatesChangeSection(_leftInArray, _rightInArray);
@@ -184,25 +175,39 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
 
 //        this.updateMaxAndMin();
 
-        this.configureMatrix(leftCursor, rightCursor);
+        float pointsWidth = _calculatingViewWidth / countPoints;
+        int addingCountDots = Math.round(getChartHorizPadding() / pointsWidth) + 2;
+
+        _linesPathes = getLinesPathesArea(_axisXForCanvas, _axisesYOriginalArrays,
+                _leftInArray - addingCountDots,
+                _rightInArray + addingCountDots);
+
+        this.configureMatrixAndApply(leftCursor, rightCursor, _linesPathes);
 
         this.invalidate();
     }
 
-    private void configureMatrix(float leftCursor, float rightCursor) {
-        float needScaleX = (rightCursor - leftCursor);
+    private int pxMatrix = getChartHorizPadding() - (CHART_LINE_IN_MINIATURE_WIDTH_PX >> 1);
+    private void configureMatrixAndApply(float leftCursor, float rightCursor, HashMap<String, Path> pathHashMap) {
+        Matrix matrixTranslate = new Matrix();
+        Matrix matrixScale = new Matrix();
 
-//        _matrixAnimMath.setScaleXNeed(needScaleX);
-    }
+        float needScaleX = 1f / (rightCursor - leftCursor);
+        float translateX = leftCursor * _calculatingViewWidth;
 
-    private void applyMatrixForPathes(HashMap<String, Path> pathHashMap) {
+        matrixScale.setScale(needScaleX, 1f, pxMatrix, 0f);
+        matrixTranslate.setTranslate(-translateX, 0f);
+
         for (Map.Entry<String, Path> entry: pathHashMap.entrySet()) {
             Path path = entry.getValue();
             if (path == null) {
                 continue;
             }
-            path.transform(_matrix);
+
+            path.transform(matrixTranslate);
+            path.transform(matrixScale);
         }
+//        _matrixAnimMath.setScaleXNeed(needScaleX);
     }
 
 //    private float[] getAxisXCalculated(float leftInPx, float rightInPx, float[] originalAxisX) {
@@ -247,6 +252,9 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
                 continue;
             }
             valuesArray = hashMap.get(entry.getKey());
+            if (valuesArray == null) {
+                continue;
+            }
             for (long value : valuesArray) {
                 if (value > max) {
                     max = value;

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.MotionEvent;
 import android.view.View;
-import com.kitzapp.telegram_stats.core.appManagers.ObserverManager;
 
 /**
  * Created by Ivan Kuzmin on 27.03.2019;
@@ -19,9 +18,12 @@ public class MotionMagicForMiniature extends BaseMotionManager {
     private final byte MOTION_RIGHT_CURSOR = 2;
 
     private boolean isMiniatureLocked = false;
-    private final float COEF_CURSOR_PX = 0.05f;
+    private final float COEF_CURSOR_WIDTH = 0.05f;
     private final float _maxCursorWidth;
     private byte _currentMotion = MOTION_UNDEFINED;
+
+    private float ALLOW_COEF_IN_PX = 0.5f;
+    private float _oldCanvasTouchX;
 
     public interface MotionListener {
         void onMoveLeftSide(float newLeftCursor);
@@ -56,17 +58,23 @@ public class MotionMagicForMiniature extends BaseMotionManager {
             if (_motionListener == null) {
                 return false;
             }
+            float eventX = event.getX();
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     if (_currentMotion == MOTION_UNDEFINED) {
-                        _oldPersentX = event.getX() / _motionListener.getCanvasWidth();
+                        _oldPersentX = eventX / _motionListener.getCanvasWidth();
                         _currentMotion = this.getNewMotion(_oldPersentX);
                         _widthViewForCenter = _motionListener.getRightCursor() - _motionListener.getLeftCursor();
+                        _oldCanvasTouchX = eventX;
                     }
                     break;
                 case MotionEvent.ACTION_MOVE:
                     if (_currentMotion != MOTION_UNDEFINED) {
-                        this.wasMove(event.getX() / _motionListener.getCanvasWidth());
+                        float difference = Math.abs(eventX - _oldCanvasTouchX);
+                        if (difference > ALLOW_COEF_IN_PX) {
+                            this.wasMove(eventX / _motionListener.getCanvasWidth());
+                            _oldCanvasTouchX = eventX;
+                        }
                     }
                     break;
             }
@@ -148,10 +156,10 @@ public class MotionMagicForMiniature extends BaseMotionManager {
 
         float leftCursor = _motionListener.getLeftCursor();
         float rightCursor = _motionListener.getRightCursor();
-        if (persentX > leftCursor - COEF_CURSOR_PX && persentX < rightCursor + COEF_CURSOR_PX) {
-            if (persentX < leftCursor + COEF_CURSOR_PX) {
+        if (persentX > leftCursor - COEF_CURSOR_WIDTH && persentX < rightCursor + COEF_CURSOR_WIDTH) {
+            if (persentX < leftCursor + COEF_CURSOR_WIDTH) {
                 motion = MOTION_LEFT_CURSOR;
-            } else if (persentX > rightCursor - COEF_CURSOR_PX) {
+            } else if (persentX > rightCursor - COEF_CURSOR_WIDTH) {
                 motion = MOTION_RIGHT_CURSOR;
             } else {
                 motion = MOTION_CENTER;

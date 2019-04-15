@@ -107,14 +107,30 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
     protected abstract int getChartVerticalPadding();
     protected abstract int getChartHalfVerticalPadding();
 
-    protected HashMap<String, Path> getLinesPathes(float[] axisXForCanvas, HashMap<String, long[]> axisesYForCanvas) {
+    protected HashMap<String, Path> getLinesPathes(float[] axisXForCanvas,
+                                                   HashMap<String, long[]> axisesYForCanvas) {
+        return this.getLinesPathesArea(axisXForCanvas, axisesYForCanvas, 0, axisXForCanvas.length);
+    }
+
+    protected HashMap<String, Path> getLinesPathesArea(float[] axisXForCanvas,
+                                                       HashMap<String, long[]> axisesYForCanvas,
+                                                       int leftCursorArray,
+                                                       int rightCursorArray) {
         HashMap<String, Path> newPathesLines = new HashMap<>();
         if (axisesYForCanvas.isEmpty()) {
             return newPathesLines;
         }
+        int columnsCount = axisXForCanvas.length;
 
-        Line line;
-        Path pathLine;
+        int myLeftIndex = leftCursorArray;
+        if (myLeftIndex < 0) {
+            myLeftIndex = 0;
+        }
+        int myRightIndex = rightCursorArray;
+        if (myRightIndex > columnsCount) {
+            myRightIndex = columnsCount;
+        }
+        Line line; Path pathLine;
         for (Map.Entry<String, long[]> entry : axisesYForCanvas.entrySet()) {
             line = _chart.getLines().get(entry.getKey());
             if (line == null) {
@@ -122,21 +138,18 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
             }
 
             long[] axisYForCanvas = entry.getValue();
-            int columnsCount = axisYForCanvas.length;
 
             pathLine = new Path();
-            float firstX = axisXForCanvas[0];
-            long firstY = axisYForCanvas[0];
-
-            pathLine.moveTo(firstX, firstY);
             long currentY;
             float currentX;
 
-            for (int i = 1; i < columnsCount; i++) {
+            for (int i = myLeftIndex; i < myRightIndex; i++) {
+                currentX = axisXForCanvas[i];
                 currentY = axisYForCanvas[i];
+                if (i == myLeftIndex) {
+                    pathLine.moveTo(currentX, currentY);
+                }
                 if (currentY > FLAG_Y_NOT_AVAILABLE) {
-                    currentX = axisXForCanvas[i];
-
                     pathLine.lineTo(currentX, currentY);
                 }
             }
