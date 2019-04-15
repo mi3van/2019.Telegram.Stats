@@ -37,12 +37,12 @@ public class AnimationManager implements AnimationManagerInterface, AnimationMan
     }
 
     @Override
-    public void setNewScaleY(int newScaleY) {
+    public void setNewScaleY(float newScaleY) {
         _scaleYAnim.setNewScaleY(newScaleY);
     }
 
     @Override
-    public void setNewAlphaAndScaleY(String keyAlphaMap, int newAlpha, int newScaleY) {
+    public void setNewAlphaAndScaleY(String keyAlphaMap, int newAlpha, float newScaleY) {
         TAlphaAnim alphaAnim = _alphaAnimsMap.get(keyAlphaMap);
         if (alphaAnim != null) {
             alphaAnim.setNewAlpha(newAlpha);

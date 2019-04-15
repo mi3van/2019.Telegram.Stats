@@ -36,11 +36,13 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
     private TViewChartInfoVert _tViewChartInfoVert;
     private TDelimiterLine _verticalDelimiter;
 
-    private float _leftCursor;
-    private float _rightCursor;
+    private HashMap<String, long[]> _axisesYFlipAndCalculated = new HashMap<>();
 
-    private int _leftInArray;
-    private int _rightInArray;
+    private float _leftCursor, _rightCursor;
+    private int _leftInArray, _rightInArray;
+
+    private long _tempMaxAxisY;
+    private long _tempMinimumAxisY;
 
     private MotionManagerForBigChart _motionManagerBig;
     private TChartBigViewInterface.Listener _chartBigListener;
@@ -85,25 +87,27 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
 
     @Override
     public void loadData(Chart chart) {
-        if (chart == null) {
-            return;
-        }
         super.loadData(chart);
 
         if (_chartBigListener != null) {
             long[] axisX = _chart.getAxisX().getData();
             _chartBigListener.onDatesWasChanged(axisX);
         }
+        isOriginalArrayWasFlipped = false;
     }
 
     private boolean isOriginalArrayWasFlipped = false;
-    @Override
-    public void onDataWasRecalculated(float[] axisXForCanvas) {
 
+    @Override
+    public void onDataWasRecalculated(float[] axisXForCanvas, HashMap<String, long[]> orginalYArray,
+                                      int maxConstAxisX, long maxConstAxisY) {
         this.updateSizeValues();
 
+        _constMaxAxisXx = maxConstAxisX;
+        _constMaxAxisY = maxConstAxisY;
         if (!isOriginalArrayWasFlipped) {
-            this.calcArrayForViewFlipVert(_axisesYOriginalArrays);
+            _axisesYOriginalArrays = orginalYArray;
+            _axisesYFlipAndCalculated = this.calcArrayForViewFlipVert(_axisesYOriginalArrays, maxConstAxisY);
             isOriginalArrayWasFlipped = true;
         }
         _axisXForCanvas = axisXForCanvas;
@@ -151,8 +155,8 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
         }
         _leftCursor = leftCursor;_rightCursor = rightCursor;
 
-        _leftInArray = Math.round (_maxAxisXx * leftCursor);
-        _rightInArray = Math.round (_maxAxisXx * rightCursor);
+        _leftInArray = Math.round (_constMaxAxisXx * leftCursor);
+        _rightInArray = Math.round (_constMaxAxisXx * rightCursor);
 
         int countPoints = _rightInArray - _leftInArray;
 
@@ -164,21 +168,14 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
             _chartBigListener.onDatesChangeSection(_leftInArray, _rightInArray);
         }
 
-        // Get new part arrays for draw Y
-//        _partAxisesY = getPartOfFullHashAxisY(_leftInArray, _rightInArray);
-//         Get new part arrays for draw X
-//        _partAxisXForGraph = getPartOfFullAxisX(_leftInArray, _rightInArray);
-//
-//        float leftInPx = leftCursor * _calculatingViewWidth;
-//        float rightInPx = rightCursor * _calculatingViewWidth;
-//        _partAxisXForGraph = getAxisXCalculated(leftInPx, rightInPx, _partAxisXForGraph);
+        this.updateMaxAndMinAndAnimate(_axisesYOriginalArrays, _leftInArray, _rightInArray);
 
-//        this.updateMaxAndMin();
+        _tViewChartInfoVert.setDatesAndInit(_tempMaxAxisY, _tempMinimumAxisY);
 
         float pointsWidth = _calculatingViewWidth / countPoints;
         int addingCountDots = Math.round(getChartHorizPadding() / pointsWidth) + 2;
 
-        _linesPathes = getLinesPathesArea(_axisXForCanvas, _axisesYOriginalArrays,
+        _linesPathes = getLinesPathesArea(_axisXForCanvas, _axisesYFlipAndCalculated,
                 _leftInArray - addingCountDots,
                 _rightInArray + addingCountDots);
 
@@ -207,45 +204,33 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
             path.transform(matrixTranslate);
             path.transform(matrixScale);
         }
-//        _matrixAnimMath.setScaleXNeed(needScaleX);
     }
 
-//    private float[] getAxisXCalculated(float leftInPx, float rightInPx, float[] originalAxisX) {
-//        int lengthX = originalAxisX.length;
-//        float[] newAxis = new float[lengthX];
-//
-//        float widthInPx = rightInPx - leftInPx;
-//        float persent = widthInPx / _calculatingViewWidth;
-//        float tempValueX;
-//        for (int i = 0; i < lengthX; i++) {
-//            tempValueX = originalAxisX[i] - leftInPx;
-//            tempValueX /= persent;
-//            newAxis[i] = tempValueX;
-//        }
-//
-//        return newAxis;
-//    }
+    private void updateMaxAndMinAndAnimate(HashMap<String, long[]> hashMap, int leftInArray, int rightInArray) {
 
-//    private void updateMaxAndMin() {
-//
-//        MyLongPair maxAndMinInPoint = this.getMaxAndMinInHashMap(_partAxisesY);
-//
-//        long _tempMaxAxisY = maxAndMinInPoint.getMax();
-//        if (_tempMaxAxisY == INTEGER_MIN_VALUE) {
-//            return;
-//        }
-//        long _tempMinAxisY = maxAndMinInPoint.getMin();
-//
-//        _tViewChartInfoVert.setNewDates(_tempMaxAxisY, _tempMinAxisY);
-//
-//        _partAxisesY = getAxisesForCanvas(_partAxisesY, _tempMaxAxisY, _tempMinAxisY);
-//    }
+        MyLongPair maxAndMinInPoint = this.getMaxAndMinInHashMap(hashMap, leftInArray, rightInArray);
 
-    private MyLongPair getMaxAndMinInHashMap(HashMap<String, long[]> hashMap) {
-        long max = INTEGER_MIN_VALUE;
-        long min = INTEGER_MAX_VALUE;
+        long tempMaxAxisY = maxAndMinInPoint.getMax();
+        if (tempMaxAxisY == INTEGER_MIN_VALUE) {
+            return;
+        }
+        _tempMaxAxisY = tempMaxAxisY;
+        _tempMinimumAxisY = maxAndMinInPoint.getMin();
+
+//        _animationManager.setNewScaleY();
+    }
+
+    private MyLongPair getMaxAndMinInHashMap(HashMap<String, long[]> hashMap, int leftInArray, int rightInArray) {
+        long max = INTEGER_MIN_VALUE;   long min = INTEGER_MAX_VALUE;
         boolean isActiveChart;
         long[] valuesArray;
+
+        if (leftInArray < 0) {
+            leftInArray = 0;
+        }
+        if (rightInArray > _constMaxAxisXx) {
+            rightInArray = _constMaxAxisXx;
+        }
         for (Map.Entry<String, long[]> entry: hashMap.entrySet()) {
             isActiveChart = getChartIsActive(entry.getKey());
             if (!isActiveChart) {
@@ -255,7 +240,8 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
             if (valuesArray == null) {
                 continue;
             }
-            for (long value : valuesArray) {
+            for (int i = leftInArray; i < rightInArray; i++) {
+                long value = valuesArray[i];
                 if (value > max) {
                     max = value;
                 }
@@ -267,22 +253,23 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
         return new MyLongPair(max, min);
     }
 
-    private void calcArrayForViewFlipVert(HashMap<String, long[]> axisesYOriginalArrays) {
+    private HashMap<String, long[]> calcArrayForViewFlipVert(HashMap<String, long[]> axisesYOriginalArrays, long maxAxisY) {
+        HashMap<String, long[]> flippedArray = new HashMap<>();
         if (axisesYOriginalArrays.isEmpty()) {
-            return;
+            return flippedArray;
         }
-
-        float coeff = _maxAxisY / _calculatingViewHeight;
-
+        float coeff = maxAxisY / _calculatingViewHeight;
+        long[] array;
         for (Map.Entry<String, long[]> entry : axisesYOriginalArrays.entrySet()) {
-            long[] array = entry.getValue();
+            array = entry.getValue().clone();
             float tempValue;
             for (int i = 0; i < array.length; i++) {
                 tempValue = array[i] / coeff;
                 array[i] = (long) (_calculatingViewHeight - tempValue + getChartHalfVerticalPadding());
             }
-            entry.setValue(array);
+            flippedArray.put(entry.getKey(), array);
         }
+        return flippedArray;
     }
 
     @Override

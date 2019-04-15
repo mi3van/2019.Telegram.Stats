@@ -4,9 +4,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
-import com.kitzapp.telegram_stats.common.AndroidUtilites;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 import com.kitzapp.telegram_stats.customViews.simple.TViewRectSelect;
+import com.kitzapp.telegram_stats.pojo.chart.Chart;
+import com.kitzapp.telegram_stats.pojo.chart.impl.Line;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,6 +46,13 @@ public abstract class TChartMiniatureView extends TAbstractChartBase implements 
     }
 
     @Override
+    public void loadData(Chart chart) {
+        super.loadData(chart);
+
+        _axisesYOriginalArrays = this.getOriginalAxysesYAndInitMaxs(chart);
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
@@ -55,19 +63,52 @@ public abstract class TChartMiniatureView extends TAbstractChartBase implements 
         drawPathes(canvas, _linesPathes);
     }
 
+    private HashMap<String, long[]> getOriginalAxysesYAndInitMaxs(Chart chart) {
+        HashMap<String, long[]> tempAxyses = new HashMap<>();
+
+        Line line;
+        int currentColumnsCount;
+        for (Map.Entry<String, Line> entry : chart.getLines().entrySet()) {
+            line = entry.getValue();
+            currentColumnsCount = line.getCountDots();
+
+            if (currentColumnsCount > 1) {
+
+                // INIT MAX IN X AXIS
+                if (_constMaxAxisXx < currentColumnsCount) {
+                    _constMaxAxisXx = currentColumnsCount;
+                }
+
+                // INIT AXIS Y AND FIND MAX Y
+                long[] axisY = new long[currentColumnsCount];
+                long currentY;
+                for (int i = 0; i < currentColumnsCount; i++) {
+                    currentY = line.getData()[i];
+                    if (_constMaxAxisY < currentY) {
+                        _constMaxAxisY = currentY;
+                    }
+                    axisY[i] = currentY;
+                }
+                tempAxyses.put(entry.getKey(), axisY);
+            }
+        }
+        return tempAxyses;
+    }
+
     //    isNeedInitPaints
     private void initAxisesForCanvas() {
         this.updateSizeValues();
 
         MAX_DOTS_FOR_APPROX_CHART_FULL = (int) _calculatingViewWidth >> 1;
 
-        _axisXForCanvas = this.recalculateAxisX(_maxAxisXx);
-        _axisesYForCanvas = this.getAxisesForCanvas(_axisesYOriginalArrays, _maxAxisY);
+        _axisXForCanvas = this.recalculateAxisX(_constMaxAxisXx);
+        _axisesYForCanvas = this.getAxisesForCanvas(_axisesYOriginalArrays, _constMaxAxisY);
 
         _linesPathes = this.getLinesPathes(_axisXForCanvas, _axisesYForCanvas);
 
         if (_miniatureListener != null) {
-            _miniatureListener.onDataWasRecalculated(_axisXForCanvas);
+            _miniatureListener.onDataWasRecalculated(_axisXForCanvas, _axisesYOriginalArrays,
+                                                                _constMaxAxisXx, _constMaxAxisY);
         }
     }
 
@@ -123,44 +164,6 @@ public abstract class TChartMiniatureView extends TAbstractChartBase implements 
         }
 
         return tempArray;
-    }
-
-    private long[] getApproximateArray(long[] arrayY, int maxCountDots) {
-        int countDotsForApprox = _axisXForCanvas.length;
-        if (countDotsForApprox > maxCountDots) {
-            int pointsCount = _axisXForCanvas.length - 1; // -1 for save last point
-            int currentApproxRange = 0;
-            float oldX, currentX;
-            long oldY, currentY;
-            while (countDotsForApprox > maxCountDots) {
-                currentApproxRange += 1;
-                oldX = _axisXForCanvas[0];
-                oldY = arrayY[0];
-                boolean rangePointsIsAvailable;
-
-                for (int i = 1; i < pointsCount; i++) {
-                    currentY = arrayY[i];
-                    if (currentY >= 0) {
-                        currentX = _axisXForCanvas[i];
-                        rangePointsIsAvailable = AndroidUtilites.isRangeLineAvailable(
-                                oldX, oldY, currentX, currentY, currentApproxRange);
-
-                        if (!rangePointsIsAvailable) {
-                            countDotsForApprox--;
-                            arrayY[i] = FLAG_Y_NOT_AVAILABLE;
-                            if (countDotsForApprox <= maxCountDots) {
-                                break;
-                            }
-                        }
-                        oldX = currentX;
-                        oldY = currentY;
-                    }
-                }
-            }
-            return arrayY;
-        } else {
-            return arrayY;
-        }
     }
 
     @Override

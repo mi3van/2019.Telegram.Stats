@@ -1,5 +1,7 @@
 package com.kitzapp.telegram_stats.customViews.charts.base;
 
+import java.util.HashMap;
+
 /**
  * Created by Ivan Kuzmin on 24.03.2019;
  * 3van@mail.ru;
@@ -14,7 +16,8 @@ public interface TChartMiniatureVInterface {
 
         void onRectCursorsWasChanged(float leftCursor, float rightCursor);
 
-        void onDataWasRecalculated(float[] _axisXForCanvas);
+        void onDataWasRecalculated(float[] _axisXForCanvas, HashMap<String, long[]> orginalYArray,
+                                            int maxConstAxisX, long maxConstaAxisY);
 
     }
 }

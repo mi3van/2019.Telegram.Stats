@@ -45,8 +45,8 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
     protected float _calculatingViewHeight;
     protected float _calculatingViewWidth;
 
-    protected int _maxAxisXx;
-    protected long _maxAxisY;
+    protected int _constMaxAxisXx;
+    protected long _constMaxAxisY;
 
     protected AnimationManager _animationManager = null;
 
@@ -76,7 +76,6 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
         this._chart = chart;
 
         _paints = this.getNewPaints(_chart);
-        _axisesYOriginalArrays = this.getOriginalAxysesYAndInitMaxs();
         this.initAnimationManager(_chart);
 
         _isFirstDraw = true;
@@ -216,38 +215,6 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
         return tempPaints;
     }
 
-    private HashMap<String, long[]> getOriginalAxysesYAndInitMaxs() {
-        HashMap<String, long[]> tempAxyses = new HashMap<>();
-
-        Line line;
-        int currentColumnsCount;
-        for (Map.Entry<String, Line> entry : _chart.getLines().entrySet()) {
-            line = entry.getValue();
-            currentColumnsCount = line.getCountDots();
-
-            if (currentColumnsCount > 1) {
-
-                // INIT MAX IN X AXIS
-                if (_maxAxisXx < currentColumnsCount) {
-                    _maxAxisXx = currentColumnsCount;
-                }
-
-                // INIT AXIS Y AND FIND MAX Y
-                long[] axisY = new long[currentColumnsCount];
-                long currentY;
-                for (int i = 0; i < currentColumnsCount; i++) {
-                    currentY = line.getData()[i];
-                    if (_maxAxisY < currentY) {
-                        _maxAxisY = currentY;
-                    }
-                    axisY[i] = currentY;
-                }
-                tempAxyses.put(entry.getKey(), axisY);
-            }
-        }
-        return tempAxyses;
-    }
-
     private void updatePaintAlpha(String key, int alpha) {
         if (_paints.isEmpty()) {
             return;
@@ -256,6 +223,44 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
 
         if (paint != null) {
             paint.setAlpha(alpha);
+        }
+    }
+
+    protected long[] getApproximateArray(long[] arrayY, int maxCountDots) {
+        int countDotsForApprox = _axisXForCanvas.length;
+        if (countDotsForApprox > maxCountDots) {
+            int pointsCount = _axisXForCanvas.length - 1; // -1 for save last point
+            int currentApproxRange = 0;
+            float oldX, currentX;
+            long oldY, currentY;
+            while (countDotsForApprox > maxCountDots) {
+                currentApproxRange += 1;
+                oldX = _axisXForCanvas[0];
+                oldY = arrayY[0];
+                boolean rangePointsIsAvailable;
+
+                for (int i = 1; i < pointsCount; i++) {
+                    currentY = arrayY[i];
+                    if (currentY >= 0) {
+                        currentX = _axisXForCanvas[i];
+                        rangePointsIsAvailable = AndroidUtilites.isRangeLineAvailable(
+                                oldX, oldY, currentX, currentY, currentApproxRange);
+
+                        if (!rangePointsIsAvailable) {
+                            countDotsForApprox--;
+                            arrayY[i] = FLAG_Y_NOT_AVAILABLE;
+                            if (countDotsForApprox <= maxCountDots) {
+                                break;
+                            }
+                        }
+                        oldX = currentX;
+                        oldY = currentY;
+                    }
+                }
+            }
+            return arrayY;
+        } else {
+            return arrayY;
         }
     }
 
