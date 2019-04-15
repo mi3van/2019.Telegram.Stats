@@ -9,15 +9,18 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
-import com.kitzapp.telegram_stats.common.AppConts;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
+import com.kitzapp.telegram_stats.core.appManagers.animation.AnimationManager;
+import com.kitzapp.telegram_stats.core.appManagers.animation.TAlphaAnim;
+import com.kitzapp.telegram_stats.core.appManagers.animation.TScaleYAnim;
 import com.kitzapp.telegram_stats.pojo.chart.Chart;
 import com.kitzapp.telegram_stats.pojo.chart.impl.Line;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.kitzapp.telegram_stats.common.AppConts.*;
+import static com.kitzapp.telegram_stats.common.AppConts.MAX_VALUE_ALPHA;
+import static com.kitzapp.telegram_stats.common.AppConts.MIN_VALUE_ALPHA;
 
 /**
  * Created by Ivan Kuzmin on 25.03.2019;
@@ -25,7 +28,8 @@ import static com.kitzapp.telegram_stats.common.AppConts.*;
  * Copyright © 2019 Example. All rights reserved.
  */
 
-abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartBaseInterface {
+abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartBaseInterface,
+                                                                        AnimationManager.ListenerForView {
     protected final int FLAG_Y_NOT_AVAILABLE = -5;
 
     protected Chart _chart = null;
@@ -43,6 +47,8 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
 
     protected int _maxAxisXx;
     protected long _maxAxisY;
+
+    protected AnimationManager _animationManager = null;
 
     public TAbstractChartBase(Context context) {
         super(context);
@@ -69,10 +75,24 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
         }
         this._chart = chart;
 
-        _paints = getNewPaints(_chart);
+        _paints = this.getNewPaints(_chart);
         _axisesYOriginalArrays = this.getOriginalAxysesYAndInitMaxs();
+        this.initAnimationManager(_chart);
 
         _isFirstDraw = true;
+    }
+
+    private void initAnimationManager(Chart chart) {
+        HashMap<String, TAlphaAnim> alphaAnimsMap = new HashMap<>();
+
+        for (Map.Entry<String, Line> entry: chart.getLines().entrySet()) {
+            TAlphaAnim alphaAnim = new TAlphaAnim(entry.getKey(), this::updatePaintAlpha);
+            alphaAnimsMap.put(entry.getKey(), alphaAnim);
+        }
+        TScaleYAnim scaleYAnim = new TScaleYAnim(newScaleY -> {
+
+        });
+        _animationManager = new AnimationManager(alphaAnimsMap, scaleYAnim, this);
     }
 
     protected void updateSizeValues() {
@@ -127,83 +147,33 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
     }
 
     protected void drawPathes(Canvas canvas, HashMap<String, Path> pathHashMap) {
+        this.drawPathesCheckAnim(canvas, pathHashMap, _paints, _isFirstDraw);
         if (_isFirstDraw) {
-            this.drawPathesWithoutAnim(canvas, pathHashMap, _paints);
             _isFirstDraw = false;
-        } else {
-            this.drawPathesAlphaAnim(canvas, pathHashMap, _paints);
         }
     }
 
-    private void drawPathesAlphaAnim(Canvas canvas, HashMap<String, Path> pathHashMap, HashMap<String, Paint> paintsMap) {
-        boolean isActiveChart;
+    private void drawPathesCheckAnim(Canvas canvas,
+                                     HashMap<String, Path> pathHashMap,
+                                     HashMap<String, Paint> paintsMap,
+                                     boolean isFirstDraw) {
         Path path;  Paint paint;
-        int newAlpha, oldAlpha;
 
         for (Map.Entry<String, Path> entry : pathHashMap.entrySet()) {
             paint = paintsMap.get(entry.getKey());
             path = entry.getValue();
-            isActiveChart = this.getChartIsActive(entry.getKey());
 
-            if (paint == null && entry.getValue() == null) {
+            if (paint == null || entry.getValue() == null) {
                 continue;
             }
 
-            canvas.drawPath(path, paint);
-
-            oldAlpha = paint.getAlpha();
-
-            boolean isDrawEnded = (isActiveChart && oldAlpha == MAX_VALUE_ALPHA) ||
-                    (!isActiveChart && oldAlpha == MIN_VALUE_ALPHA);
-
-            if (isDrawEnded) {
-                continue;
+            if (isFirstDraw) {
+                boolean isActiveChart = this.getChartIsActive(entry.getKey());
+                int alpha = isActiveChart ? MAX_VALUE_ALPHA : MIN_VALUE_ALPHA;
+                paint.setAlpha(alpha);
             }
-
-            newAlpha = this.getNewAlpha(isActiveChart, oldAlpha);
-
-            paint.setAlpha(newAlpha);
-            postInvalidateDelayed(AppConts.DELAY_STEP_ELEMENTS_ANIM);
-        }
-    }
-
-    protected void drawPathesWithoutAnim(Canvas canvas, HashMap<String, Path> pathHashMap, HashMap<String, Paint> paintsMap) {
-        boolean isActiveChart;
-        Path path;
-        Paint paint;
-
-        for (Map.Entry<String, Path> entry : pathHashMap.entrySet()) {
-            paint = paintsMap.get(entry.getKey());
-            path = entry.getValue();
-            isActiveChart = this.getChartIsActive(entry.getKey());
-
-            if (paint == null && entry.getValue() == null) {
-                continue;
-            }
-            int alpha = isActiveChart ? MAX_VALUE_ALPHA : MIN_VALUE_ALPHA;
-            paint.setAlpha(alpha);
             canvas.drawPath(path, paint);
         }
-    }
-
-    private int getNewAlpha(boolean isActiveChart, int alpha) {
-        int newAlpha = alpha;
-
-        if (isActiveChart) {
-            if (newAlpha + STEP_ALPHA_FOR_ANIM <= MAX_VALUE_ALPHA) {
-                newAlpha += STEP_ALPHA_FOR_ANIM;
-            } else {
-                newAlpha = MAX_VALUE_ALPHA;
-            }
-        } else {
-            if (newAlpha - STEP_ALPHA_FOR_ANIM >= MIN_VALUE_ALPHA) {
-                newAlpha -= STEP_ALPHA_FOR_ANIM;
-            } else {
-                newAlpha = MIN_VALUE_ALPHA;
-            }
-        }
-
-        return newAlpha;
     }
 
     protected boolean getChartIsActive(String key) {
@@ -265,6 +235,17 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
         return tempAxyses;
     }
 
+    private void updatePaintAlpha(String key, int alpha) {
+        if (_paints.isEmpty()) {
+            return;
+        }
+        Paint paint = _paints.get(key);
+
+        if (paint != null) {
+            paint.setAlpha(alpha);
+        }
+    }
+
     protected int getChartHorizPaddingSum() {
         return ThemeManager.MARGIN_32DP_IN_PX;
     }
@@ -275,6 +256,19 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
 
     @Override
     public void wasChangedIsActiveChart() {
+        if (_chart == null || _animationManager == null) {
+            return;
+        }
+
+        for (Map.Entry<String, Line> entry: _chart.getLines().entrySet()) {
+            boolean isLineActive = entry.getValue().getIsActive();
+            int newAlpha = isLineActive ? MAX_VALUE_ALPHA : MIN_VALUE_ALPHA;
+            _animationManager.setNewAlpha(entry.getKey(), newAlpha);
+        }
+    }
+
+    @Override
+    public void animNeedInvalidateView() {
         invalidate();
     }
 

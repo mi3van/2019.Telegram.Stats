@@ -1,6 +1,8 @@
 package com.kitzapp.telegram_stats.common;
 
 import android.animation.ArgbEvaluator;
+import android.animation.FloatEvaluator;
+import android.animation.IntEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
@@ -15,6 +17,7 @@ import com.kitzapp.telegram_stats.BuildConfig;
 import java.util.Hashtable;
 
 import static com.kitzapp.telegram_stats.common.AppConts.DELAY_COLOR_ANIM;
+import static com.kitzapp.telegram_stats.common.AppConts.DELAY_ELEMENTS_ANIM;
 
 /**
  * Created by Ivan Kuzmin on 2019-03-22.
@@ -29,6 +32,20 @@ public class AndroidUtilites {
         colorAnimation.setDuration(DELAY_COLOR_ANIM);
         colorAnimation.addUpdateListener(listener);
         return colorAnimation;
+    }
+
+    public static ValueAnimator getIntAnimator(int fromValue, int toValue, ValueAnimator.AnimatorUpdateListener listener){
+        ValueAnimator intAnimator = ValueAnimator.ofObject(new IntEvaluator(), fromValue, toValue);
+        intAnimator.setDuration(DELAY_ELEMENTS_ANIM);
+        intAnimator.addUpdateListener(listener);
+        return intAnimator;
+    }
+
+    public static ValueAnimator getFloatAnimator(float fromValue, float toValue, ValueAnimator.AnimatorUpdateListener listener){
+        ValueAnimator intAnimator = ValueAnimator.ofObject(new FloatEvaluator(), fromValue, toValue);
+        intAnimator.setDuration(DELAY_ELEMENTS_ANIM);
+        intAnimator.addUpdateListener(listener);
+        return intAnimator;
     }
 
     public static Typeface getTypeface(Context context, String assetPath) {

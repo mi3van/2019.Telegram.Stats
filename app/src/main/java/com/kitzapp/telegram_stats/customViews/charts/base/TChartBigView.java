@@ -45,7 +45,7 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
     private TChartBigViewInterface.Listener _chartBigListener;
 
     private Matrix _matrix = new Matrix();
-    private TAnimMatrixMath _matrixAnimMath = new TAnimMatrixMath();
+
 
 //    private TViewContainerCircleViews _containerCircleViewsPopup;
 //    private int _verticalDelimiterHeightForPopup;
@@ -92,7 +92,7 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
         }
         super.loadData(chart);
 
-        _matrixAnimMath.reset();
+//        _matrixAnimMath.reset();
         _matrix.reset();
 
         if (_chartBigListener != null) {
@@ -192,7 +192,7 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
     private void configureMatrix(float leftCursor, float rightCursor) {
         float needScaleX = (rightCursor - leftCursor);
 
-        _matrixAnimMath.setScaleXNeed(needScaleX);
+//        _matrixAnimMath.setScaleXNeed(needScaleX);
     }
 
     private void applyMatrixForPathes(HashMap<String, Path> pathHashMap) {
