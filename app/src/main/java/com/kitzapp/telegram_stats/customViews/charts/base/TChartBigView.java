@@ -47,6 +47,10 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
     private MotionManagerForBigChart _motionManagerBig;
     private TChartBigViewInterface.Listener _chartBigListener;
 
+    // MATRIX VALUE
+    private int _pxMatrix = getChartHorizPadding() - (CHART_LINE_IN_MINIATURE_WIDTH_PX >> 1);
+    private float _pyMatrix;
+
 //    private TViewContainerCircleViews _containerCircleViewsPopup;
 //    private int _verticalDelimiterHeightForPopup;
 //    private int _xoffForPopup;
@@ -109,6 +113,8 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
             _axisesYOriginalArrays = orginalYArray;
             _axisesYFlipAndCalculated = this.calcArrayForViewFlipVert(_axisesYOriginalArrays, maxConstAxisY);
             isOriginalArrayWasFlipped = true;
+
+            _pyMatrix = _calculatingViewHeight;
         }
         _axisXForCanvas = axisXForCanvas;
 
@@ -170,30 +176,39 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
 
         this.updateMaxAndMinAndAnimate(_axisesYOriginalArrays, _leftInArray, _rightInArray);
 
-        _tViewChartInfoVert.setDatesAndInit(_tempMaxAxisY, _tempMinimumAxisY);
+        _tViewChartInfoVert.setDatesAndInit(_tempMaxAxisY, 0);//_tempMinimumAxisY);
 
-        float pointsWidth = _calculatingViewWidth / countPoints;
-        int addingCountDots = Math.round(getChartHorizPadding() / pointsWidth) + 2;
+        _linesPathes = this.getPathsForMatrixAndDraw();
 
-        _linesPathes = getLinesPathesArea(_axisXForCanvas, _axisesYFlipAndCalculated,
-                _leftInArray - addingCountDots,
-                _rightInArray + addingCountDots);
-
-        this.configureMatrixAndApply(leftCursor, rightCursor, _linesPathes);
+        this.configureMatrixAndApply(leftCursor, rightCursor, _scaleY, _linesPathes);
 
         this.invalidate();
     }
 
-    private int pxMatrix = getChartHorizPadding() - (CHART_LINE_IN_MINIATURE_WIDTH_PX >> 1);
-    private void configureMatrixAndApply(float leftCursor, float rightCursor, HashMap<String, Path> pathHashMap) {
+    private HashMap<String, Path> getPathsForMatrixAndDraw() {
+        int countPoints = _rightInArray - _leftInArray;
+        HashMap<String, Path> tempMap;
+
+        float pointsWidth = _calculatingViewWidth / countPoints;
+        int addingCountDots = Math.round(getChartHorizPadding() / pointsWidth) + 2;
+
+        tempMap = getLinesPathesArea(_axisXForCanvas, _axisesYFlipAndCalculated,
+                _leftInArray - addingCountDots,
+                _rightInArray + addingCountDots);
+
+        return tempMap;
+    }
+
+    private void configureMatrixAndApply(float leftCursor, float rightCursor, float scaleY, HashMap<String, Path> pathHashMap) {
         Matrix matrixTranslate = new Matrix();
         Matrix matrixScale = new Matrix();
 
         float needScaleX = 1f / (rightCursor - leftCursor);
         float translateX = leftCursor * _calculatingViewWidth;
+        float translateY = getChartHalfVerticalPadding();
 
-        matrixScale.setScale(needScaleX, 1f, pxMatrix, 0f);
-        matrixTranslate.setTranslate(-translateX, 0f);
+        matrixScale.setScale(needScaleX, scaleY, _pxMatrix, _pyMatrix);
+        matrixTranslate.setTranslate(-translateX, translateY);
 
         for (Map.Entry<String, Path> entry: pathHashMap.entrySet()) {
             Path path = entry.getValue();
@@ -204,6 +219,13 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
             path.transform(matrixTranslate);
             path.transform(matrixScale);
         }
+    }
+
+    @Override
+    protected void needRecalculatePathYScale(float newYScale) {
+//        HashMap newPath = this.getPathsForMatrixAndDraw();
+//
+//        this.configureMatrixAndApply(_leftInArray, _rightInArray, newYScale, newPath);
     }
 
     private void updateMaxAndMinAndAnimate(HashMap<String, long[]> hashMap, int leftInArray, int rightInArray) {
@@ -217,7 +239,13 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
         _tempMaxAxisY = tempMaxAxisY;
         _tempMinimumAxisY = maxAndMinInPoint.getMin();
 
-//        _animationManager.setNewScaleY();
+        long difference = _tempMaxAxisY - 0;//_tempMinimumAxisY;
+        float scaleY = (float) _constMaxAxisY / difference;
+        if (!_isFirstDraw) {
+            _animationManager.setNewScaleY(scaleY);
+        } else {
+            _scaleY = scaleY;
+        }
     }
 
     private MyLongPair getMaxAndMinInHashMap(HashMap<String, long[]> hashMap, int leftInArray, int rightInArray) {

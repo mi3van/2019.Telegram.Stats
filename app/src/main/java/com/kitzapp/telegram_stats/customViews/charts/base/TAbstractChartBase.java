@@ -34,7 +34,7 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
 
     protected Chart _chart = null;
     private HashMap<String, Paint> _paints = new HashMap<>();
-    protected HashMap<String, Path> _linesPathes = new HashMap<>();
+    protected volatile HashMap<String, Path> _linesPathes = new HashMap<>();
 
     protected HashMap<String, long[]> _axisesYOriginalArrays = new HashMap<>();
     protected float[] _axisXForCanvas = null;
@@ -49,6 +49,7 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
     protected long _constMaxAxisY;
 
     protected AnimationManager _animationManager = null;
+    protected float _scaleY = 1f;
 
     public TAbstractChartBase(Context context) {
         super(context);
@@ -89,8 +90,10 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
             alphaAnimsMap.put(entry.getKey(), alphaAnim);
         }
         TScaleYAnim scaleYAnim = new TScaleYAnim(newScaleY -> {
-
+            _scaleY = newScaleY;
+            this.needRecalculatePathYScale(_scaleY);
         });
+
         _animationManager = new AnimationManager(alphaAnimsMap, scaleYAnim, this);
     }
 
@@ -105,6 +108,7 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
 
     protected abstract int getChartVerticalPadding();
     protected abstract int getChartHalfVerticalPadding();
+    protected abstract void needRecalculatePathYScale(float newYScale);
 
     protected HashMap<String, Path> getLinesPathes(float[] axisXForCanvas,
                                                    HashMap<String, long[]> axisesYForCanvas) {

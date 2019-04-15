@@ -63,6 +63,11 @@ public abstract class TChartMiniatureView extends TAbstractChartBase implements 
         drawPathes(canvas, _linesPathes);
     }
 
+    @Override
+    protected void needRecalculatePathYScale(float newYScale) {
+        // todo calculate path scaleY
+    }
+
     private HashMap<String, long[]> getOriginalAxysesYAndInitMaxs(Chart chart) {
         HashMap<String, long[]> tempAxyses = new HashMap<>();
 

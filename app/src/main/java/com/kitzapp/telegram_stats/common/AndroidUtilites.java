@@ -42,10 +42,10 @@ public class AndroidUtilites {
     }
 
     public static ValueAnimator getFloatAnimator(float fromValue, float toValue, ValueAnimator.AnimatorUpdateListener listener){
-        ValueAnimator intAnimator = ValueAnimator.ofObject(new FloatEvaluator(), fromValue, toValue);
-        intAnimator.setDuration(DELAY_ELEMENTS_ANIM);
-        intAnimator.addUpdateListener(listener);
-        return intAnimator;
+        ValueAnimator flaotAnimator = ValueAnimator.ofObject(new FloatEvaluator(), fromValue, toValue);
+        flaotAnimator.setDuration(DELAY_ELEMENTS_ANIM);
+        flaotAnimator.addUpdateListener(listener);
+        return flaotAnimator;
     }
 
     public static Typeface getTypeface(Context context, String assetPath) {
