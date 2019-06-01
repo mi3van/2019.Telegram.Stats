@@ -128,8 +128,13 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
     public void wasChangedIsActiveChart() {
         super.wasChangedIsActiveChart();
 
+        this.scaleYAnimationStart();
+    }
+
+    private void scaleYAnimationStart() {
         float newScaleY = this.getNewScaleAndUpdateMaxAndMin(_axisesYOriginalArrays, _leftInArray, _rightInArray);
-        this.startScaleTransitionAnimation(newScaleY);
+
+        _animationManager.setNewScaleY(_scaleY, newScaleY);
     }
 
     @Override
@@ -152,21 +157,39 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
             _chartBigListener.onDatesChangeSection(_leftInArray, _rightInArray);
         }
 
-        float newScaleY = this.getNewScaleAndUpdateMaxAndMin(_axisesYOriginalArrays, _leftInArray, _rightInArray);
+        initPathsForDraw();
 
         _tViewChartInfoVert.setDatesAndInit(_tempMaxAxisY, 0);
 
-        _scaleY = newScaleY;
-
-        updatePathsForMatrix(_rightInArray, _leftInArray, _axisesYFlipAndCalculated);
-
-//        this.startScaleTransitionAnimation(newScaleY);
-
-        this.configureMatrixAndApply(leftCursor, rightCursor, _scaleY, _linesPathes);
-
         postInvalidateOnAnimation();
 
-//        this.startScaleTransitionAnimation(newScaleY);
+        scaleYAnimationStart();
+    }
+
+    @Override
+    protected void needRecalculatePathYScale(float newYScale) {
+        _scaleY = newYScale;
+
+        initPathsForDraw();
+    }
+
+    private void initPathsForDraw() {
+        this.calculateMaxAndMin(_axisesYOriginalArrays, _leftInArray, _rightInArray);
+
+        updatePathsForMatrix(_leftInArray, _rightInArray, _axisesYFlipAndCalculated);
+
+        this.configureMatrixAndApply(_leftCursor, _rightCursor, _scaleY, _linesPathes);
+    }
+
+    private void calculateMaxAndMin(HashMap<String, long[]> hashMap, int leftInArray, int rightInArray) {
+        MyLongPair maxAndMinInPoint = this.getMaxAndMinInHashMap(hashMap, leftInArray, rightInArray);
+
+        long tempMaxAxisY = maxAndMinInPoint.getMax();
+        if (tempMaxAxisY == INTEGER_MIN_VALUE) {
+            return;
+        }
+        _tempMaxAxisY = tempMaxAxisY;
+        _tempMinimumAxisY = maxAndMinInPoint.getMin();
     }
 
     private void configureMatrixAndApply(float leftCursor, float rightCursor, float scaleY, HashMap<String, Path> pathHashMap) {
@@ -191,33 +214,12 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
         }
     }
 
-    @Override
-    protected void needRecalculatePathYScale(float newYScale) {
-//        _linesPathes = this.updatePathsForMatrix();
-
-        this.configureMatrixAndApply(_leftInArray, _rightInArray, newYScale, _linesPathes);
-    }
-
     private float getNewScaleAndUpdateMaxAndMin(HashMap<String, long[]> hashMap, int leftInArray, int rightInArray) {
-
-        MyLongPair maxAndMinInPoint = this.getMaxAndMinInHashMap(hashMap, leftInArray, rightInArray);
-
-        long tempMaxAxisY = maxAndMinInPoint.getMax();
-        if (tempMaxAxisY == INTEGER_MIN_VALUE) {
-            return _scaleY;
-        }
-        _tempMaxAxisY = tempMaxAxisY;
-        _tempMinimumAxisY = maxAndMinInPoint.getMin();
+        this.calculateMaxAndMin(hashMap, leftInArray, rightInArray);
 
         long difference = _tempMaxAxisY - 0;//_tempMinimumAxisY;
         float scaleY = (float) _constMaxAxisY / difference;
         return scaleY;
-    }
-
-    private void startScaleTransitionAnimation(float newScaleY) {
-        if (newScaleY != _scaleY) {
-            _animationManager.setNewScaleY(newScaleY);
-        }
     }
 
     private MyLongPair getMaxAndMinInHashMap(HashMap<String, long[]> hashMap, int leftInArray, int rightInArray) {

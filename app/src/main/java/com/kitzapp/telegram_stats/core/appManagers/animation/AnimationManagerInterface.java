@@ -4,7 +4,7 @@ interface AnimationManagerInterface {
 
     void setNewAlpha(String keyAlphaMap, int newAlpha);
 
-    void setNewScaleY(float newScaleY);
+    void setNewScaleY(float oldScaleY, float newScaleY);
 
     interface ListenerForValues {
         void animNeedInvalidate();

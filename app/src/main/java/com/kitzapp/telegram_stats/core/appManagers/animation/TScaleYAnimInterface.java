@@ -8,7 +8,7 @@ package com.kitzapp.telegram_stats.core.appManagers.animation;
 
 public interface TScaleYAnimInterface {
 
-    void setNewScaleY(float newScaleY);
+    void setNewScaleY(float oldScaleY, float newScaleY);
 
     interface Listener {
         void updateScaleY(float newScaleY);

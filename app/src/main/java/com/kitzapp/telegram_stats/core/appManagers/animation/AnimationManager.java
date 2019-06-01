@@ -35,8 +35,8 @@ public class AnimationManager implements AnimationManagerInterface, AnimationMan
     }
 
     @Override
-    public void setNewScaleY(float newScaleY) {
-        _scaleYAnim.setNewScaleY(newScaleY);
+    public void setNewScaleY(float oldScaleY, float newScaleY) {
+        _scaleYAnim.setNewScaleY(oldScaleY, newScaleY);
     }
 
     @Override

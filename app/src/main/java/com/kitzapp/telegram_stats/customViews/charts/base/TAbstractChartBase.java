@@ -89,10 +89,7 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
             TAlphaAnim alphaAnim = new TAlphaAnim(entry.getKey(), this::updatePaintAlpha);
             alphaAnimsMap.put(entry.getKey(), alphaAnim);
         }
-        TScaleYAnim scaleYAnim = new TScaleYAnim(newScaleY -> {
-            _scaleY = newScaleY;
-            this.needRecalculatePathYScale(_scaleY);
-        });
+        TScaleYAnim scaleYAnim = new TScaleYAnim(this::needRecalculatePathYScale);
 
         _animationManager = new AnimationManager(alphaAnimsMap, scaleYAnim, this);
     }
@@ -168,7 +165,7 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
         }
     }
 
-    protected void updatePathsForMatrix(int _rightInArray, int _leftInArray ,
+    protected void updatePathsForMatrix( int _leftInArray, int _rightInArray,
                                         HashMap<String, long[]> _axisesYFlipAndCalculated) {
         int countPoints = _rightInArray - _leftInArray;
         HashMap<String, Path> tempMap;
