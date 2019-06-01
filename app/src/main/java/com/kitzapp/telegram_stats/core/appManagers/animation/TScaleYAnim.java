@@ -7,6 +7,7 @@ public class TScaleYAnim extends TTBaseAnimValue implements TScaleYAnimInterface
 
     private Listener _myDelegate;
     private AnimationManagerInterface.ListenerForValues _listenerForManage;
+    private ValueAnimator _valueAnimator = null;
 
     private float _oldscaleY = 1f;
 
@@ -19,7 +20,11 @@ public class TScaleYAnim extends TTBaseAnimValue implements TScaleYAnimInterface
         if (_oldscaleY == newScaleY) {
             return;
         }
-        ValueAnimator _valueAnimator = AndroidUtilites.getFloatAnimator(
+        if (_valueAnimator != null ) {
+            _oldscaleY = (float) _valueAnimator.getAnimatedValue();
+            _valueAnimator.cancel();
+        }
+        _valueAnimator = AndroidUtilites.getFloatAnimator(
                 _oldscaleY,
                 newScaleY,
                 animation -> {
@@ -38,4 +43,6 @@ public class TScaleYAnim extends TTBaseAnimValue implements TScaleYAnimInterface
     public void setManagerListener(AnimationManagerInterface.ListenerForValues listenerForManage) {
         _listenerForManage = listenerForManage;
     }
+
+    private String TAG_DEBUG = this.getClass().getSimpleName();
 }

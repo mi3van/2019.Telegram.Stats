@@ -51,13 +51,6 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
     private int _pxMatrix = getChartHorizPadding() - (CHART_LINE_IN_MINIATURE_WIDTH_PX >> 1);
     private float _pyMatrix;
 
-//    private TViewContainerCircleViews _containerCircleViewsPopup;
-//    private int _verticalDelimiterHeightForPopup;
-//    private int _xoffForPopup;
-//    private int _oldIndexShowedPopup;
-//    private boolean _isCoeffXForPopupNeedCalculate = true;
-//    private float _coeffXForPopup = 0;
-
     public TChartBigView(Context context) {
         super(context);
     }
@@ -132,26 +125,11 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
     }
 
     @Override
-    public void onXTouchWasDetected(float newX) {
-//        if (_partAxisXForGraph != null) {
-//            int tempIndex = -1;
-//            if (_isCoeffXForPopupNeedCalculate) {
-//                _isCoeffXForPopupNeedCalculate = false;
-//                _coeffXForPopup = (_partAxisXForGraph[1] - _partAxisXForGraph[0]) / 2;
-//            }
-//            for (int i = 0; i < _partAxisXForGraph.length; i++) {
-//                float currentPoint = _partAxisXForGraph[i] - _coeffXForPopup;
-//                float nextPoint = _partAxisXForGraph[i] + _coeffXForPopup;
-//                if (newX > currentPoint && newX <= nextPoint) {
-//                    tempIndex = i;
-//                    break;
-//                }
-//            }
-//            if (tempIndex >=0 && tempIndex != _oldIndexShowedPopup) {
-//                _oldIndexShowedPopup = tempIndex;
-//                this.drawPopupViews(_oldIndexShowedPopup);
-//            }
-//        }
+    public void wasChangedIsActiveChart() {
+        super.wasChangedIsActiveChart();
+
+        float newScaleY = this.getNewScaleAndUpdateMaxAndMin(_axisesYOriginalArrays, _leftInArray, _rightInArray);
+        this.startScaleTransitionAnimation(newScaleY);
     }
 
     @Override
@@ -174,29 +152,21 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
             _chartBigListener.onDatesChangeSection(_leftInArray, _rightInArray);
         }
 
-        this.updateMaxAndMinAndAnimate(_axisesYOriginalArrays, _leftInArray, _rightInArray);
+        float newScaleY = this.getNewScaleAndUpdateMaxAndMin(_axisesYOriginalArrays, _leftInArray, _rightInArray);
 
-        _tViewChartInfoVert.setDatesAndInit(_tempMaxAxisY, 0);//_tempMinimumAxisY);
+        _tViewChartInfoVert.setDatesAndInit(_tempMaxAxisY, 0);
 
-        _linesPathes = this.getPathsForMatrixAndDraw();
+        _scaleY = newScaleY;
+
+        updatePathsForMatrix(_rightInArray, _leftInArray, _axisesYFlipAndCalculated);
+
+//        this.startScaleTransitionAnimation(newScaleY);
 
         this.configureMatrixAndApply(leftCursor, rightCursor, _scaleY, _linesPathes);
 
-        this.postInvalidateOnAnimation();
-    }
+        postInvalidateOnAnimation();
 
-    private HashMap<String, Path> getPathsForMatrixAndDraw() {
-        int countPoints = _rightInArray - _leftInArray;
-        HashMap<String, Path> tempMap;
-
-        float pointsWidth = _calculatingViewWidth / countPoints;
-        int addingCountDots = Math.round(getChartHorizPadding() / pointsWidth) + 2;
-
-        tempMap = getLinesPathesArea(_axisXForCanvas, _axisesYFlipAndCalculated,
-                _leftInArray - addingCountDots,
-                _rightInArray + addingCountDots);
-
-        return tempMap;
+//        this.startScaleTransitionAnimation(newScaleY);
     }
 
     private void configureMatrixAndApply(float leftCursor, float rightCursor, float scaleY, HashMap<String, Path> pathHashMap) {
@@ -223,26 +193,30 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
 
     @Override
     protected void needRecalculatePathYScale(float newYScale) {
+//        _linesPathes = this.updatePathsForMatrix();
+
         this.configureMatrixAndApply(_leftInArray, _rightInArray, newYScale, _linesPathes);
     }
 
-    private void updateMaxAndMinAndAnimate(HashMap<String, long[]> hashMap, int leftInArray, int rightInArray) {
+    private float getNewScaleAndUpdateMaxAndMin(HashMap<String, long[]> hashMap, int leftInArray, int rightInArray) {
 
         MyLongPair maxAndMinInPoint = this.getMaxAndMinInHashMap(hashMap, leftInArray, rightInArray);
 
         long tempMaxAxisY = maxAndMinInPoint.getMax();
         if (tempMaxAxisY == INTEGER_MIN_VALUE) {
-            return;
+            return _scaleY;
         }
         _tempMaxAxisY = tempMaxAxisY;
         _tempMinimumAxisY = maxAndMinInPoint.getMin();
 
         long difference = _tempMaxAxisY - 0;//_tempMinimumAxisY;
         float scaleY = (float) _constMaxAxisY / difference;
-        if (!_isFirstDraw) {
-            _animationManager.setNewScaleY(scaleY);
-        } else {
-            _scaleY = scaleY;
+        return scaleY;
+    }
+
+    private void startScaleTransitionAnimation(float newScaleY) {
+        if (newScaleY != _scaleY) {
+            _animationManager.setNewScaleY(newScaleY);
         }
     }
 

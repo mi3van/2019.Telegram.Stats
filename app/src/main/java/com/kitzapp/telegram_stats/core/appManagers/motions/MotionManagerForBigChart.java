@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.MotionEvent;
 import android.view.View;
-import com.kitzapp.telegram_stats.core.appManagers.ObserverManager;
 
 /**
  * Created by Ivan Kuzmin on 29.03.2019;
@@ -17,7 +16,7 @@ public class MotionManagerForBigChart extends BaseMotionManager  {
     boolean isMiniatureViewLocked = false;
 
     public interface OnMyTouchListener {
-        void onXTouchWasDetected(float newX);
+//        void onXTouchWasDetected(float newX);
 
         void onMiniatureViewIsLocked(boolean isLocked);
     }
@@ -39,7 +38,6 @@ public class MotionManagerForBigChart extends BaseMotionManager  {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_MOVE:
-                _myTouchListener.onXTouchWasDetected(event.getX());
                 this.onMiniatureViewIsLocked(true);
                 break;
         }

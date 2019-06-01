@@ -109,7 +109,7 @@ public abstract class TChartMiniatureView extends TAbstractChartBase implements 
         _axisXForCanvas = this.recalculateAxisX(_constMaxAxisXx);
         _axisesYForCanvas = this.getAxisesForCanvas(_axisesYOriginalArrays, _constMaxAxisY);
 
-        _linesPathes = this.getLinesPathes(_axisXForCanvas, _axisesYForCanvas);
+        super.updateLinesPathes(_axisXForCanvas, _axisesYForCanvas);
 
         if (_miniatureListener != null) {
             _miniatureListener.onDataWasRecalculated(_axisXForCanvas, _axisesYOriginalArrays,

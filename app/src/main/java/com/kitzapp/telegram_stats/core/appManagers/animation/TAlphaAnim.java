@@ -11,6 +11,7 @@ public class TAlphaAnim extends TTBaseAnimValue implements TAlphaAnimInterface {
 
     private Listener _listener;
     private AnimationManagerInterface.ListenerForValues _listenerForManage;
+    private ValueAnimator _valueAnimator = null;
 
     private int _oldAlpha = MAX_VALUE_ALPHA;
 
@@ -24,7 +25,11 @@ public class TAlphaAnim extends TTBaseAnimValue implements TAlphaAnimInterface {
         if (_oldAlpha == newAlpha) {
             return;
         }
-        ValueAnimator _valueAnimator = AndroidUtilites.getIntAnimator(
+        if (_valueAnimator != null ) {
+            _oldAlpha = (int) _valueAnimator.getAnimatedValue();
+            _valueAnimator.cancel();
+        }
+        _valueAnimator = AndroidUtilites.getIntAnimator(
                 _oldAlpha,
                 newAlpha,
                 animation -> {

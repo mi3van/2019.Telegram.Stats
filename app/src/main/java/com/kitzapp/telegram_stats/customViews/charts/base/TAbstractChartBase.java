@@ -34,7 +34,7 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
 
     protected Chart _chart = null;
     private HashMap<String, Paint> _paints = new HashMap<>();
-    protected volatile HashMap<String, Path> _linesPathes = new HashMap<>();
+    protected HashMap<String, Path> _linesPathes = new HashMap<>();
 
     protected HashMap<String, long[]> _axisesYOriginalArrays = new HashMap<>();
     protected float[] _axisXForCanvas = null;
@@ -110,9 +110,8 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
     protected abstract int getChartHalfVerticalPadding();
     protected abstract void needRecalculatePathYScale(float newYScale);
 
-    protected HashMap<String, Path> getLinesPathes(float[] axisXForCanvas,
-                                                   HashMap<String, long[]> axisesYForCanvas) {
-        return this.getLinesPathesArea(axisXForCanvas, axisesYForCanvas, 0, axisXForCanvas.length);
+    protected void updateLinesPathes(float[] axisXForCanvas, HashMap<String, long[]> axisesYForCanvas) {
+        _linesPathes = this.getLinesPathesArea(axisXForCanvas, axisesYForCanvas, 0, axisXForCanvas.length);
     }
 
     protected HashMap<String, Path> getLinesPathesArea(float[] axisXForCanvas,
@@ -167,6 +166,21 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
         if (_isFirstDraw) {
             _isFirstDraw = false;
         }
+    }
+
+    protected void updatePathsForMatrix(int _rightInArray, int _leftInArray ,
+                                        HashMap<String, long[]> _axisesYFlipAndCalculated) {
+        int countPoints = _rightInArray - _leftInArray;
+        HashMap<String, Path> tempMap;
+
+        float pointsWidth = _calculatingViewWidth / countPoints;
+        int addingCountDots = Math.round(getChartHorizPadding() / pointsWidth) + 2;
+
+        tempMap = getLinesPathesArea(_axisXForCanvas, _axisesYFlipAndCalculated,
+                _leftInArray - addingCountDots,
+                _rightInArray + addingCountDots);
+
+        _linesPathes = tempMap;
     }
 
     private void drawPathesCheckAnim(Canvas canvas,
