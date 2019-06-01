@@ -196,8 +196,8 @@ public class ThemeManager {
     }
 
     public static void initTextFonts(Context context) {
-        rBoldTypeface = AndroidUtilites.getTypeface(context, "fonts/rbold.ttf");
-        rMediumTypeface = AndroidUtilites.getTypeface(context, "fonts/rmedium.ttf");
-        rRegularTypeface = AndroidUtilites.getTypeface(context, "fonts/rregular.ttf");
+        rBoldTypeface = Typeface.DEFAULT_BOLD;  //AndroidUtilites.getTypeface(context, "fonts/rbold.ttf");
+        rMediumTypeface = Typeface.SANS_SERIF;       //AndroidUtilites.getTypeface(context, "fonts/rmedium.ttf");
+        rRegularTypeface = Typeface.DEFAULT;    //AndroidUtilites.getTypeface(context, "fonts/rregular.ttf");
     }
 }
