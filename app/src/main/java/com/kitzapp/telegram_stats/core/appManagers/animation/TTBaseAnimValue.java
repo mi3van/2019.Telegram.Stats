@@ -9,8 +9,6 @@ interface TTBaseAnimValueInterface {
 
     void setManagerListener(AnimationManagerInterface.ListenerForValues listenerForManage);
 
-    boolean isAnimatorRun();
-
 }
 
 abstract class TTBaseAnimValue implements TTBaseAnimValueInterface {

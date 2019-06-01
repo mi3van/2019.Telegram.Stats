@@ -7,7 +7,6 @@ import static com.kitzapp.telegram_stats.common.AppConts.MAX_VALUE_ALPHA;
 
 public class TAlphaAnim extends TTBaseAnimValue implements TAlphaAnimInterface {
 
-    private ValueAnimator _valueAnimator = new ValueAnimator();
     private String _keyMap;
 
     private Listener _listener;
@@ -25,11 +24,7 @@ public class TAlphaAnim extends TTBaseAnimValue implements TAlphaAnimInterface {
         if (_oldAlpha == newAlpha) {
             return;
         }
-        if (_valueAnimator.isRunning()) {
-            _oldAlpha = (int) _valueAnimator.getAnimatedValue();
-            _valueAnimator.cancel();
-        }
-        _valueAnimator = AndroidUtilites.getIntAnimator(
+        ValueAnimator _valueAnimator = AndroidUtilites.getIntAnimator(
                 _oldAlpha,
                 newAlpha,
                 animation -> {
@@ -37,7 +32,7 @@ public class TAlphaAnim extends TTBaseAnimValue implements TAlphaAnimInterface {
                         _listener.updateAlpha(_keyMap, (int) animation.getAnimatedValue());
                     }
                     if (_listenerForManage != null) {
-                        _listenerForManage.animNeedInvalidate(AnimationManager.TYPE_ANIM_ALPHA);
+                        _listenerForManage.animNeedInvalidate();
                     }
                 });
         _valueAnimator.start();
@@ -47,10 +42,5 @@ public class TAlphaAnim extends TTBaseAnimValue implements TAlphaAnimInterface {
     @Override
     public void setManagerListener(AnimationManagerInterface.ListenerForValues listenerForManage) {
         _listenerForManage = listenerForManage;
-    }
-
-    @Override
-    public boolean isAnimatorRun() {
-        return _valueAnimator.isRunning();
     }
 }

@@ -182,7 +182,7 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
 
         this.configureMatrixAndApply(leftCursor, rightCursor, _scaleY, _linesPathes);
 
-        this.invalidate();
+        this.postInvalidateOnAnimation();
     }
 
     private HashMap<String, Path> getPathsForMatrixAndDraw() {
@@ -223,9 +223,7 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
 
     @Override
     protected void needRecalculatePathYScale(float newYScale) {
-//        HashMap newPath = this.getPathsForMatrixAndDraw();
-//
-//        this.configureMatrixAndApply(_leftInArray, _rightInArray, newYScale, newPath);
+        this.configureMatrixAndApply(_leftInArray, _rightInArray, newYScale, _linesPathes);
     }
 
     private void updateMaxAndMinAndAnimate(HashMap<String, long[]> hashMap, int leftInArray, int rightInArray) {

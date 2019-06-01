@@ -10,8 +10,6 @@ import java.util.Map;
  */
 
 public class AnimationManager implements AnimationManagerInterface, AnimationManagerInterface.ListenerForValues {
-    public static final byte TYPE_ANIM_ALPHA = 0;
-    public static final byte TYPE_ANIM_SCALE_Y = 2;
 
     private final HashMap<String, TAlphaAnim> _alphaAnimsMap;
     private final TScaleYAnim _scaleYAnim;
@@ -42,42 +40,12 @@ public class AnimationManager implements AnimationManagerInterface, AnimationMan
     }
 
     @Override
-    public void setNewAlphaAndScaleY(String keyAlphaMap, int newAlpha, float newScaleY) {
-        TAlphaAnim alphaAnim = _alphaAnimsMap.get(keyAlphaMap);
-        if (alphaAnim != null) {
-            alphaAnim.setNewAlpha(newAlpha);
-        }
-        _scaleYAnim.setNewScaleY(newScaleY);
-    }
-
-    @Override
-    public void animNeedInvalidate(byte animType) {
+    public void animNeedInvalidate() {
         if (_listener == null) {
             return;
         }
 
-        if (animType == TYPE_ANIM_ALPHA) {
-            _listener.animNeedInvalidateView();
-        } else if (animType == TYPE_ANIM_SCALE_Y) {
-            if (!getIsAlphaRun()) {
-                _listener.animNeedInvalidateView();
-            }
-        }
-    }
-
-    private boolean getIsAlphaRun() {
-        boolean isAlphaRun = false;
-        if (_alphaAnimsMap.isEmpty()) {
-            return isAlphaRun;
-        }
-
-        for (Map.Entry<String, TAlphaAnim> entry: _alphaAnimsMap.entrySet()) {
-            if  (entry.getValue().isAnimatorRun()) {
-                isAlphaRun = true;
-            }
-        }
-
-        return isAlphaRun;
+        _listener.animNeedInvalidateView();
     }
 
     private void initAnimsManagerListener() {

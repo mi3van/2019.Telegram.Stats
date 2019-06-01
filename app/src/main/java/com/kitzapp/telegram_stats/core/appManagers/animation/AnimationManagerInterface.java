@@ -6,10 +6,8 @@ interface AnimationManagerInterface {
 
     void setNewScaleY(float newScaleY);
 
-    void setNewAlphaAndScaleY(String keyAlphaMap, int newAlpha, float newScaleY);
-
     interface ListenerForValues {
-        void animNeedInvalidate(byte animType);
+        void animNeedInvalidate();
     }
 
     interface ListenerForView {

@@ -291,7 +291,7 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
 
     @Override
     public void animNeedInvalidateView() {
-        invalidate();
+        postInvalidateOnAnimation();
     }
 
     @Override
