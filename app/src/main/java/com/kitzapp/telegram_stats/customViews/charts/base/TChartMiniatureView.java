@@ -65,7 +65,43 @@ public abstract class TChartMiniatureView extends TAbstractChartBase implements 
 
     @Override
     protected void needRecalculatePathYScale(float newYScale) {
-        // todo calculate path scaleY
+        super.needRecalculatePathYScale(newYScale);
+        initPathsForDraw();
+    }
+
+    @Override
+    protected int getLeftInArray() {
+        return 0;
+    }
+
+    @Override
+    protected int getRightInArray() {
+        return _constMaxAxisXx;
+    }
+
+    @Override
+    protected HashMap<String, long[]> getCalculatedYArrays() {
+        return _axisesYForCanvas;
+    }
+
+    @Override
+    protected int getPxForMatrix() {
+        return 0;
+    }
+
+    @Override
+    protected float getPyForMatrix() {
+        return _calculatingViewHeight;
+    }
+
+    @Override
+    protected float getLeftCursor() {
+        return 0;
+    }
+
+    @Override
+    protected float getRightCursor() {
+        return 1f;
     }
 
     private HashMap<String, long[]> getOriginalAxysesYAndInitMaxs(Chart chart) {

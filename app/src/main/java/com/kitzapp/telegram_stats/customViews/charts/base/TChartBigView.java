@@ -3,15 +3,12 @@ package com.kitzapp.telegram_stats.customViews.charts.base;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import com.kitzapp.telegram_stats.AndroidApp;
 import com.kitzapp.telegram_stats.R;
-import com.kitzapp.telegram_stats.common.MyLongPair;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 import com.kitzapp.telegram_stats.core.appManagers.motions.MotionManagerForBigChart;
 import com.kitzapp.telegram_stats.customViews.popup.TCellDescriptionTexts;
@@ -26,8 +23,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.kitzapp.telegram_stats.common.AppConts.INTEGER_MAX_VALUE;
-import static com.kitzapp.telegram_stats.common.AppConts.INTEGER_MIN_VALUE;
 import static com.kitzapp.telegram_stats.core.appManagers.ThemeManager.CHART_LINE_IN_MINIATURE_WIDTH_PX;
 
 public abstract class TChartBigView extends TAbstractChartBase implements TChartBigViewInterface,
@@ -40,9 +35,6 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
 
     private float _leftCursor, _rightCursor;
     private int _leftInArray, _rightInArray;
-
-    private long _tempMaxAxisY;
-    private long _tempMinimumAxisY;
 
     private MotionManagerForBigChart _motionManagerBig;
     private TChartBigViewInterface.Listener _chartBigListener;
@@ -125,19 +117,6 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
     }
 
     @Override
-    public void wasChangedIsActiveChart() {
-        super.wasChangedIsActiveChart();
-
-        this.scaleYAnimationStart();
-    }
-
-    private void scaleYAnimationStart() {
-        float newScaleY = this.getNewScaleAndUpdateMaxAndMin(_axisesYOriginalArrays, _leftInArray, _rightInArray);
-
-        _animationManager.setNewScaleY(_scaleY, newScaleY);
-    }
-
-    @Override
     public void onRectCursorsWasChanged(float leftCursor, float rightCursor) {
         if (_leftCursor == leftCursor && _rightCursor == rightCursor && !_isFirstDraw) {
             return;
@@ -167,92 +146,44 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
     }
 
     @Override
+    protected int getLeftInArray() {
+        return _leftInArray;
+    }
+
+    @Override
+    protected int getRightInArray() {
+        return _rightInArray;
+    }
+
+    @Override
+    protected HashMap<String, long[]> getCalculatedYArrays() {
+        return _axisesYFlipAndCalculated;
+    }
+
+    @Override
+    protected int getPxForMatrix() {
+        return _pxMatrix;
+    }
+
+    @Override
+    protected float getPyForMatrix() {
+        return _pyMatrix;
+    }
+
+    @Override
+    protected float getLeftCursor() {
+        return _leftCursor;
+    }
+
+    @Override
+    protected float getRightCursor() {
+        return _rightCursor;
+    }
+
+    @Override
     protected void needRecalculatePathYScale(float newYScale) {
-        _scaleY = newYScale;
-
+        super.needRecalculatePathYScale(newYScale);
         initPathsForDraw();
-    }
-
-    private void initPathsForDraw() {
-        this.calculateMaxAndMin(_axisesYOriginalArrays, _leftInArray, _rightInArray);
-
-        updatePathsForMatrix(_leftInArray, _rightInArray, _axisesYFlipAndCalculated);
-
-        this.configureMatrixAndApply(_leftCursor, _rightCursor, _scaleY, _linesPathes);
-    }
-
-    private void calculateMaxAndMin(HashMap<String, long[]> hashMap, int leftInArray, int rightInArray) {
-        MyLongPair maxAndMinInPoint = this.getMaxAndMinInHashMap(hashMap, leftInArray, rightInArray);
-
-        long tempMaxAxisY = maxAndMinInPoint.getMax();
-        if (tempMaxAxisY == INTEGER_MIN_VALUE) {
-            return;
-        }
-        _tempMaxAxisY = tempMaxAxisY;
-        _tempMinimumAxisY = maxAndMinInPoint.getMin();
-    }
-
-    private void configureMatrixAndApply(float leftCursor, float rightCursor, float scaleY, HashMap<String, Path> pathHashMap) {
-        Matrix matrixTranslate = new Matrix();
-        Matrix matrixScale = new Matrix();
-
-        float needScaleX = 1f / (rightCursor - leftCursor);
-        float translateX = leftCursor * _calculatingViewWidth;
-        float translateY = getChartHalfVerticalPadding();
-
-        matrixScale.setScale(needScaleX, scaleY, _pxMatrix, _pyMatrix);
-        matrixTranslate.setTranslate(-translateX, translateY);
-
-        for (Map.Entry<String, Path> entry: pathHashMap.entrySet()) {
-            Path path = entry.getValue();
-            if (path == null) {
-                continue;
-            }
-
-            path.transform(matrixTranslate);
-            path.transform(matrixScale);
-        }
-    }
-
-    private float getNewScaleAndUpdateMaxAndMin(HashMap<String, long[]> hashMap, int leftInArray, int rightInArray) {
-        this.calculateMaxAndMin(hashMap, leftInArray, rightInArray);
-
-        long difference = _tempMaxAxisY - 0;//_tempMinimumAxisY;
-        float scaleY = (float) _constMaxAxisY / difference;
-        return scaleY;
-    }
-
-    private MyLongPair getMaxAndMinInHashMap(HashMap<String, long[]> hashMap, int leftInArray, int rightInArray) {
-        long max = INTEGER_MIN_VALUE;   long min = INTEGER_MAX_VALUE;
-        boolean isActiveChart;
-        long[] valuesArray;
-
-        if (leftInArray < 0) {
-            leftInArray = 0;
-        }
-        if (rightInArray > _constMaxAxisXx) {
-            rightInArray = _constMaxAxisXx;
-        }
-        for (Map.Entry<String, long[]> entry: hashMap.entrySet()) {
-            isActiveChart = getChartIsActive(entry.getKey());
-            if (!isActiveChart) {
-                continue;
-            }
-            valuesArray = hashMap.get(entry.getKey());
-            if (valuesArray == null) {
-                continue;
-            }
-            for (int i = leftInArray; i < rightInArray; i++) {
-                long value = valuesArray[i];
-                if (value > max) {
-                    max = value;
-                }
-                if (value < min) {
-                    min = value;
-                }
-            }
-        }
-        return new MyLongPair(max, min);
     }
 
     private HashMap<String, long[]> calcArrayForViewFlipVert(HashMap<String, long[]> axisesYOriginalArrays, long maxAxisY) {

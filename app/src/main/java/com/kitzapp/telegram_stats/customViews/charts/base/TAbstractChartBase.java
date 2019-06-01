@@ -2,6 +2,7 @@ package com.kitzapp.telegram_stats.customViews.charts.base;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import com.kitzapp.telegram_stats.common.AndroidUtilites;
+import com.kitzapp.telegram_stats.common.MyLongPair;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 import com.kitzapp.telegram_stats.core.appManagers.animation.AnimationManager;
 import com.kitzapp.telegram_stats.core.appManagers.animation.TAlphaAnim;
@@ -19,8 +21,7 @@ import com.kitzapp.telegram_stats.pojo.chart.impl.Line;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.kitzapp.telegram_stats.common.AppConts.MAX_VALUE_ALPHA;
-import static com.kitzapp.telegram_stats.common.AppConts.MIN_VALUE_ALPHA;
+import static com.kitzapp.telegram_stats.common.AppConts.*;
 
 /**
  * Created by Ivan Kuzmin on 25.03.2019;
@@ -47,6 +48,8 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
 
     protected int _constMaxAxisXx;
     protected long _constMaxAxisY;
+    protected long _tempMaxAxisY;
+    protected long _tempMinimumAxisY;
 
     protected AnimationManager _animationManager = null;
     protected float _scaleY = 1f;
@@ -105,10 +108,21 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
 
     protected abstract int getChartVerticalPadding();
     protected abstract int getChartHalfVerticalPadding();
-    protected abstract void needRecalculatePathYScale(float newYScale);
+
+    protected abstract int getLeftInArray();
+    protected abstract int getRightInArray();
+    protected abstract HashMap<String, long[]> getCalculatedYArrays();
+    protected abstract int getPxForMatrix();
+    protected abstract float getPyForMatrix();
+    protected abstract float getLeftCursor();
+    protected abstract float getRightCursor();
+
+    protected void needRecalculatePathYScale(float newYScale) {
+        _scaleY = newYScale;
+    }
 
     protected void updateLinesPathes(float[] axisXForCanvas, HashMap<String, long[]> axisesYForCanvas) {
-        _linesPathes = this.getLinesPathesArea(axisXForCanvas, axisesYForCanvas, 0, axisXForCanvas.length);
+        _linesPathes = this.getLinesPathesArea(axisXForCanvas, axisesYForCanvas, 0, _constMaxAxisXx);
     }
 
     protected HashMap<String, Path> getLinesPathesArea(float[] axisXForCanvas,
@@ -163,21 +177,6 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
         if (_isFirstDraw) {
             _isFirstDraw = false;
         }
-    }
-
-    protected void updatePathsForMatrix( int _leftInArray, int _rightInArray,
-                                        HashMap<String, long[]> _axisesYFlipAndCalculated) {
-        int countPoints = _rightInArray - _leftInArray;
-        HashMap<String, Path> tempMap;
-
-        float pointsWidth = _calculatingViewWidth / countPoints;
-        int addingCountDots = Math.round(getChartHorizPadding() / pointsWidth) + 2;
-
-        tempMap = getLinesPathesArea(_axisXForCanvas, _axisesYFlipAndCalculated,
-                _leftInArray - addingCountDots,
-                _rightInArray + addingCountDots);
-
-        _linesPathes = tempMap;
     }
 
     private void drawPathesCheckAnim(Canvas canvas,
@@ -298,6 +297,111 @@ abstract class TAbstractChartBase extends FrameLayout implements TAbstractChartB
             int newAlpha = isLineActive ? MAX_VALUE_ALPHA : MIN_VALUE_ALPHA;
             _animationManager.setNewAlpha(entry.getKey(), newAlpha);
         }
+
+        this.scaleYAnimationStart();
+    }
+
+    protected void initPathsForDraw() {
+        this.calculateMaxAndMin(_axisesYOriginalArrays, getLeftInArray(), getRightInArray());
+
+        updatePathsForMatrix(getLeftInArray(), getRightInArray(), getCalculatedYArrays());
+
+        this.configureMatrixAndApply(getLeftCursor(), getRightCursor(), _scaleY, _linesPathes);
+    }
+
+    protected void scaleYAnimationStart() {
+        float newScaleY = this.getNewScaleAndUpdateMaxAndMin(_axisesYOriginalArrays, getLeftInArray(), getRightInArray());
+
+        _animationManager.setNewScaleY(_scaleY, newScaleY);
+    }
+
+    protected void updatePathsForMatrix( int _leftInArray, int _rightInArray,
+                                         HashMap<String, long[]> _axisesYCalculated) {
+        int countPoints = _rightInArray - _leftInArray;
+        HashMap<String, Path> tempMap;
+
+        float pointsWidth = _calculatingViewWidth / countPoints;
+        int addingCountDots = Math.round(getChartHorizPadding() / pointsWidth) + 2;
+
+        tempMap = getLinesPathesArea(_axisXForCanvas, _axisesYCalculated,
+                _leftInArray - addingCountDots,
+                _rightInArray + addingCountDots);
+
+        _linesPathes = tempMap;
+    }
+
+    private void configureMatrixAndApply(float leftCursor, float rightCursor, float scaleY, HashMap<String, Path> pathHashMap) {
+        Matrix matrixTranslate = new Matrix();
+        Matrix matrixScale = new Matrix();
+
+        float needScaleX = 1f / (rightCursor - leftCursor);
+        float translateX = leftCursor * _calculatingViewWidth;
+        float translateY = getChartHalfVerticalPadding();
+
+        matrixScale.setScale(needScaleX, scaleY, getPxForMatrix(), getPyForMatrix());
+        matrixTranslate.setTranslate(-translateX, translateY);
+
+        for (Map.Entry<String, Path> entry: pathHashMap.entrySet()) {
+            Path path = entry.getValue();
+            if (path == null) {
+                continue;
+            }
+
+            path.transform(matrixTranslate);
+            path.transform(matrixScale);
+        }
+    }
+
+    private float getNewScaleAndUpdateMaxAndMin(HashMap<String, long[]> hashMap, int leftInArray, int rightInArray) {
+        this.calculateMaxAndMin(hashMap, leftInArray, rightInArray);
+
+        long difference = _tempMaxAxisY - 0;//_tempMinimumAxisY;
+        float scaleY = (float) _constMaxAxisY / difference;
+        return scaleY;
+    }
+
+    protected void calculateMaxAndMin(HashMap<String, long[]> hashMap, int leftInArray, int rightInArray) {
+        MyLongPair maxAndMinInPoint = this.getMaxAndMinInHashMap(hashMap, leftInArray, rightInArray);
+
+        long tempMaxAxisY = maxAndMinInPoint.getMax();
+        if (tempMaxAxisY == INTEGER_MIN_VALUE) {
+            return;
+        }
+        _tempMaxAxisY = tempMaxAxisY;
+        _tempMinimumAxisY = maxAndMinInPoint.getMin();
+    }
+
+    protected MyLongPair getMaxAndMinInHashMap(HashMap<String, long[]> hashMap, int leftInArray, int rightInArray) {
+        long max = INTEGER_MIN_VALUE;   long min = INTEGER_MAX_VALUE;
+        boolean isActiveChart;
+        long[] valuesArray;
+
+        if (leftInArray < 0) {
+            leftInArray = 0;
+        }
+        if (rightInArray > _constMaxAxisXx) {
+            rightInArray = _constMaxAxisXx;
+        }
+        for (Map.Entry<String, long[]> entry: hashMap.entrySet()) {
+            isActiveChart = getChartIsActive(entry.getKey());
+            if (!isActiveChart) {
+                continue;
+            }
+            valuesArray = hashMap.get(entry.getKey());
+            if (valuesArray == null) {
+                continue;
+            }
+            for (int i = leftInArray; i < rightInArray; i++) {
+                long value = valuesArray[i];
+                if (value > max) {
+                    max = value;
+                }
+                if (value < min) {
+                    min = value;
+                }
+            }
+        }
+        return new MyLongPair(max, min);
     }
 
     @Override
