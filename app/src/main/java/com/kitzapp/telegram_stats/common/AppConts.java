@@ -8,6 +8,7 @@ package com.kitzapp.telegram_stats.common;
 
 public class AppConts {
     public static final String JSON_CHART_FILENAME = "chart_data.json";
+    public static final String AUTHOR_LINK = "https://www.linkedin.com/in/ivan-kuzmin-ab2233167";
 
     public static final int DELAY_COLOR_ANIM = 220;
     public static final int DELAY_ELEMENTS_ANIM = 220;

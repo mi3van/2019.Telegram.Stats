@@ -7,6 +7,7 @@ import com.kitzapp.telegram_stats.BuildConfig;
 import com.kitzapp.telegram_stats.clean_mvp.mvp.BasePresenter;
 import com.kitzapp.telegram_stats.core.appManagers.ThemeManager;
 import com.kitzapp.telegram_stats.core.mainChart.TChartContract.TPresenter;
+import com.kitzapp.telegram_stats.customViews.AuthorView;
 import com.kitzapp.telegram_stats.customViews.charts.TChartCardCell;
 import com.kitzapp.telegram_stats.pojo.chart.Chart;
 import com.kitzapp.telegram_stats.pojo.chart.ChartsList;
@@ -80,9 +81,11 @@ class TChartPresenter extends BasePresenter<TView, TModel> implements TPresenter
         view.addViewToContainer(firstChartsDelimiter);
         try {
             for (Chart chart: chartsList.getCharts()) {
-                TChartCardCell chartCardCell = createChartView(chart);
+                TChartCardCell chartCardCell = this.createChartView(chart);
                 view.addViewToContainer(chartCardCell);
             }
+            AuthorView authorView = new AuthorView(view.getContext());
+            view.addViewToContainer(authorView);
         } catch (Exception e) {
             view.showMessageToast(e.getMessage());
         } finally {
