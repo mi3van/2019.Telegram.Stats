@@ -138,11 +138,14 @@ public abstract class TChartBigView extends TAbstractChartBase implements TChart
 
         initPathsForDraw();
 
-        _tViewChartInfoVert.setDatesAndInit(_tempMaxAxisY, 0);
-
-        postInvalidateOnAnimation();
-
         scaleYAnimationStart();
+    }
+
+    @Override
+    protected void initPathsForDraw() {
+        super.initPathsForDraw();
+
+        _tViewChartInfoVert.setDatesAndInit(_tempMaxAxisY, 0);
     }
 
     @Override
